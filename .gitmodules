@@ -1,6 +1,6 @@
 [submodule "Borek/vendor/magic_enum"]
 	path = Borek/vendor/magic_enum
-	url = https://github.com/Neargye/magic_enum
+	url = https://github.com/KamilMensik/borek_magic_enum
 [submodule "Borek/vendor/spdlog"]
 	path = Borek/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
