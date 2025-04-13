@@ -1,0 +1,15 @@
+[submodule "Borek/vendor/magic_enum"]
+	path = Borek/vendor/magic_enum
+	url = https://github.com/Neargye/magic_enum
+[submodule "Borek/vendor/spdlog"]
+	path = Borek/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "Borek/vendor/glfw"]
+	path = Borek/vendor/glfw
+	url = https://github.com/glfw/glfw
+[submodule "Borek/vendor/glm"]
+	path = Borek/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "Borek/vendor/imgui"]
+	path = Borek/vendor/imgui
+	url = https://github.com/KamilMensik/borek-imgui
