@@ -1,4 +1,4 @@
-file(GLOB_RECURSE ENGINE_SRC_FILES src/*.cpp src/*.c)
+file(GLOB_RECURSE ENGINE_SRC_FILES src/*.cpp src/*.c src/*.h)
 
 project(BOREK)
 add_library(BOREK STATIC ${ENGINE_SRC_FILES})

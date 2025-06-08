@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include <string>
+#include <ostream>
 
 #pragma once
 

@@ -13,7 +13,7 @@
 #ifndef BR_PLATFORM_WINDOWS
         #include "Include/Platform/Linux/LinuxWindow.h"
 #else
-        // When windows window will be created include it here.
+        #include "Include/Platform/Windows/WindowsWindow.h"
 #endif
 
 

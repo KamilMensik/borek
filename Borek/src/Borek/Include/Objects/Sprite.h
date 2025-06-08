@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include <string>
+#include <cstdint>
+
 #include "Include/Core.h"
 #include "Include/Graphics/Texture.h"
 

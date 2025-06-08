@@ -16,6 +16,9 @@ target_link_libraries(BOREK yaml-cpp)
 add_subdirectory(imguismo)
 target_link_libraries(BOREK imguismo)
 
+add_subdirectory(spdlog)
+target_link_libraries(BOREK spdlog)
+
 target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./../vendor"
                                         "./magic_enum/include"

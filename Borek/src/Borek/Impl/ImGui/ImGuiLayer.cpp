@@ -14,7 +14,7 @@
 #include "imguismo/ImGuizmo.h"
 
 #ifdef WIN32
-#define TRY_ENABLE_VIEWPORTS io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+#define TRY_ENABLE_VIEWPORTS //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 #else
 #include <stdlib.h>
 #define TRY_ENABLE_VIEWPORTS                                               \
@@ -46,7 +46,7 @@ ImGuiKey KeyToImguiKey(KeyCode keycode)
         case KeyCode::HOME: return ImGuiKey_Home;
         case KeyCode::END: return ImGuiKey_End;
         case KeyCode::INSERT: return ImGuiKey_Insert;
-        case KeyCode::DELETE: return ImGuiKey_Delete;
+        case KeyCode::DEL: return ImGuiKey_Delete;
         case KeyCode::BACKSPACE: return ImGuiKey_Backspace;
         case KeyCode::SPACE: return ImGuiKey_Space;
         case KeyCode::ENTER: return ImGuiKey_Enter;
@@ -244,11 +244,11 @@ constexpr ImVec4 ToImVec4(const glm::vec4& v)
 void ImGuiLayer::SetDefaultColors()
 {
         auto& colors = ImGui::GetStyle().Colors;
-        auto c1 = ToImVec4(Colors::RGB(224, 164, 6));
-        auto c2 = ToImVec4(Colors::RGB(251, 206, 7));
-        auto c3 = ToImVec4(Colors::RGB(89, 64, 30));
-        auto c4 = ToImVec4(Colors::RGB(41, 38, 25));
-        auto c5 = ToImVec4(Colors::RGB(193, 178, 148));
+        auto c1 = ToImVec4(Colors::FROM_RGB(224, 164, 6));
+        auto c2 = ToImVec4(Colors::FROM_RGB(251, 206, 7));
+        auto c3 = ToImVec4(Colors::FROM_RGB(89, 64, 30));
+        auto c4 = ToImVec4(Colors::FROM_RGB(41, 38, 25));
+        auto c5 = ToImVec4(Colors::FROM_RGB(193, 178, 148));
 
         colors[ImGuiCol_WindowBg] = c4;
 

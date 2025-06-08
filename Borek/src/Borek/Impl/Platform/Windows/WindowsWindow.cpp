@@ -1,6 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#ifndef BR_PLATFORM_WINDOWS
+#ifdef BR_PLATFORM_WINDOWS
 
 #include <cstdlib>
 
@@ -11,7 +11,7 @@
 #include "Include/Events/KeyEvents.h"
 #include "Include/Events/MouseEvents.h"
 #include "Include/Graphics/Context.h"
-#include "Include/Platform/Linux/LinuxWindow.h"
+#include "Include/Platform/Windows/WindowsWindow.h"
 #include "Include/Debug/Log.h"
 #include "Include/Debug/Assert.h"
 

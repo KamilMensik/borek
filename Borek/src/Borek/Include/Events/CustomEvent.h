@@ -7,9 +7,10 @@
 
 namespace Borek {
 
+static uint32_t _Current_Custom_Event_Id = 0;
+
 constexpr static uint32_t GenerateNewCustomEventId() {
-        static uint32_t current = 0;
-        return current++;
+        return _Current_Custom_Event_Id++;
 }
 
 template <class T>
