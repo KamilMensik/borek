@@ -10,7 +10,8 @@
 #include "Include/Events/MouseEvents.h"
 #include "Include/Graphics/Context.h"
 #include "Include/Platform/Linux/LinuxWindow.h"
-#include "Include/Log.h"
+#include "Include/Debug/Log.h"
+#include "Include/Debug/Assert.h"
 
 namespace Borek
 {
@@ -70,18 +71,17 @@ void Window::Init()
         Graphics::Context::Create(this);
         Graphics::Context::Instance()->Init();
 
-
         glfwSetWindowUserPointer(m_Window, this);
 
         // Add callbacks
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width,
-                                               int heigth)
+                                               int height)
         {
                 Window& wn = *SCAST<Window*>(glfwGetWindowUserPointer(window));
                 wn.m_Width = width;
-                wn.m_Height = heigth;
+                wn.m_Height = height;
 
-                WindowResizeEvent ev(width, heigth);
+                WindowResizeEvent ev(width, height);
                 wn.Callback(ev);
         });
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
@@ -159,6 +159,11 @@ void Window::Init()
 void Window::Shutdown()
 {
         glfwDestroyWindow(m_Window);
+}
+
+Time Window::GetTime()
+{
+        return Time(glfwGetTime());
 }
 
 } // namespace Borek

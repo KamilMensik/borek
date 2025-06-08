@@ -5,8 +5,8 @@
 #include <format>
 #include <magic_enum/magic_enum.hpp>
 
-#include "./Event.h"
-#include "Include/Input.h"
+#include "Include/Events/Event.h"
+#include "Include/Base/Input.h"
 
 namespace Borek {
 

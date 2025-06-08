@@ -13,3 +13,10 @@
 [submodule "Borek/vendor/imgui"]
 	path = Borek/vendor/imgui
 	url = https://github.com/KamilMensik/borek-imgui
+[submodule "Borek/vendor/yaml-cpp"]
+	path = Borek/vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
+[submodule "Borek/vendor/imguismo"]
+	path = Borek/vendor/imguismo
+	url = https://github.com/KamilMensik/Borek-ImGuizmo
+	branch = borek

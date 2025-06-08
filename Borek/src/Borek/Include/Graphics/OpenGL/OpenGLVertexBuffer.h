@@ -11,14 +11,19 @@ namespace Graphics {
 
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
-        OpenGLVertexBuffer(float* vertexes, uint32_t size);
+        OpenGLVertexBuffer(const void* vertexes, uint32_t size,
+                           bool is_dynamic = false);
         ~OpenGLVertexBuffer() override;
         void Bind() override;
         void Unbind() override;
-        void SetBufferDescriptor(const BufferDescriptor& desc) override
+        void SetData(const void* vertexes, uint32_t size) override;
+        inline void SetBufferDescriptor(
+                const std::initializer_list<BufferDescriptor::Element>& els)
+                override
         {
-                m_Descriptor = desc;
+                m_Descriptor = BufferDescriptor(els);
         }
+
         const BufferDescriptor& GetBufferDescriptor() override
         {
                 return m_Descriptor;
@@ -27,6 +32,7 @@ public:
 private:
         BufferDescriptor m_Descriptor;
         uint32_t m_Id;
+        uint32_t m_Size;
 };
 
 }  // namespace Graphics

@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "Include/Core.h"
 #include <vector>
+
+#include "Include/Core.h"
 
 namespace Borek {
 namespace Graphics {
@@ -25,7 +26,7 @@ public:
         BufferDescriptor(const std::initializer_list<Element>& elements);
         BufferDescriptor() {}
 
-        const uint32_t Size();
+        uint32_t Size();
 
         inline const std::vector<Element>& GetElements()
         {

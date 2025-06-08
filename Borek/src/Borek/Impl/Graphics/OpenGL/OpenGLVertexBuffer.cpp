@@ -1,9 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include <glad/glad.h>
-#include <iostream>
 
 #include "Include/Graphics/OpenGL/OpenGLVertexBuffer.h"
+#include "Include/Debug/Assert.h"
 
 namespace Borek {
 namespace Graphics {
@@ -14,16 +15,24 @@ uint32_t GetOpenGLType(Datatype d) {
         case Datatype::Float2:
         case Datatype::Float3:
         case Datatype::Float4:
-                        return GL_FLOAT;
+                return GL_FLOAT;
+        case Datatype::Int:
+        case Datatype::Int2:
+        case Datatype::Int3:
+        case Datatype::Int4:
+                return GL_INT;
         }
 
         return 0;
 }
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertexes, uint32_t size) {
+OpenGLVertexBuffer::OpenGLVertexBuffer(const void* vertexes, uint32_t size,
+                                       bool is_dynamic) {
+        m_Size = size;
         glGenBuffers(1, &m_Id);
         glBindBuffer(GL_ARRAY_BUFFER, m_Id);
-        glBufferData(GL_ARRAY_BUFFER, size, vertexes, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size, vertexes,
+                     is_dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 }
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer()
@@ -40,21 +49,22 @@ void OpenGLVertexBuffer::Bind()
                 glVertexAttribPointer(i, el.Count(),
                                       GetOpenGLType(el.datatype),
                                       el.is_normalized ? GL_TRUE : GL_FALSE,
-                                      0,
+                                      m_Descriptor.Size(),
                                       (void*)el.offset);
-                /*
-                glVertexAttribFormat(i, el.Count(),
-                                     GetOpenGLType(el.datatype),
-                                     el.is_normalized ? GL_TRUE : GL_FALSE,
-                                     el.offset);
-                glVertexAttribBinding(i, 0);
-                */
+                i++;
         }
 }
 
 void OpenGLVertexBuffer::Unbind()
 {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
+{
+        BOREK_ENGINE_ASSERT(size < m_Size, "Trying to write into vertex buffer data that is larger than its size");
+        glBindBuffer(GL_ARRAY_BUFFER, m_Id);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
 }  // namespace Graphics

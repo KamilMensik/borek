@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Include/Window.h"
+#include "Include/Base/Window.h"
 
 namespace Borek {
 

@@ -3,7 +3,7 @@
 
 #include "Include/Graphics/OpenGL/OpenGLContext.h"
 #include "Include/Graphics/Backend.h"
-#include "Include/Core.h"
+#include "Include/Debug/Assert.h"
 
 namespace Borek {
 namespace Graphics {
@@ -28,6 +28,9 @@ void OpenGLContext::Init()
 
         BOREK_ENGINE_INFO("OpenGL renderer: {}",
                           (char*)glGetString(GL_RENDERER));
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void OpenGLContext::SwapBuffers()

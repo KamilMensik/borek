@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "./Event.h"
+#include "Include/Events/Event.h"
 
 namespace Borek {
 

@@ -2,17 +2,17 @@
 
 #include "Include/Graphics/IndexBuffer.h"
 #include "Include/Graphics/Backend.h"
-
 #include "Include/Graphics/OpenGL/OpenGLIndexBuffer.h"
 
 namespace Borek {
 namespace Graphics {
 
-IndexBuffer* IndexBuffer::Create(uint32_t *indexes, uint32_t size)
+Ref<IndexBuffer> IndexBuffer::Create(const uint32_t *indexes, uint32_t count,
+                                     bool is_dynamic)
 {
         switch (Backend::GetType()) {
         case Backend::Type::kOpenGL:
-                return new OpenGLIndexBuffer(indexes, size);
+                return NewRef<OpenGLIndexBuffer>(indexes, count, is_dynamic);
         }
 
         return nullptr;

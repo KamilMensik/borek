@@ -52,6 +52,8 @@ enum class EventType {
         kMouseButtonReleased,
         kMouseMoved,
         kMouseScrolled,
+
+        kCustomEvent,
 };
 
 enum EventCategory {
@@ -62,6 +64,7 @@ enum EventCategory {
         kMouse = 8,
         kMouseButton = 16,
         kApplication = 32,
+        kCustom = 64,
 };
 
 
@@ -70,6 +73,7 @@ class Event {
 
 public:
         inline bool GetHandled() { return m_Handled; }
+        inline void Handle() { m_Handled = true; }
 
         virtual const EventType GetEventType() const = 0;
         virtual const int GetEventCategories() const = 0;

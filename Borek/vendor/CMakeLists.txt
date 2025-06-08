@@ -7,9 +7,21 @@ target_link_libraries(BOREK GLAD)
 add_subdirectory(imgui)
 target_link_libraries(BOREK imgui)
 
+add_subdirectory(stb)
+target_link_libraries(BOREK stb)
+
+add_subdirectory(yaml-cpp)
+target_link_libraries(BOREK yaml-cpp)
+
+add_subdirectory(imguismo)
+target_link_libraries(BOREK imguismo)
+
 target_include_directories(BOREK PUBLIC "./spdlog/include"
+                                        "./../vendor"
                                         "./magic_enum/include"
                                         "./glfw/include"
                                         "./glad/include"
                                         "./imgui"
-                                        "./glm")
+                                        "./glm"
+                                        "./stb"
+                                        "./yaml-cpp/include")

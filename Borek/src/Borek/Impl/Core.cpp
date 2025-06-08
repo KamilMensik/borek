@@ -15,6 +15,14 @@ uint32_t DatatypeSize(Datatype d)
                 return sizeof(float) * 3;
         case Datatype::Float4:
                 return sizeof(float) * 4;
+        case Datatype::Int:
+                return sizeof(int);
+        case Datatype::Int2:
+                return sizeof(int) * 2;
+        case Datatype::Int3:
+                return sizeof(int) * 3;
+        case Datatype::Int4:
+                return sizeof(int) * 4;
         }
 
         return 0;

@@ -1,314 +1,746 @@
 [
 {
-  "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Application.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Application.cpp",
-  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Application.cpp",
-  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Application.cpp.o"
+  "directory": "/home/kamil/bakalarka/borek/build/ECS",
+  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/ECS.dir/src/ECS/Archetype.cpp.o -c /home/kamil/bakalarka/borek/ECS/src/ECS/Archetype.cpp",
+  "file": "/home/kamil/bakalarka/borek/ECS/src/ECS/Archetype.cpp",
+  "output": "ECS/CMakeFiles/ECS.dir/src/ECS/Archetype.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/ECS",
+  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/ECS.dir/src/ECS/ComponentColumn.cpp.o -c /home/kamil/bakalarka/borek/ECS/src/ECS/ComponentColumn.cpp",
+  "file": "/home/kamil/bakalarka/borek/ECS/src/ECS/ComponentColumn.cpp",
+  "output": "ECS/CMakeFiles/ECS.dir/src/ECS/ComponentColumn.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/ECS",
+  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/ECS.dir/src/ECS/Query.cpp.o -c /home/kamil/bakalarka/borek/ECS/src/ECS/Query.cpp",
+  "file": "/home/kamil/bakalarka/borek/ECS/src/ECS/Query.cpp",
+  "output": "ECS/CMakeFiles/ECS.dir/src/ECS/Query.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/ECS",
+  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/ECS.dir/src/ECS/World.cpp.o -c /home/kamil/bakalarka/borek/ECS/src/ECS/World.cpp",
+  "file": "/home/kamil/bakalarka/borek/ECS/src/ECS/World.cpp",
+  "output": "ECS/CMakeFiles/ECS.dir/src/ECS/World.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Core.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Core.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Application.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Application.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Application.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Application.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Components.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Components.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Components.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Components.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Entity.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Entity.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Entity.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Entity.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Input.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Input.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Input.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Input.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Layer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Layer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Layer.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Layer.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/LayerStack.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/LayerStack.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/LayerStack.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/LayerStack.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Renderer2D.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Renderer2D.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Renderer2D.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Renderer2D.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Scene.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Scene.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Base/Scene.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Base/Scene.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Core.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Core.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Core.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Core.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Backend.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Backend.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Debug/Log.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Debug/Log.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Debug/Log.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Debug/Log.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Engine/SceneSerializer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Engine/SceneSerializer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Engine/SceneSerializer.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Engine/SceneSerializer.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Engine/Utils/FileUtils.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Engine/Utils/FileUtils.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Engine/Utils/FileUtils.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Engine/Utils/FileUtils.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/cc -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -o CMakeFiles/BOREK.dir/src/Borek/Impl/Engine/Utils/tinyfiledialogs.c.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Engine/Utils/tinyfiledialogs.c",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Engine/Utils/tinyfiledialogs.c",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Engine/Utils/tinyfiledialogs.c.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Events/MouseEvents.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Events/MouseEvents.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Events/MouseEvents.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Events/MouseEvents.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Backend.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Backend.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Backend.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Backend.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/BufferDescriptor.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/BufferDescriptor.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/BufferDescriptor.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/BufferDescriptor.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/BufferDescriptor.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/BufferDescriptor.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Context.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Context.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Camera.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Camera.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Camera.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Camera.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Context.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Context.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Context.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Context.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/IndexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/IndexBuffer.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/FrameBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/FrameBuffer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/FrameBuffer.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/FrameBuffer.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/IndexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/IndexBuffer.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/IndexBuffer.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/IndexBuffer.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLContext.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLContext.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLContext.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLContext.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLContext.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLContext.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLIndexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLIndexBuffer.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLFrameBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLFrameBuffer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLFrameBuffer.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLFrameBuffer.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLIndexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLIndexBuffer.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLIndexBuffer.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLIndexBuffer.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLShader.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLShader.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLRendererImpl.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLRendererImpl.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLRendererImpl.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLRendererImpl.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLShader.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLShader.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLShader.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLShader.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexBuffer.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLTexture.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLTexture.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLTexture.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLTexture.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexArray.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexArray.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexArray.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexArray.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexBuffer.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexBuffer.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/OpenGL/OpenGLVertexBuffer.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Shader.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Shader.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Renderer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Renderer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Renderer.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Renderer.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Shader.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Shader.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Shader.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Shader.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/VertexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/VertexBuffer.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/ShaderLibrary.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/ShaderLibrary.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/ShaderLibrary.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/ShaderLibrary.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/ShaderPreprocessor.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/ShaderPreprocessor.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/ShaderPreprocessor.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/ShaderPreprocessor.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Texture.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Texture.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/Texture.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/Texture.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/VertexArray.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/VertexArray.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/VertexArray.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/VertexArray.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/VertexBuffer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/VertexBuffer.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Graphics/VertexBuffer.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Graphics/VertexBuffer.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/ImGui/ImGuiImpl.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/ImGui/ImGuiImpl.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/ImGui/ImGuiImpl.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/ImGui/ImGuiImpl.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/ImGui/ImGuiImpl.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/ImGui/ImGuiImpl.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/ImGui/ImGuiLayer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/ImGui/ImGuiLayer.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/ImGui/ImGuiLayer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/ImGui/ImGuiLayer.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/ImGui/ImGuiLayer.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/ImGui/ImGuiLayer.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Input.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Input.cpp",
-  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Input.cpp",
-  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Input.cpp.o"
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Objects/Camera2D.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Objects/Camera2D.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Objects/Camera2D.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Objects/Camera2D.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Layer.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Layer.cpp",
-  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Layer.cpp",
-  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Layer.cpp.o"
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Platform/Linux/LinuxInput.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Platform/Linux/LinuxInput.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Platform/Linux/LinuxInput.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Platform/Linux/LinuxInput.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/LayerStack.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/LayerStack.cpp",
-  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/LayerStack.cpp",
-  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/LayerStack.cpp.o"
-},
-{
-  "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Log.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Log.cpp",
-  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Log.cpp",
-  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Log.cpp.o"
-},
-{
-  "directory": "/home/kamil/bakalarka/borek/build/Borek",
-  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Platform/Linux/LinuxWindow.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Platform/Linux/LinuxWindow.cpp",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Platform/Linux/LinuxWindow.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Platform/Linux/LinuxWindow.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Platform/Linux/LinuxWindow.cpp",
   "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Platform/Linux/LinuxWindow.cpp.o"
 },
 {
+  "directory": "/home/kamil/bakalarka/borek/build/Borek",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/BOREK.dir/src/Borek/Impl/Scripting/ScriptableObject.cpp.o -c /home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Scripting/ScriptableObject.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/src/Borek/Impl/Scripting/ScriptableObject.cpp",
+  "output": "Borek/CMakeFiles/BOREK.dir/src/Borek/Impl/Scripting/ScriptableObject.cpp.o"
+},
+{
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/context.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/context.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/context.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/context.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/init.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/init.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/init.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/init.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/input.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/input.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/input.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/input.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/input.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/input.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/monitor.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/monitor.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/monitor.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/monitor.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/platform.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/platform.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/platform.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/platform.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/platform.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/platform.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/vulkan.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/vulkan.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/vulkan.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/vulkan.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/vulkan.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/vulkan.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/window.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/window.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/window.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/window.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/egl_context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/egl_context.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/egl_context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/egl_context.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/egl_context.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/egl_context.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/osmesa_context.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/osmesa_context.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/osmesa_context.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_init.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_init.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_init.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/null_init.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_monitor.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_monitor.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_monitor.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/null_monitor.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_window.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_window.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_window.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/null_window.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_joystick.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_joystick.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/null_joystick.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_joystick.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/null_joystick.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_module.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_module.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_module.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_module.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_module.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/posix_module.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_time.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_time.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_time.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_time.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_time.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/posix_time.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_thread.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_thread.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_thread.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_thread.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_thread.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/posix_thread.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_init.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_init.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_init.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/x11_init.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_monitor.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_monitor.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_monitor.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/x11_monitor.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_window.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/x11_window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_window.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/x11_window.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/x11_window.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/xkb_unicode.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/xkb_unicode.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/xkb_unicode.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/xkb_unicode.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/xkb_unicode.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/xkb_unicode.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/glx_context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/glx_context.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/glx_context.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/glx_context.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/glx_context.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/glx_context.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/wl_init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_init.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/wl_init.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_init.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_init.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/wl_init.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/wl_monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_monitor.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/wl_monitor.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_monitor.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_monitor.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/wl_monitor.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/wl_window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_window.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/wl_window.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_window.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/wl_window.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/wl_window.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/linux_joystick.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/linux_joystick.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/linux_joystick.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/linux_joystick.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/linux_joystick.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/linux_joystick.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src",
-  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_poll.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_poll.c",
+  "command": "/usr/bin/cc -DHAVE_MEMFD_CREATE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -D_DEFAULT_SOURCE -D_GLFW_WAYLAND -D_GLFW_X11 -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/src -I/home/kamil/bakalarka/borek/build/Borek/vendor/glfw/src -g -Wall -O0 -fPIC -std=c99 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_poll.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_poll.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glfw/src/posix_poll.c",
   "output": "Borek/vendor/glfw/src/CMakeFiles/glfw.dir/posix_poll.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/glad",
-  "command": "/usr/bin/cc  -I/home/kamil/bakalarka/borek/Borek/vendor/glad/./include -g -Wall -O0 -fPIC -o CMakeFiles/GLAD.dir/src/glad.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glad/src/glad.c",
+  "command": "/usr/bin/cc -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/glad/./include -g -Wall -O0 -fPIC -o CMakeFiles/GLAD.dir/src/glad.c.o -c /home/kamil/bakalarka/borek/Borek/vendor/glad/src/glad.c",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/glad/src/glad.c",
   "output": "Borek/vendor/glad/CMakeFiles/GLAD.dir/src/glad.c.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imgui",
-  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui.cpp",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui.cpp",
   "output": "Borek/vendor/imgui/CMakeFiles/imgui.dir/imgui.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imgui",
-  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_demo.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_demo.cpp",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_demo.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_demo.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_demo.cpp",
   "output": "Borek/vendor/imgui/CMakeFiles/imgui.dir/imgui_demo.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imgui",
-  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_draw.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_draw.cpp",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_draw.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_draw.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_draw.cpp",
   "output": "Borek/vendor/imgui/CMakeFiles/imgui.dir/imgui_draw.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imgui",
-  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_tables.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_tables.cpp",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_tables.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_tables.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_tables.cpp",
   "output": "Borek/vendor/imgui/CMakeFiles/imgui.dir/imgui_tables.cpp.o"
 },
 {
   "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imgui",
-  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_widgets.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_widgets.cpp",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./backends -I/home/kamil/bakalarka/borek/Borek/vendor/imgui/./../imgui -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imgui.dir/imgui_widgets.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_widgets.cpp",
   "file": "/home/kamil/bakalarka/borek/Borek/vendor/imgui/imgui_widgets.cpp",
   "output": "Borek/vendor/imgui/CMakeFiles/imgui.dir/imgui_widgets.cpp.o"
 },
 {
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/stb",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\"  -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/stb.dir/stb/image.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/stb/stb/image.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/stb/stb/image.cpp",
+  "output": "Borek/vendor/stb/CMakeFiles/stb.dir/stb/image.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilder.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/contrib/graphbuilder.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/contrib/graphbuilder.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilder.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilderadapter.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/contrib/graphbuilderadapter.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/contrib/graphbuilderadapter.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilderadapter.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/binary.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/binary.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/binary.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/binary.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/convert.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/convert.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/convert.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/convert.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/depthguard.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/depthguard.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/depthguard.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/depthguard.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/directives.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/directives.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/directives.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/directives.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/emit.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emit.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emit.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emit.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/emitfromevents.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitfromevents.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitfromevents.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitfromevents.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/emitter.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitter.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitter.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitter.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/emitterstate.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitterstate.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitterstate.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitterstate.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/emitterutils.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitterutils.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/emitterutils.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitterutils.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/exceptions.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/exceptions.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/exceptions.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/exceptions.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/exp.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/exp.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/exp.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/exp.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/fptostring.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/fptostring.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/fptostring.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/fptostring.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/memory.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/memory.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/memory.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/memory.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/node.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/node.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/node.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/node.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/node_data.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/node_data.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/node_data.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/node_data.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/nodebuilder.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/nodebuilder.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/nodebuilder.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/nodebuilder.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/nodeevents.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/nodeevents.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/nodeevents.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/nodeevents.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/null.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/null.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/null.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/null.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/ostream_wrapper.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/ostream_wrapper.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/ostream_wrapper.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/ostream_wrapper.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/parse.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/parse.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/parse.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/parse.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/parser.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/parser.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/parser.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/parser.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/regex_yaml.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/regex_yaml.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/regex_yaml.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/regex_yaml.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/scanner.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scanner.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scanner.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scanner.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/scanscalar.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scanscalar.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scanscalar.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scanscalar.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/scantag.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scantag.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scantag.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scantag.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/scantoken.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scantoken.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/scantoken.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scantoken.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/simplekey.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/simplekey.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/simplekey.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/simplekey.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/singledocparser.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/singledocparser.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/singledocparser.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/singledocparser.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/stream.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/stream.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/stream.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/stream.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src -g -Wall -O0 -fPIC -std=gnu++23 -fPIC -o CMakeFiles/yaml-cpp.dir/src/tag.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/tag.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/src/tag.cpp",
+  "output": "Borek/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/tag.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp/util",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/yaml-cpp-sandbox.dir/sandbox.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/util/sandbox.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/util/sandbox.cpp",
+  "output": "Borek/vendor/yaml-cpp/util/CMakeFiles/yaml-cpp-sandbox.dir/sandbox.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp/util",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/yaml-cpp-parse.dir/parse.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/util/parse.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/util/parse.cpp",
+  "output": "Borek/vendor/yaml-cpp/util/CMakeFiles/yaml-cpp-parse.dir/parse.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/yaml-cpp/util",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/yaml-cpp-read.dir/read.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/util/read.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/util/read.cpp",
+  "output": "Borek/vendor/yaml-cpp/util/CMakeFiles/yaml-cpp-read.dir/read.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imguismo",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../imgui -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/. -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imguismo.dir/GraphEditor.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imguismo/GraphEditor.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/imguismo/GraphEditor.cpp",
+  "output": "Borek/vendor/imguismo/CMakeFiles/imguismo.dir/GraphEditor.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imguismo",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../imgui -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/. -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imguismo.dir/ImCurveEdit.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImCurveEdit.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImCurveEdit.cpp",
+  "output": "Borek/vendor/imguismo/CMakeFiles/imguismo.dir/ImCurveEdit.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imguismo",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../imgui -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/. -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imguismo.dir/ImGradient.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImGradient.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImGradient.cpp",
+  "output": "Borek/vendor/imguismo/CMakeFiles/imguismo.dir/ImGradient.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imguismo",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../imgui -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/. -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imguismo.dir/ImGuizmo.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImGuizmo.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImGuizmo.cpp",
+  "output": "Borek/vendor/imguismo/CMakeFiles/imguismo.dir/ImGuizmo.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Borek/vendor/imguismo",
+  "command": "/usr/bin/c++ -D_ASSETS_PATH=\\\"/home/kamil/bakalarka/borek/Borek/assets/\\\" -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/./../imgui -I/home/kamil/bakalarka/borek/Borek/vendor/imguismo/. -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/imguismo.dir/ImSequencer.cpp.o -c /home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImSequencer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Borek/vendor/imguismo/ImSequencer.cpp",
+  "output": "Borek/vendor/imguismo/CMakeFiles/imguismo.dir/ImSequencer.cpp.o"
+},
+{
   "directory": "/home/kamil/bakalarka/borek/build/Sandbox",
-  "command": "/usr/bin/c++  -I/home/kamil/bakalarka/borek/Sandbox/./../Borek/src -I/home/kamil/bakalarka/borek/Sandbox/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/SandboxApp.dir/src/TestApp.cpp.o -c /home/kamil/bakalarka/borek/Sandbox/src/TestApp.cpp",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_PROJECT_PATH=\\\"/home/kamil/bakalarka/borek/Sandbox/\\\" -I/home/kamil/bakalarka/borek/Sandbox/./../Borek/src -I/home/kamil/bakalarka/borek/Sandbox/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/SandboxApp.dir/src/TestApp.cpp.o -c /home/kamil/bakalarka/borek/Sandbox/src/TestApp.cpp",
   "file": "/home/kamil/bakalarka/borek/Sandbox/src/TestApp.cpp",
   "output": "Sandbox/CMakeFiles/SandboxApp.dir/src/TestApp.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Stavitel",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_PROJECT_PATH=\\\"/home/kamil/bakalarka/borek/Stavitel/\\\" -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/src -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Stavitel/./src -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/Stavitel.dir/src/Layers/EditorLayer.cpp.o -c /home/kamil/bakalarka/borek/Stavitel/src/Layers/EditorLayer.cpp",
+  "file": "/home/kamil/bakalarka/borek/Stavitel/src/Layers/EditorLayer.cpp",
+  "output": "Stavitel/CMakeFiles/Stavitel.dir/src/Layers/EditorLayer.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Stavitel",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_PROJECT_PATH=\\\"/home/kamil/bakalarka/borek/Stavitel/\\\" -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/src -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Stavitel/./src -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/Stavitel.dir/src/Panels/GizmoPanel.cpp.o -c /home/kamil/bakalarka/borek/Stavitel/src/Panels/GizmoPanel.cpp",
+  "file": "/home/kamil/bakalarka/borek/Stavitel/src/Panels/GizmoPanel.cpp",
+  "output": "Stavitel/CMakeFiles/Stavitel.dir/src/Panels/GizmoPanel.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Stavitel",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_PROJECT_PATH=\\\"/home/kamil/bakalarka/borek/Stavitel/\\\" -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/src -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Stavitel/./src -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/Stavitel.dir/src/Panels/Properties.cpp.o -c /home/kamil/bakalarka/borek/Stavitel/src/Panels/Properties.cpp",
+  "file": "/home/kamil/bakalarka/borek/Stavitel/src/Panels/Properties.cpp",
+  "output": "Stavitel/CMakeFiles/Stavitel.dir/src/Panels/Properties.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Stavitel",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_PROJECT_PATH=\\\"/home/kamil/bakalarka/borek/Stavitel/\\\" -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/src -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Stavitel/./src -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/Stavitel.dir/src/Panels/Scene.cpp.o -c /home/kamil/bakalarka/borek/Stavitel/src/Panels/Scene.cpp",
+  "file": "/home/kamil/bakalarka/borek/Stavitel/src/Panels/Scene.cpp",
+  "output": "Stavitel/CMakeFiles/Stavitel.dir/src/Panels/Scene.cpp.o"
+},
+{
+  "directory": "/home/kamil/bakalarka/borek/build/Stavitel",
+  "command": "/usr/bin/c++ -DYAML_CPP_STATIC_DEFINE -D_PROJECT_PATH=\\\"/home/kamil/bakalarka/borek/Stavitel/\\\" -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/src -I/home/kamil/bakalarka/borek/Stavitel/./../Borek/vendor/spdlog/include -I/home/kamil/bakalarka/borek/Stavitel/./src -I/home/kamil/bakalarka/borek/Borek/vendor/./spdlog/include -I/home/kamil/bakalarka/borek/Borek/vendor/./../vendor -I/home/kamil/bakalarka/borek/Borek/vendor/./magic_enum/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/./glad/include -I/home/kamil/bakalarka/borek/Borek/vendor/./imgui -I/home/kamil/bakalarka/borek/Borek/vendor/./glm -I/home/kamil/bakalarka/borek/Borek/vendor/./stb -I/home/kamil/bakalarka/borek/Borek/vendor/./yaml-cpp/include -I/home/kamil/bakalarka/borek/Borek/src/Borek -I/home/kamil/bakalarka/borek/Borek/../ECS/src -I/home/kamil/bakalarka/borek/Borek/vendor/glfw/include -I/home/kamil/bakalarka/borek/Borek/vendor/yaml-cpp/include -I/home/kamil/bakalarka/borek/ECS/src -g -Wall -O0 -fPIC -std=gnu++23 -o CMakeFiles/Stavitel.dir/src/Stavitel.cpp.o -c /home/kamil/bakalarka/borek/Stavitel/src/Stavitel.cpp",
+  "file": "/home/kamil/bakalarka/borek/Stavitel/src/Stavitel.cpp",
+  "output": "Stavitel/CMakeFiles/Stavitel.dir/src/Stavitel.cpp.o"
 }
 ]

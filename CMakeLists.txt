@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_FLAGS "-g -Wall -O0 -fPIC")
 set(CMAKE_CXX_FLAGS "-g -Wall -O0 -fPIC")
 
+add_subdirectory(ECS)
 add_subdirectory(Borek)
 add_subdirectory(Sandbox)
-
-
+add_subdirectory(Stavitel)

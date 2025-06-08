@@ -4,22 +4,27 @@
 
 #include <cstdint>
 
-#include "./BufferDescriptor.h"
+#include "Include/Graphics/BufferDescriptor.h"
 
-namespace Borek {
-namespace Graphics {
+namespace Borek
+{
+namespace Graphics
+{
 
 class VertexBuffer {
-public:
+    public:
         virtual ~VertexBuffer() {}
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
+        virtual void SetData(const void* data, uint32_t size) = 0;
 
-        virtual void SetBufferDescriptor(const BufferDescriptor& desc) = 0;
-        virtual const BufferDescriptor& GetBufferDescriptor() = 0;
+        virtual void SetBufferDescriptor(
+                const std::initializer_list<BufferDescriptor::Element>&) = 0;
+        virtual const BufferDescriptor &GetBufferDescriptor() = 0;
 
-        static VertexBuffer* Create(float* vertexes, uint32_t size);
+        static Ref<VertexBuffer> Create(const void *vertexes, uint32_t size,
+                                        bool is_dynamic = false);
 };
 
-}  // namespace Graphics
-}  // namespace Borek
+} // namespace Graphics
+} // namespace Borek

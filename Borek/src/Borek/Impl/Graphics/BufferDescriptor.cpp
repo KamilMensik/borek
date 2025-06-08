@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include <glad/glad.h>
 
 #include "Include/Graphics/BufferDescriptor.h"
@@ -14,12 +15,16 @@ uint32_t BufferDescriptor::Element::Count() const
 {
         switch (datatype) {
         case Datatype::Float:
+        case Datatype::Int:
                 return 1;
         case Datatype::Float2:
+        case Datatype::Int2:
                 return 2;
         case Datatype::Float3:
+        case Datatype::Int3:
                 return 3;
         case Datatype::Float4:
+        case Datatype::Int4:
                 return 4;
         }
 
@@ -55,15 +60,9 @@ BufferDescriptor::BufferDescriptor(const ElementIList& elements)
         m_Stride = CalculateOffset(m_Elements);
 }
 
-const uint32_t BufferDescriptor::Size()
+uint32_t BufferDescriptor::Size()
 {
-        uint32_t res = 0;
-
-        for (const auto& el : m_Elements) {
-                res += el.size;
-        }
-
-        return res;
+        return m_Stride;
 }
 
 

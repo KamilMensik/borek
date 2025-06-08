@@ -1,0 +1,28 @@
+Scene: Jmeno
+Entities:
+  - Name: Entity 6
+    Components:
+      Transform:
+        Position: [-33, 103, 0]
+        Scale: [64, 64, 64]
+        Rotation: [0, 0, 0]
+      Sprite:
+        Color: [1, 1, 1, 1]
+  - Name: Entity 7
+    Components:
+      Transform:
+        Position: [-320, 0, 0]
+        Scale: [64, 64, 64]
+        Rotation: [0, 0, 0]
+      Sprite:
+        Color: [1, 0, 0, 1]
+  - Name: Player
+    Components:
+      Transform:
+        Position: [-90.50732, -16.630783, 0]
+        Scale: [64, 64, 64]
+        Rotation: [8039.548, 8039.548, 8039.548]
+      Sprite:
+        Color: [1, 1, 1, 1]
+      Script:
+        Has script: Yes

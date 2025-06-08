@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Include/Window.h"
+#include "Include/Base/Window.h"
 
 namespace Borek {
 
@@ -25,7 +25,7 @@ public:
         {
                 return m_Window;
         }
-
+        Time GetTime() override;
 
 private:
         GLFWwindow* m_Window;

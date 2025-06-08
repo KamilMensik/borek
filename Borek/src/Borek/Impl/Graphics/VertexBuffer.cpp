@@ -2,17 +2,17 @@
 
 #include "Include/Graphics/VertexBuffer.h"
 #include "Include/Graphics/Backend.h"
-
 #include "Include/Graphics/OpenGL/OpenGLVertexBuffer.h"
 
 namespace Borek {
 namespace Graphics {
 
-VertexBuffer* VertexBuffer::Create(float *vertices, uint32_t size)
+Ref<VertexBuffer> VertexBuffer::Create(const void *vertices, uint32_t size,
+                                       bool is_dynamic)
 {
         switch (Backend::GetType()) {
         case Backend::Type::kOpenGL:
-                return new OpenGLVertexBuffer(vertices, size);
+                return NewRef<OpenGLVertexBuffer>(vertices, size, is_dynamic);
         }
 
         return nullptr;
