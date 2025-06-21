@@ -20,3 +20,7 @@
 	path = Borek/vendor/imguismo
 	url = https://github.com/KamilMensik/Borek-ImGuizmo
 	branch = borek
+[submodule "Borek/vendor/Box2D"]
+	path = Borek/vendor/Box2D
+	url = git@github.com:KamilMensik/BorekBox2D.git
+	branch = borek

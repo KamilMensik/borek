@@ -10,9 +10,9 @@ layout(location = 3) in float a_TextureId;
 
 uniform mat4 u_ProjectionView;
 
-out vec4 e_Color;
-out vec2 e_TexCord;
-out float e_TextureId;
+layout(location = 0) out vec4 e_Color;
+layout(location = 1) out vec2 e_TexCord;
+layout(location = 2) out float e_TextureId;
 
 void main()
 {
@@ -29,9 +29,9 @@ layout(location = 0) out vec4 color;
 
 uniform sampler2D[32] u_Textures;
 
-in vec4 e_Color;
-in vec2 e_TexCord;
-in float e_TextureId;
+layout(location = 0) in vec4 e_Color;
+layout(location = 1) in vec2 e_TexCord;
+layout(location = 2) in float e_TextureId;
 
 void main()
 {
@@ -71,5 +71,6 @@ void main()
                 case 31: texColor *= texture(u_Textures[31], e_TexCord); break;
         }
 
+        if (texColor.a < 0.5f) { discard; }
         color = texColor;
 }
