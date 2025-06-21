@@ -41,7 +41,7 @@ class Query {
 public:
         Query() {}
         Query(uint32_t query_id, class World* world);
-        void each(std::function<void(View&)> body);
+        void each(std::function<void(View&)> body) const;
 
 private:
         class World* m_World;

@@ -1,77 +1,73 @@
+// Copyright 2024-2025 <kamilekmensik@gmail.com>
+
 #pragma once
 
+#include <utility>
+
 #include "Include/Base/Components.h"
+#include "Include/Base/Scene.h"
+#include "Include/Graphics/FrameBuffer.h"
 #include "Include/ImGui/ImGuiLayer.h"
 #include "Include/Events/Event.h"
 #include "Include/Events/WindowEvents.h"
 #include "Include/Base/Window.h"
 #include "Include/Base/LayerStack.h"
-#include <utility>
 
 namespace Borek {
 
-class Application
-{
+class Application {
 public:
         Application(const std::string& name = "Borek!");
         virtual ~Application();
 
+        static const Scene::BaseQueries& BaseQueries();
+        static void PushLayer(Layer* layer);
+        static void PushOverlay(Layer* layer);
+        static AbstractWindow& GetWindow();
+        static std::pair<CameraComponent*, TransformComponent*> GetCamera();
+        static void Shutdown();
+        static ImGuiLayer& GetImguiLayer();
+        static void SetScene(Ref<Scene> scene);
+        static Ref<Scene> GetScene();
+        static Ref<Graphics::FrameBuffer> GetFramebuffer();
+        static void SendEvent(Event& e);
+
         void Run();
-        virtual void OnUpdate(float delta) {}
-        // Set camera here every frame.
-        virtual void OnRenderBegin() {}
-        virtual void OnRenderEnd() {}
-        virtual void OnImguiRenderEnd() {}
 
-        void OnEvent(Event& e);
-
-        inline void PushLayer(Layer* layer)
-        {
-                m_Layers.Push(layer);
-                layer->OnAttach();
-        }
-        inline void PushOverlay(Layer* layer)
-        {
-                m_Layers.PushOverlay(layer);
-                layer->OnAttach();
-        }
-
-        inline AbstractWindow& GetWindow()
-        {
-                return *m_Window;
-        }
-        inline static Application& Instance() { return *s_Instance; }
-        // Needs to be set every tick. Otherwise gets deleted.
-        inline void SetCamera(CameraComponent* cam,
-                              TransformComponent* transform)
-        {
-                cam->aspect_ratio = m_AspectRatio;
-                m_Camera = cam;
-                m_CameraTransform = transform;
-        }
-
-        inline std::pair<CameraComponent*, TransformComponent*> GetCamera()
-        {
-                return { m_Camera, m_CameraTransform };
-        }
-
-        inline void Shutdown() { m_Running = false; }
-        inline ImGuiLayer& GetImguiLayer() { return *m_ImGuiLayer; }
-
-private:
+protected:
         static Application* s_Instance;
 
         LayerStack m_Layers;
         Uniq<AbstractWindow> m_Window;
+
         CameraComponent* m_Camera;
         TransformComponent* m_CameraTransform;
+
         ImGuiLayer* m_ImGuiLayer;
-        Time m_Time;
+
+        Ref<Scene> m_CurrentScene;
+        Ref<Graphics::FrameBuffer> m_FrameBuffer;
+
         float m_AspectRatio = 1.6f;
         bool m_Running = true;
 
         bool OnWindowClose(WindowCloseEvent& e);
         bool OnWindowResize(WindowResizeEvent& e);
+
+        void RunEntityScripts(double delta);
+        void DrawEntities();
+        void SendEventToEntities(Event& e);
+
+        virtual void OnEvent(Event& e);
+        virtual void OnUpdate(float delta) {}
+        virtual void OnRenderBegin();
+        virtual void OnRenderEnd();
+        virtual void OnImGuiRenderBegin() {}
+        virtual void OnImguiRenderEnd() {}
+        virtual bool IsPlaying() { return true; }
+        virtual void SetCamera();
+        virtual void OnStart();
+        virtual void OnEnd();
 };
 
 }

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float4.hpp>
 
@@ -29,8 +30,10 @@ public:
         static void DrawQuad(const glm::vec2& position, const glm::vec2& size,
                              Ref<SubSprite> subsprite, unsigned zindex = 0);
         static void DrawQuad(const TransformComponent& transform,
-                             const SpriteComponent& sprite);
+                             const SpriteComponent& sprite,
+                             uint32_t entity_id = UINT32_MAX);
 
+        static Ref<Graphics::Texture2D> WhiteTexture();
 };
 
 }  // namespace Borek

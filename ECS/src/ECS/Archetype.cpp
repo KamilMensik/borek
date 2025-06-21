@@ -32,7 +32,8 @@ void Archetype::init(uint32_t id, World& world)
                                                    .component_data_index];
 
                 components.emplace_back(cdata.size, cdata.alignment,
-                                        cdata.constructor, cdata.destructor);
+                                        cdata.constructor, cdata.destructor,
+                                        cdata.to_s);
                 
                 world.m_ComponentColumn[world.GetCAId(c, id)] = i;
                 i++;
@@ -96,10 +97,8 @@ uint32_t Archetype::move_entity(EntityId e, Archetype& dest, World& world)
                 auto& to = dest.components[world.m_ComponentColumn[world.GetCAId(c, dest.id)]];
                 auto from_col = world.m_ComponentColumn.find(world.GetCAId(c, id));
                 if (from_col == world.m_ComponentColumn.end()) {
-                        std::cout << "Constructed field\n";
                         to.constructor(to[dest_row]);
                 } else {
-                        std::cout << "Copied field\n";
                         std::memcpy(to[dest_row],
                                     components[from_col->second][from_row],
                                     to.element_size);

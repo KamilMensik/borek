@@ -3,9 +3,7 @@
 #pragma once
 
 #include <cstdint>
-#include <sstream>
 #include <string>
-#include <iostream>
 
 namespace ECS {
 
@@ -15,10 +13,13 @@ struct ComponentColumn {
         uint32_t alignment;
         void (*constructor)(void*);
         void (*destructor)(void*);
+        std::string (*to_s_internal)(void*);
         ComponentColumn(uint32_t element_size, uint32_t alignment,
-                        void(*constructor)(void*), void(*destructor)(void*))
+                        void(*constructor)(void*), void(*destructor)(void*),
+                        std::string(*to_s_internal)(void*))
                 : element_size(element_size), alignment(alignment),
-                  constructor(constructor), destructor(destructor) {}
+                  constructor(constructor), destructor(destructor),
+                  to_s_internal(to_s_internal) {}
 
         inline void* operator [](uint32_t index)
         {

@@ -8,6 +8,20 @@
 namespace Borek {
 namespace Graphics {
 
+void MessageCallback(GLenum source,
+                     GLenum type,
+                     GLuint id,
+                     GLenum severity,
+                     GLsizei length,
+                     const GLchar* message,
+                     const void* userParam)
+{
+        BOREK_ENGINE_ERROR("GL CALLBACK: {} type = 0x{:x}, severity = 0x{:x}, message = {}\n",
+        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+        type, severity, message);
+}
+
+
 OpenGLContext::OpenGLContext(AbstractWindow* window)
 {
         BOREK_ENGINE_ASSERT(Backend::CheckType(Backend::Type::kOpenGL),
@@ -30,7 +44,12 @@ void OpenGLContext::Init()
                           (char*)glGetString(GL_RENDERER));
 
         glEnable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_ALPHA_TEST);
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDebugMessageCallback(MessageCallback, 0);
 }
 
 void OpenGLContext::SwapBuffers()

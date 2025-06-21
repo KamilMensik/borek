@@ -1,7 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Core.h"
-#include "Include/Debug/Log.h"
 #include <imgui.h>
 #include <imguismo/ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,7 +25,7 @@ void GizmoPanel::DrawGizmo()
                                   ImGui::GetWindowHeight());
 
                 std::pair<CameraComponent*, TransformComponent*> cam_tran_data =
-                        Application::Instance().GetCamera();
+                        Application::GetCamera();
 
                 glm::mat4 cam_projection =
                         cam_tran_data.first->GetProjectionMatrix();

@@ -1,4 +1,5 @@
 #include "Include/Base/Colors.h"
+#include "Include/Debug/Log.h"
 #include "Include/Events/Event.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -179,12 +180,12 @@ void ImGuiLayer::OnAttach()
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
         auto window = SCAST<GLFWwindow*>(
-                Application::Instance().GetWindow().WindowImpl());
+                Application::GetWindow().WindowImpl());
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 460");
 
-        const AbstractWindow& wn = Application::Instance().GetWindow();
+        const AbstractWindow& wn = Application::GetWindow();
         io.DisplaySize = ImVec2(wn.GetWidth(), wn.GetHeight());
         SetDefaultColors();
 }
@@ -207,7 +208,7 @@ void ImGuiLayer::RenderPrepare()
 void ImGuiLayer::RenderFinish()
 {
         ImGuiIO& io = ImGui::GetIO();
-        auto& window = Application::Instance().GetWindow();
+        auto& window = Application::GetWindow();
         io.DisplaySize = ImVec2(window.GetWidth(), window.GetHeight());
 
         ImGui::Render();

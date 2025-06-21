@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Include/Base/Scene.h"
+#include "Include/Events/CustomEvent.h"
 #include "Include/Events/Event.h"
 
 namespace Borek {
@@ -25,6 +27,12 @@ class RenderEvent : public Event {
         _EVENT_CLASS_CATEGORY(kApplication);
 
         RenderEvent() {}
+};
+
+class SceneChangedEvent : public CustomEvent<SceneChangedEvent> {
+public: 
+        SceneChangedEvent() {}
+        Ref<Scene> GetScene();
 };
 
 }  // namespace Borek

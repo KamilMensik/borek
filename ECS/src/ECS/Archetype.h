@@ -44,7 +44,7 @@ struct Archetype {
                 std::stringstream s;
                 s << "Archetype " << id << " {\n";
                 for (auto& ccol : components) {
-                        s << "\t" << ccol.to_s(max_size) << "\n";
+                        s << "\t" << ccol.to_s(entities.size()) << "\n";
                 }
                 s << "}";
                 return s.str();

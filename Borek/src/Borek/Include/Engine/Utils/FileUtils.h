@@ -8,8 +8,10 @@ namespace Borek {
 namespace Utils {
 
 std::string OpenFileDialog(const char* filter, const char* default_path);
-
 std::string SaveFileDialog(const char* filter, const char* default_path);
+std::string OpenFolderDialog(const char* default_path);
+std::string UserHomePath();
+std::string UserDataPath();
 
 }  // namespace Utils
 }  // namespace Borek

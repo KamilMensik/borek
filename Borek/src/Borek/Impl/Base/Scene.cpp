@@ -28,14 +28,33 @@ void Scene::DeleteEntity(Entity e)
 
 Scene::Scene()
 {
+        RegisterBaseComponents();
+        RegisterBaseQueries();
+
+        base_entity = m_World.get_archetype({ TransformComponent::Id(),
+                                              TagComponent::Id() });
+}
+
+void Scene::RegisterBaseComponents()
+{
         RegisterComponent<TransformComponent>();
         RegisterComponent<TagComponent>();
         RegisterComponent<SpriteComponent>();
         RegisterComponent<CameraComponent>();
         RegisterComponent<ScriptComponent>();
+        RegisterComponent<RigidBody2DComponent>();
+        RegisterComponent<BoxCollider2DComponent>();
+}
 
-        base_entity = m_World.get_archetype({ TransformComponent::Id(),
-                                              TagComponent::Id() });
+void Scene::RegisterBaseQueries()
+{
+        m_Queries.entity_query = Query(TagComponent::Id());
+        m_Queries.draw_query = Query(TransformComponent::Id(),
+                                     SpriteComponent::Id());
+        m_Queries.camera_query = Query(TransformComponent::Id(),
+                                       CameraComponent::Id());
+        m_Queries.scriptable_object_query = Query(ScriptComponent::Id());
+        m_Queries.rigidbody_query = Query(RigidBody2DComponent::Id(), TransformComponent::Id());
 }
 
 }  // namespace Borek

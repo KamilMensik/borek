@@ -1,0 +1,60 @@
+Scene: Jmeno
+Entities:
+  - Name: Camera
+    Components:
+      Transform:
+        Position: [0, 0, 0]
+        Scale: [1, 1, 1]
+        Rotation: [0, 0, 0]
+      Camera:
+        IsActive: true
+  - Name: Player
+    Components:
+      Transform:
+        Position: [-0.12452423, 0.24662173, 0]
+        Scale: [0.16, 0.16, 1.72224]
+        Rotation: [0, -0, 0]
+      Sprite:
+        Color: [1, 1, 1, 1]
+        AssetID: 5
+      RigidBody2D:
+        FixedRotation: false
+        Type: kDynamic
+      BoxCollider2D:
+        Restitution: 0
+        RestitutionTreshold: 0.5
+        Friction: 0.5
+        Density: 1
+        Offset: [0, 0]
+        Size: [0.5, 0.5]
+  - Name: Ground
+    Components:
+      Transform:
+        Position: [0.037480824, -0.37609565, 0]
+        Scale: [2.532465, 0.042499997, 1]
+        Rotation: [0, -0, 16.879683]
+      Sprite:
+        Color: [1, 1, 1, 1]
+      RigidBody2D:
+        FixedRotation: false
+        Type: kStatic
+      BoxCollider2D:
+        Restitution: 0
+        RestitutionTreshold: 0.5
+        Friction: 0.5
+        Density: 1
+        Offset: [0, 0]
+        Size: [0.5, 0.5]
+Assets:
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/EditorIcons/FolderBasic.png
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/EditorIcons/FileBasic.png
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/EditorIcons/FolderImportant.png
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/retro-mario.png
+  - Type: Texture2D
+    Path: tilemap.png
+  - Type: Texture2D
+    Path: retro-mario.png

@@ -2,29 +2,32 @@
 
 #pragma once
 
+#include "Include/Engine/AssetManager.h"
 #include <string>
 #include <cstdint>
 
 #include "Include/Core.h"
-#include "Include/Graphics/Texture.h"
+#include "Include/Engine/Asset.h"
 
 namespace Borek {
 
 class Sprite {
+friend class SceneSerializer;
 public:
-        Sprite(Ref<Graphics::Texture2D> tex) : m_Texture(tex) {}
-        inline void Bind(uint32_t slot = 0) const { m_Texture->Bind(slot); }
-        inline uint32_t GetWidth() const { return m_Texture->GetWidth(); }
-        inline uint32_t GetHeight() const { return m_Texture->GetHeight(); }
-        inline uint32_t GetId() const { return m_Texture->GetId(); }
-        const Ref<Graphics::Texture2D>& GetTexture() { return m_Texture; }
+        Sprite(Asset tex) : m_Texture(tex) {}
+        inline void Bind(uint32_t slot = 0) const { m_Texture.Tex()->Bind(slot); }
+        inline uint32_t GetWidth() const { return m_Texture.Tex()->GetWidth(); }
+        inline uint32_t GetHeight() const { return m_Texture.Tex()->GetHeight(); }
+        inline uint32_t GetId() const { return m_Texture.Tex()->GetId(); }
+        inline Asset GetAsset() const { return m_Texture; }
+        const Ref<Graphics::Texture2D> GetTexture() { return m_Texture; }
         inline static Ref<Sprite> Create(const std::string& path)
         {
-                return NewRef<Sprite>(Graphics::Texture2D::Create(path));
+                return NewRef<Sprite>(AssetManager::GetTexture(path));
         }
 
 private:
-        Ref<Graphics::Texture2D> m_Texture;
+        Asset m_Texture;
 };
 
 }  // namespace Borek

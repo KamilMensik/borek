@@ -2,9 +2,7 @@
 
 #pragma once
 
-#include "Include/Base/Entity.h"
-#include "Include/Base/Query.h"
-#include <Include/Base/Scene.h>
+#include <Borek/Include/Base/Entity.h>
 #include <Include/Core.h>
 
 namespace Borek {
@@ -12,15 +10,13 @@ namespace Panels {
 
 class Scene {
 public:
-        Scene(Ref<Borek::Scene> scene);
+        Scene();
         void OnImguiRender();
         void SendOnSelectionChangeEvent();
         inline Entity GetSelectedEntity() { return m_SelectedEntity; }
 
 private:
-        Ref<Borek::Scene> m_Scene;
         Entity m_SelectedEntity;
-        Query m_EntityQuery;
 
         void DrawTreeNode(Entity e);
 };

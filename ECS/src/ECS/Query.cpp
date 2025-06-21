@@ -53,7 +53,7 @@ void QueryL::Each(std::function<void(View&)> body)
 Query::Query(uint32_t query_id, World* world)
        : m_World(world), m_QueryId(query_id) {}
 
-void Query::each(std::function<void(View&)> body)
+void Query::each(std::function<void(View&)> body) const
 {
         m_World->m_LQueries[m_QueryId].Each(body);
 }

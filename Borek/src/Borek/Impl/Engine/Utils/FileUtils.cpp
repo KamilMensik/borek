@@ -19,5 +19,15 @@ std::string SaveFileDialog(const char* filter, const char* default_path)
         return tinyfd_saveFileDialog("Open file", default_path, 0, NULL, "");
 }
 
+std::string OpenFolderDialog(const char* default_path)
+{
+        return tinyfd_selectFolderDialog("Select folder", default_path);
+}
+
+std::string UserDataPath()
+{
+        return UserHomePath().append("/.Borek");
+}
+
 }  // namespace Utils
 }  // namespace Borek

@@ -14,4 +14,4 @@ target_include_directories(BOREK PUBLIC "${PROJECT_SOURCE_DIR}/src/Borek")
 
 # Include ECS library
 target_link_libraries(BOREK ECS)
-target_include_directories(BOREK PUBLIC "${PROJECT_SOURCE_DIR}/../ECS/src")
+target_include_directories(BOREK PRIVATE "${PROJECT_SOURCE_DIR}/../ECS/src")

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(BOREK_ENGINE)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -19,6 +19,8 @@ if(CMAKE_HOST_SYSTEM MATCHES Linux)
    set(CMAKE_C_FLAGS "-g -Wall -O0 -fPIC")
    set(CMAKE_CXX_FLAGS "-g -Wall -O0 -fPIC")
 endif()
+
+add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 
 add_subdirectory(ECS)
 add_subdirectory(Borek)

@@ -19,16 +19,17 @@ enum EntityFlags {
         kDelete = 1,
 };
 
-Scene::Scene(Ref<Borek::Scene> scene)
-        : m_Scene(scene), m_EntityQuery(m_Scene->Query(TagComponent::Id()))
+Scene::Scene()
 {
+        m_SelectedEntity = Entity();
 }
 
 void Scene::OnImguiRender()
 {
         if (ImGui::Begin("Scene")) {
-                m_EntityQuery.each([this](ECS::View& v) {
-                        DrawTreeNode(Entity{ v.current_entity_id, m_Scene.get() });
+                Application::BaseQueries().entity_query.each([this](View& v) {
+                        DrawTreeNode(Entity(v.current_entity_id,
+                                            Application::GetScene().get()));
                 });
 
                 if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered()) {
@@ -38,7 +39,7 @@ void Scene::OnImguiRender()
 
                 if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
                         if (ImGui::MenuItem("Create new Entity"))
-                                m_Scene->NewEntity();
+                                Application::GetScene()->NewEntity();
 
                         ImGui::EndPopup();
                 }
@@ -91,7 +92,7 @@ void Scene::DrawTreeNode(Entity e)
 void Scene::SendOnSelectionChangeEvent()
 {
         ScenePanelSelectedEvent ev(m_SelectedEntity);
-        Application::Instance().OnEvent(ev);
+        Application::SendEvent(ev);
 }
 
 } // namespace Panels

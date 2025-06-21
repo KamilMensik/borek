@@ -11,7 +11,7 @@
 namespace Borek {
         bool Input::IsKeyPressed(KeyCode key)
         {
-                void* window_impl = Application::Instance().GetWindow().WindowImpl();
+                void* window_impl = Application::GetWindow().WindowImpl();
 
                 return glfwGetKey(SCAST<GLFWwindow*>(window_impl),
                                   SCAST<unsigned>(key));
@@ -19,7 +19,7 @@ namespace Borek {
 
         bool Input::IsMouseButtonPressed(MouseButton button)
         {
-                void* window_impl = Application::Instance().GetWindow().WindowImpl();
+                void* window_impl = Application::GetWindow().WindowImpl();
 
                 return glfwGetMouseButton(SCAST<GLFWwindow*>(window_impl),
                                           SCAST<unsigned>(button));
@@ -28,7 +28,7 @@ namespace Borek {
         std::pair<double, double> Input::GetMousePos()
         {
                 std::pair<double, double> res;
-                void* window_impl = Application::Instance().GetWindow().WindowImpl();
+                void* window_impl = Application::GetWindow().WindowImpl();
 
                 glfwGetCursorPos(SCAST<GLFWwindow*>(window_impl),
                                  &res.first, &res.second);

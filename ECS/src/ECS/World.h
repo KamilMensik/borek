@@ -228,13 +228,17 @@ public:
                 void (*destructor)(void*) = [](void* address){
                         reinterpret_cast<T*>(address)->~T();
                 };
+                std::string (*to_s)(void*) = [](void* address){
+                        return reinterpret_cast<T*>(address)->to_s();
+                };
                 T::component_id = component(sizeof(T), alignof(T),
-                                            constructor, destructor);
+                                            constructor, destructor, to_s);
                 return T::component_id;
         }
         ComponentId component(uint32_t size, uint32_t alignment,
                               void(*constructor)(void*),
-                              void(*destructor)(void*));
+                              void(*destructor)(void*),
+                              std::string(*to_s)(void*));
 
         // Archetypes
         // Extremely slow. Try to save result somewhere.

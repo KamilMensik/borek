@@ -1,0 +1,22 @@
+Scene: Jmeno
+Entities:
+  - Name: Player
+    Components:
+      Transform:
+        Position: [0, 0, 0]
+        Scale: [0.16, 0.16, 0.16]
+        Rotation: [0, 0, 0]
+      Sprite:
+        Color: [1, 1, 1, 1]
+        AssetID: 3
+      Script:
+        Has script: Yes
+Assets:
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/EditorIcons/FolderBasic.png
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/EditorIcons/FileBasic.png
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/EditorIcons/FolderImportant.png
+  - Type: Texture2D
+    Path: /home/kamil/bakalarka/borek/Stavitel/assets/retro-mario.png

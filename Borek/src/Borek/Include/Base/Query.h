@@ -3,8 +3,10 @@
 #pragma once
 
 #include "ECS/Query.h"
+
 namespace Borek {
 
 using Query = ECS::Query;
+using View = ECS::View;
 
 }  // namespace Borek

@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include "Include/Events/CustomEvent.h"
-#include <Include/Base/Entity.h>
 #include <string>
+
+#include <Borek/Include/Events/CustomEvent.h>
+#include <Borek/Include/Base/Entity.h>
 
 namespace Borek {
 

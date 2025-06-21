@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Renderer2D.h"
 #include "Include/Debug/Log.h"
 #include "glm/gtc/type_ptr.hpp"
 #include <cstring>
@@ -73,6 +74,57 @@ static void Control(const char* label, glm::vec3& values,
         ImGui::PopStyleColor(3);
         ImGui::SameLine();
         ImGui::DragFloat("##Z", &values.z, 1.0f);
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+
+        ImGui::PopStyleVar();
+
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+}
+
+static void Control(const char* label, glm::vec2& values,
+                    float reset_value = 0.0f, float column_width = 100.0f)
+{
+        ImGuiIO io = ImGui::GetIO();
+        auto bold_font = io.Fonts->Fonts[0];
+        auto normal_font = io.Fonts->Fonts[1];
+
+        ImGui::PushID(label);
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, column_width);
+        ImGui::Text("%s", label);
+        ImGui::NextColumn();
+
+        ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{0.0f, 0.0f});
+        float line_height = GImGui->FontSize + GImGui->Style.FramePadding.y * 2;
+        ImVec2 button_size = { line_height + 3.0f, line_height + 1.0f };
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{198.0f / 256, 3.0f / 256, 0.0f / 256, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{220.0f / 256, 18.0f / 256, 15.0f / 256, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{255.0f / 256, 4.0f / 256, 0.0f / 256, 1.0f});
+        ImGui::PushFont(bold_font);
+        if (ImGui::Button("X", button_size))
+                values.x = reset_value;
+        ImGui::PopFont();
+        ImGui::PopStyleColor(3);
+        ImGui::SameLine();
+        ImGui::DragFloat("##X", &values.x, 1.0f);
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+;
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{94.0f / 256, 139.0f / 256, 38.0f / 256, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{119.0f / 256, 165.0f / 256, 40.0f / 256, 1.0f});
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{164.0f / 256, 208.0f / 256, 105.0f / 256, 1.0f});
+        ImGui::PushFont(bold_font);
+        if (ImGui::Button("Y", button_size))
+                values.y = reset_value;
+        ImGui::PopFont();
+        ImGui::PopStyleColor(3);
+        ImGui::SameLine();
+        ImGui::DragFloat("##Y", &values.y, 1.0f);
         ImGui::PopItemWidth();
         ImGui::SameLine();
 
@@ -178,13 +230,51 @@ void Properties::OnImguiRender()
                         ImGui::Text("%s", "Has script yay");
                 });
 
-                DrawComponent<CameraComponent>("Camera", m_Entity, [](Entity){
-                        ImGui::Text("%s", "Has camera yay");
+                DrawComponent<CameraComponent>("Camera", m_Entity, [](Entity e){
+                        ImGui::Checkbox("IsActive", &e.GetComponent<CameraComponent>().is_active);
                 });
 
                 DrawComponent<SpriteComponent>("Sprite", m_Entity, [](Entity e){
                         auto& sprite = e.GetComponent<SpriteComponent>();
                         ImGui::ColorEdit4("Color", glm::value_ptr(sprite.color));
+                        auto sprite_texture = sprite.sprite ? sprite.sprite->GetTexture() : Renderer2D::WhiteTexture();
+                        ImGui::ImageButton("SpriteImage", sprite_texture->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
+                        if (ImGui::BeginDragDropTarget()) {
+                                if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
+                                        sprite.sprite = Sprite::Create(SCAST<char*>(payload->Data));
+                                }
+                                ImGui::EndDragDropTarget();
+                        }
+                        ImGui::TextWrapped("Sprite Texture");
+                });
+
+                DrawComponent<RigidBody2DComponent>("RigidBody2D", m_Entity,
+                                                    [](Entity e){
+                        auto& rb2d = e.GetComponent<RigidBody2DComponent>();
+                        ImGui::Checkbox("Fixed rotation", &rb2d.fixed_rotation);
+                        const char* types[] = { "Static", "Dynamic", "Kinematic" };
+                        const char* current_type = types[(int)rb2d.type];
+                        if (ImGui::BeginCombo("Type", current_type)) {
+                                for (int i = 0; i < 3; i++) {
+                                        bool is_selected = current_type == types[i];
+                                        if (ImGui::Selectable(types[i], is_selected)) {
+                                                current_type = types[i];
+                                                rb2d.type = (RigidBody2DComponent::Type)i;
+                                        }
+
+                                        if (is_selected) {
+                                                ImGui::SetItemDefaultFocus();
+                                        }
+                                }
+
+                                ImGui::EndCombo();
+                        }
+                });
+
+                DrawComponent<BoxCollider2DComponent>("RigidBody2D", m_Entity, [](Entity e){
+                        auto& rb2d = e.GetComponent<BoxCollider2DComponent>();
+                        Control("Offset", rb2d.offset);
+                        Control("Size", rb2d.size);
                 });
 
                 if (ImGui::Button("Add Component")) {
@@ -202,6 +292,14 @@ void Properties::OnImguiRender()
                         }
                         if (ImGui::MenuItem("Script")) {
                                 m_Entity.AddComponent<ScriptComponent>();
+                                ImGui::CloseCurrentPopup();
+                        }
+                        if (ImGui::MenuItem("RigidBody2D")) {
+                                m_Entity.AddComponent<RigidBody2DComponent>();
+                                ImGui::CloseCurrentPopup();
+                        }
+                        if (ImGui::MenuItem("BoxCollider2D")) {
+                                m_Entity.AddComponent<BoxCollider2DComponent>();
                                 ImGui::CloseCurrentPopup();
                         }
                         ImGui::EndPopup();

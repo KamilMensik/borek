@@ -94,8 +94,9 @@ void* World::get_component(EntityId entity, ComponentId component)
 }
 
 ComponentId World::component(uint32_t size, uint32_t alignment,
-                              void(*constructor)(void*),
-                              void(*destructor)(void*))
+                             void(*constructor)(void*),
+                             void(*destructor)(void*),
+                             std::string(*to_s)(void*))
 {
         Id id = GetId();
         m_WorldData[id].component_data_index = m_ComponentData.size();
@@ -103,7 +104,8 @@ ComponentId World::component(uint32_t size, uint32_t alignment,
                 .size = size,
                 .alignment = alignment,
                 .constructor = constructor,
-                .destructor = destructor
+                .destructor = destructor,
+                .to_s = to_s,
         });
         return id;
 }

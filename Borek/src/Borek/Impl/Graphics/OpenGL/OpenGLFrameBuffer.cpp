@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include "Include/Graphics/Camera.h"
 #include <glad/glad.h>
 
@@ -19,6 +20,7 @@ OpenGLFrameBuffer::~OpenGLFrameBuffer()
         glDeleteFramebuffers(1, &m_Id);
         glDeleteTextures(1, &m_ColorAttachment);
         glDeleteTextures(1, &m_DepthAttachment);
+        glDeleteTextures(1, &m_EntityIndexAttachment);
 }
 
 void OpenGLFrameBuffer::OnChange()
@@ -27,10 +29,12 @@ void OpenGLFrameBuffer::OnChange()
                 glDeleteFramebuffers(1, &m_Id);
                 glDeleteTextures(1, &m_ColorAttachment);
                 glDeleteTextures(1, &m_DepthAttachment);
+                glDeleteTextures(1, &m_EntityIndexAttachment);
         }
         BOREK_ENGINE_TRACE("Width: {}, height: {}", m_Settings.width, m_Settings.height);
         glCreateFramebuffers(1, &m_Id);
         glBindFramebuffer(GL_FRAMEBUFFER, m_Id);
+
         glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachment);
         glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Settings.width,
@@ -39,6 +43,18 @@ void OpenGLFrameBuffer::OnChange()
         glTextureParameteri(m_ColorAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                GL_TEXTURE_2D, m_ColorAttachment, 0);
+
+        glCreateTextures(GL_TEXTURE_2D, 1, &m_EntityIndexAttachment);
+        glBindTexture(GL_TEXTURE_2D, m_EntityIndexAttachment);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R32I, m_Settings.width,
+                     m_Settings.height, 0, GL_RED_INTEGER, GL_INT, nullptr);
+        glTextureParameteri(m_EntityIndexAttachment, GL_TEXTURE_MIN_FILTER,
+                            GL_LINEAR);
+        glTextureParameteri(m_EntityIndexAttachment, GL_TEXTURE_MAG_FILTER,
+                            GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+                               GL_TEXTURE_2D, m_EntityIndexAttachment, 0);
+
 
         glCreateTextures(GL_TEXTURE_2D, 1, &m_DepthAttachment);
         glBindTexture(GL_TEXTURE_2D, m_DepthAttachment);
@@ -51,6 +67,7 @@ void OpenGLFrameBuffer::OnChange()
                             "Could not generate framebuffer");
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void OpenGLFrameBuffer::Bind()

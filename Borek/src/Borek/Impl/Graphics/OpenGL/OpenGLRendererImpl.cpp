@@ -11,7 +11,7 @@ namespace Graphics {
 static void _clear_func()
 {
         glClearColor(0.0f, 0.0f, 0.0f, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 static void _add_func(const Graphics::VertexArray& va)

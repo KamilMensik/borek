@@ -19,6 +19,9 @@ target_link_libraries(BOREK imguismo)
 add_subdirectory(spdlog)
 target_link_libraries(BOREK spdlog)
 
+add_subdirectory(Box2D)
+target_link_libraries(BOREK box2d)
+
 target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./../vendor"
                                         "./magic_enum/include"
@@ -27,4 +30,5 @@ target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./imgui"
                                         "./glm"
                                         "./stb"
+                                        "./Box2D/include"
                                         "./yaml-cpp/include")

@@ -1,5 +1,8 @@
-#include "ComponentColumn.h"
 #include <string>
+#include <sstream>
+
+#include "ComponentColumn.h"
+
 namespace ECS {
 
 std::string ComponentColumn::to_s(int until) const
@@ -8,11 +11,7 @@ std::string ComponentColumn::to_s(int until) const
         s << "Col size: " << element_size << " [";
 
         for (int j = 0; j < until; j++) {
-                s << "{ ";
-                for (unsigned i = 0; i < (element_size); i++) {
-                        s << (int)((char*)data)[element_size * j + i] << ", ";
-                }
-                s << "}, ";
+                s << "{ " << to_s_internal(&((char*)data)[element_size * j]) << "}, ";
         }
 
         s << "]";

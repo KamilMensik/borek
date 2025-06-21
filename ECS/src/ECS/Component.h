@@ -3,12 +3,15 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
+
 namespace ECS {
 
 template <class T>
 struct Component {
         static uint32_t component_id;
         static uint32_t Id() { return component_id; }
+        virtual std::string to_s() { return ""; }
 };
 
 template <class T>
@@ -19,6 +22,7 @@ struct ComponentData {
         uint32_t alignment;
         void (*constructor)(void*);
         void (*destructor)(void*);
+        std::string (*to_s)(void*);
 };
 
 }  // namespace ECS

@@ -18,6 +18,7 @@ public:
 private:
         uint32_t m_ColorAttachment;
         uint32_t m_DepthAttachment;
+        uint32_t m_EntityIndexAttachment;
 };
 
 }  // namespace Graphics
