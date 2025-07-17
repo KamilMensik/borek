@@ -1,10 +1,16 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include <format>
+
 #include <ECS/Archetype.h>
+#include <ECS/World.h>
+
+#include <box2d/box2d.h>
+#include <Box2D/src/body.h>
+#include <box2d/types.h>
 
 #include "Include/Base/Scene.h"
 #include "Include/Base/Components.h"
-#include <format>
 
 namespace Borek {
 
@@ -15,6 +21,7 @@ Entity Scene::NewEntity(const std::string& value)
         Entity e(m_World.entity(base_entity), this);
 
         TagComponent& tc = e.GetComponent<TagComponent>();
+        e.GetComponent<IDComponent>().ecs_id = e.GetId();
 
         tc.value = std::string(value.empty() ? std::format("Entity {}", e.GetId()) : value);
 
@@ -28,33 +35,20 @@ void Scene::DeleteEntity(Entity e)
 
 Scene::Scene()
 {
-        RegisterBaseComponents();
-        RegisterBaseQueries();
+        using ECS::GetId;
 
-        base_entity = m_World.get_archetype({ TransformComponent::Id(),
-                                              TagComponent::Id() });
+        base_entity = m_World.get_archetype<IDComponent, TransformComponent, TagComponent>();
+
+        m_RootNode = new Node(NewEntity("Root"));
+
+        b2WorldDef wdef = b2DefaultWorldDef();
+        wdef.gravity = b2Vec2(0.0f, -9.8f);
+        m_PhysicsWorld = b2CreateWorld(&wdef);
 }
 
-void Scene::RegisterBaseComponents()
+Scene::~Scene()
 {
-        RegisterComponent<TransformComponent>();
-        RegisterComponent<TagComponent>();
-        RegisterComponent<SpriteComponent>();
-        RegisterComponent<CameraComponent>();
-        RegisterComponent<ScriptComponent>();
-        RegisterComponent<RigidBody2DComponent>();
-        RegisterComponent<BoxCollider2DComponent>();
-}
-
-void Scene::RegisterBaseQueries()
-{
-        m_Queries.entity_query = Query(TagComponent::Id());
-        m_Queries.draw_query = Query(TransformComponent::Id(),
-                                     SpriteComponent::Id());
-        m_Queries.camera_query = Query(TransformComponent::Id(),
-                                       CameraComponent::Id());
-        m_Queries.scriptable_object_query = Query(ScriptComponent::Id());
-        m_Queries.rigidbody_query = Query(RigidBody2DComponent::Id(), TransformComponent::Id());
+        b2DestroyWorld(m_PhysicsWorld);
 }
 
 }  // namespace Borek

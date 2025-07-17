@@ -1,14 +1,23 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Renderer2D.h"
-#include "Include/Debug/Log.h"
-#include "glm/gtc/type_ptr.hpp"
-#include <cstring>
+
+#include <string>
+
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <Include/Base/Components.h>
+#include <imgui/misc/cpp/imgui_stdlib.h>
+#include <glm/gtc/type_ptr.hpp>
 
+#include <ECS/World.h>
+
+#include <Include/Base/Components.h>
+#include <Include/Base/Renderer2D.h>
+#include <Include/Base/Application.h>
+
+#include "Events/Events.h"
 #include "./Properties.h"
+
+#define COMPONENT_ADD(_component) Application::SendEvent(new AddComponentEvent(ECS::GetId<_component>(), m_Entity));
 
 namespace Borek {
 namespace Panels {
@@ -25,7 +34,7 @@ static void Control(const char* label, glm::vec3& values,
 {
         ImGuiIO io = ImGui::GetIO();
         auto bold_font = io.Fonts->Fonts[0];
-        auto normal_font = io.Fonts->Fonts[1];
+        //auto normal_font = io.Fonts->Fonts[1];
 
         ImGui::PushID(label);
         ImGui::Columns(2);
@@ -89,7 +98,7 @@ static void Control(const char* label, glm::vec2& values,
 {
         ImGuiIO io = ImGui::GetIO();
         auto bold_font = io.Fonts->Fonts[0];
-        auto normal_font = io.Fonts->Fonts[1];
+        //auto normal_font = io.Fonts->Fonts[1];
 
         ImGui::PushID(label);
         ImGui::Columns(2);
@@ -158,7 +167,7 @@ static const ImGuiTreeNodeFlags tflags = ImGuiTreeNodeFlags_DefaultOpen
         | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed
         | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 
-template<class T> requires std::derived_from<T, Component<T>>
+template<class T>
 static void DrawComponent(const char* label, Entity e, void(*fn)(Entity))
 {
         if (e.HasComponent<T>()) {
@@ -167,7 +176,7 @@ static void DrawComponent(const char* label, Entity e, void(*fn)(Entity))
                 ImVec2 content_region_avail = ImGui::GetContentRegionAvail();
                 bool delete_component = false;
                 ImGui::Separator();
-                bool is_open = (ImGui::TreeNodeEx(VPCAST(T::Id()), tflags, "%s", label));
+                bool is_open = (ImGui::TreeNodeEx(VPCAST(ECS::GetId<T>()), tflags, "%s", label));
                 ImGui::PopStyleVar();
                 ImGui::SameLine(content_region_avail.x - line_height * 0.5f);
                 if (ImGui::Button("«", ImVec2{line_height, line_height})) {
@@ -204,7 +213,7 @@ void Properties::OnImguiRender()
                 }
                     
                 if (m_Entity.HasComponent<TagComponent>()) {
-                        if (ImGui::TreeNodeEx(VPCAST(TagComponent::Id()), tflags, "Tag")) {
+                        if (ImGui::TreeNodeEx(VPCAST(ECS::GetId<TagComponent>()), tflags, "Tag")) {
                                 auto& tc = m_Entity.GetComponent<TagComponent>();
                                 Control("Value", tc.value);
                                 ImGui::TreePop();
@@ -213,7 +222,7 @@ void Properties::OnImguiRender()
 
                 if (m_Entity.HasComponent<TransformComponent>()) {
                         ImGui::Separator();
-                        if (ImGui::TreeNodeEx(VPCAST(TransformComponent::Id()), tflags, "Transform")) {
+                        if (ImGui::TreeNodeEx(VPCAST(ECS::GetId<TransformComponent>()), tflags, "Transform")) {
                                 auto& transform = m_Entity.GetComponent<TransformComponent>();
                                 transform.position *= 400.0f;
                                 Control("Position", transform.position);
@@ -271,10 +280,27 @@ void Properties::OnImguiRender()
                         }
                 });
 
-                DrawComponent<BoxCollider2DComponent>("RigidBody2D", m_Entity, [](Entity e){
+                DrawComponent<BoxCollider2DComponent>("BoxCollider2D", m_Entity, [](Entity e){
                         auto& rb2d = e.GetComponent<BoxCollider2DComponent>();
                         Control("Offset", rb2d.offset);
                         Control("Size", rb2d.size);
+                });
+
+                DrawComponent<RubyScriptComponent>("RBScript", m_Entity, [](Entity e){
+                        auto& rbscript = e.GetComponent<RubyScriptComponent>();  
+
+                        if (ImGui::Button("Select Ruby Class")) {
+                                ImGui::OpenPopup("Select Ruby Class");
+                        }
+
+                        if (ImGui::BeginPopup("Select Ruby Class")) {
+                                for (auto cname : Application::GetRubyEngine().GetClasses()) {
+                                        if (ImGui::MenuItem(cname)) {
+                                                rbscript.ruby_class = cname;
+                                        }
+                                }
+                                ImGui::EndPopup();
+                        }
                 });
 
                 if (ImGui::Button("Add Component")) {
@@ -283,23 +309,23 @@ void Properties::OnImguiRender()
 
                 if (ImGui::BeginPopup("AddComponent")) {
                         if (ImGui::MenuItem("Camera")) {
-                                m_Entity.AddComponent<CameraComponent>();
+                                COMPONENT_ADD(CameraComponent);
                                 ImGui::CloseCurrentPopup();
                         }
                         if (ImGui::MenuItem("Sprite")) {
-                                m_Entity.AddComponent<SpriteComponent>();
+                                COMPONENT_ADD(SpriteComponent);
                                 ImGui::CloseCurrentPopup();
                         }
                         if (ImGui::MenuItem("Script")) {
-                                m_Entity.AddComponent<ScriptComponent>();
+                                COMPONENT_ADD(RubyScriptComponent);
                                 ImGui::CloseCurrentPopup();
                         }
                         if (ImGui::MenuItem("RigidBody2D")) {
-                                m_Entity.AddComponent<RigidBody2DComponent>();
+                                COMPONENT_ADD(RigidBody2DComponent);
                                 ImGui::CloseCurrentPopup();
                         }
                         if (ImGui::MenuItem("BoxCollider2D")) {
-                                m_Entity.AddComponent<BoxCollider2DComponent>();
+                                COMPONENT_ADD(BoxCollider2DComponent);
                                 ImGui::CloseCurrentPopup();
                         }
                         ImGui::EndPopup();

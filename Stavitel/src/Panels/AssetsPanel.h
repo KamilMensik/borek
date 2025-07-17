@@ -13,7 +13,7 @@ public:
         void OnImguiRender();
 
 private:
-        void FileButton(const std::filesystem::directory_entry& file, float size);
+        bool FileButton(const std::filesystem::directory_entry& file, float size);
         std::filesystem::path m_CurrentPath;
 };
 

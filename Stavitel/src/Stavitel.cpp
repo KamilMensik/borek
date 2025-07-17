@@ -3,8 +3,11 @@
 #include "EditorState.h"
 #include "Include/Base/Components.h"
 #include "Include/Core.h"
+#include "Include/Engine/Assets/AssetManager.h"
 #include "Include/Events/EventCaller.h"
 #include <Borek.h>
+#include "Borek/Include/Engine/SceneSerializer.h"
+#include "Borek/Include/Engine/Utils/Settings.h"
 
 #include "Layers/EditorLayer.h"
 
@@ -24,6 +27,7 @@ public:
 
                 m_EditorLayer = new EditorLayer();
                 PushLayer(m_EditorLayer);
+                AssetManager::AssetifyWorkspace(Utils::Settings::Instance().current_project_path, true);
         }
 
         ~Stavitel()
@@ -36,17 +40,30 @@ public:
 
                 EventCaller ec(e);
                 ec.TryCall<MouseMovedEvent>(EVENT_FN(Stavitel::OnMouseMovedEvent));
+                ec.TryCall<AddComponentEvent>(EVENT_FN(Stavitel::OnAddComponentEvent));
+                ec.TryCall<RemoveComponentEvent>(EVENT_FN(Stavitel::OnRemoveComponentEvent));
         }
 
         void OnUpdate(float delta) override
         {
+                static unsigned tick_counter = 30;
+
                 Application::OnUpdate(delta);
                 if (IsPlaying() && !m_Started) {
-                        OnStart();
+                        auto path = Utils::Settings::Instance().last_scene_opened_path;
+                        m_EditorLayer->OnGameStarted();
+                        SceneSerializer(Application::GetScene()).Serialize(path);
                         m_Started = true;
                 } else if (!IsPlaying() && m_Started) {
-                        OnEnd();
+                        m_EditorLayer->OnGameEnded();
+                        auto path = Utils::Settings::Instance().last_scene_opened_path;
+                        m_CurrentScene = SceneSerializer().Deserialize(path);
                         m_Started = false;
+                }
+
+                if (--tick_counter <= 0) {
+                        AssetManager::AssetifyWorkspace(Utils::Settings::Instance().current_project_path);
+                        tick_counter = 30;
                 }
         }
 
@@ -56,13 +73,15 @@ public:
                 m_EditorLayer->BeginDockspace();
         }
 
-        virtual void OnImguiRenderEnd() override {
+        virtual void OnImguiRenderEnd() override
+        {
                 Application::OnImguiRenderEnd();
                 m_EditorLayer->EndDockspace();
         }
 
 
-        bool OnMouseMovedEvent(MouseMovedEvent& ev) {
+        bool OnMouseMovedEvent(MouseMovedEvent& ev)
+        {
                 if (!IsPlaying() && Input::IsMouseButtonPressed(MouseButton::BUTTON_RIGHT)) {
                         glm::vec2 delta = ev.GetDelta() / 400.0f;
                         m_EditorCameraTransform.position.x -= delta.x;
@@ -70,6 +89,18 @@ public:
                 }
 
                 return false;
+        }
+
+        bool OnAddComponentEvent(AddComponentEvent& ev)
+        {
+                Entity(ev.GetEntityId(), m_CurrentScene.get()).AddComponent(ev.GetId());
+                return true;
+        }
+
+        bool OnRemoveComponentEvent(RemoveComponentEvent& ev)
+        {
+                Entity(ev.GetEntityId(), m_CurrentScene.get()).RemoveComponent(ev.GetId());
+                return true;
         }
 
         void SetCamera() override

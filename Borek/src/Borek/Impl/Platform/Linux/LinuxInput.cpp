@@ -24,7 +24,7 @@ namespace Borek {
                                           SCAST<unsigned>(button));
         }
 
-        std::pair<double, double> Input::GetMousePos()
+        glm::vec2 Input::GetMousePos()
         {
                 std::pair<double, double> res;
                 void* window_impl = Application::GetWindow().WindowImpl();
@@ -32,7 +32,7 @@ namespace Borek {
                 glfwGetCursorPos(SCAST<GLFWwindow*>(window_impl),
                                  &res.first, &res.second);
 
-                return res;
+                return glm::vec2(res.first, res.second);
         }
 }
 

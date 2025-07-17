@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Include/Events/ApplicationEvents.h"
+#include "Include/Scripting/Ruby/RubyEngine.h"
 #include <utility>
 
 #include "Include/Base/Components.h"
@@ -20,7 +22,6 @@ public:
         Application(const std::string& name = "Borek!");
         virtual ~Application();
 
-        static const Scene::BaseQueries& BaseQueries();
         static void PushLayer(Layer* layer);
         static void PushOverlay(Layer* layer);
         static AbstractWindow& GetWindow();
@@ -30,7 +31,8 @@ public:
         static void SetScene(Ref<Scene> scene);
         static Ref<Scene> GetScene();
         static Ref<Graphics::FrameBuffer> GetFramebuffer();
-        static void SendEvent(Event& e);
+        static void SendEvent(Event* e);
+        static RubyEngine& GetRubyEngine();
 
         void Run();
 
@@ -48,11 +50,16 @@ protected:
         Ref<Scene> m_CurrentScene;
         Ref<Graphics::FrameBuffer> m_FrameBuffer;
 
+        std::vector<Event*> m_Events;
+
+        RubyEngine m_RubyEngine;
+
         float m_AspectRatio = 1.6f;
         bool m_Running = true;
 
         bool OnWindowClose(WindowCloseEvent& e);
         bool OnWindowResize(WindowResizeEvent& e);
+        bool OnComponentAdded(ComponentAddedEvent& e);
 
         void RunEntityScripts(double delta);
         void DrawEntities();
@@ -66,8 +73,7 @@ protected:
         virtual void OnImguiRenderEnd() {}
         virtual bool IsPlaying() { return true; }
         virtual void SetCamera();
-        virtual void OnStart();
-        virtual void OnEnd();
+        virtual void HandleEvents();
 };
 
 }

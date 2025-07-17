@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Include/Events/ApplicationEvents.h"
+#include "Panels/ReplPanel.h"
 #include "Panels/ToolbarPanel.h"
 #include <glm/ext/vector_float2.hpp>
 
@@ -29,6 +30,8 @@ public:
         void EndDockspace();
 
         void OnEvent(Event &e) override;
+        void OnGameStarted();
+        void OnGameEnded();
 
 private:
         Panels::Properties m_PropertiesPanel;
@@ -36,6 +39,7 @@ private:
         Panels::GizmoPanel m_GizmoPanel;
         Panels::Assets m_AssetsPanel;
         Panels::Toolbar m_ToolbarPanel;
+        Panels::Repl m_Repl;
 
         glm::vec2 m_ViewportSize = glm::vec2(1280, 720);
         bool m_IsFocused;

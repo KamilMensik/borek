@@ -3,26 +3,44 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
+#include <vector>
 
 namespace ECS {
-
-template <class T>
-struct Component {
-        static uint32_t component_id;
-        static uint32_t Id() { return component_id; }
-        virtual std::string to_s() { return ""; }
-};
-
-template <class T>
-uint32_t Component<T>::component_id = UINT32_MAX;
 
 struct ComponentData {
         uint32_t size;
         uint32_t alignment;
         void (*constructor)(void*);
         void (*destructor)(void*);
-        std::string (*to_s)(void*);
 };
+
+extern std::vector<ComponentData> s_ComponentData;
+
+template <class T>
+constexpr void RegisterComponent()
+{
+        void (*constructor)(void*) = [](void* address){
+                new(address) T();
+        };
+        void (*destructor)(void*) = [](void* address){
+                reinterpret_cast<T*>(address)->~T();
+        };
+        s_ComponentData.emplace_back(sizeof(T), alignof(T), constructor,
+                                     destructor);
+}
+
+
+extern uint32_t s_ComponentCounter;
+template <class T>
+constexpr uint32_t GetId()
+{
+        static uint32_t s_ComponentId = s_ComponentCounter++;
+
+        if (s_ComponentData.size() <= s_ComponentId) {
+                RegisterComponent<T>();
+        }
+
+        return s_ComponentId;
+}
 
 }  // namespace ECS

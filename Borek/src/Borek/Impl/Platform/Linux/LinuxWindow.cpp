@@ -83,14 +83,12 @@ void Window::Init()
                 wn.m_Width = width;
                 wn.m_Height = height;
 
-                WindowResizeEvent ev(width, height);
-                wn.Callback(ev);
+                wn.Callback(new WindowResizeEvent(width, height));
         });
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
         {
                 Window& wn = *SCAST<Window*>(glfwGetWindowUserPointer(window));
-                WindowCloseEvent ev;
-                wn.Callback(ev);
+                wn.Callback(new WindowCloseEvent);
         });
         glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key,
                                         int scancode, int action, int mods)
@@ -100,20 +98,17 @@ void Window::Init()
                 switch(action) {
                 case GLFW_PRESS:
                 {
-                        KeyPressedEvent ev(SCAST<KeyCode>(key));
-                        wn.Callback(ev);
+                        wn.Callback(new KeyPressedEvent(SCAST<KeyCode>(key)));
                         break;
                 }
                 case GLFW_RELEASE:
                 {
-                        KeyReleasedEvent ev(SCAST<KeyCode>(key));
-                        wn.Callback(ev);
+                        wn.Callback(new KeyReleasedEvent(SCAST<KeyCode>(key)));
                         break;
                 }
                 case GLFW_REPEAT:
                 {
-                        KeyPressedEvent ev(SCAST<KeyCode>(key), true);
-                        wn.Callback(ev);
+                        wn.Callback(new KeyPressedEvent(SCAST<KeyCode>(key), true));
                         break;
                 }
                 }
@@ -125,14 +120,12 @@ void Window::Init()
                 switch (action) {
                 case GLFW_PRESS:
                 {
-                        MouseButtonPressedEvent ev(SCAST<MouseButton>(button));
-                        wn.Callback(ev);
+                        wn.Callback(new MouseButtonPressedEvent(SCAST<MouseButton>(button)));
                         break;
                 }
                 case GLFW_RELEASE:
                 {
-                        MouseButtonReleasedEvent ev(SCAST<MouseButton>(button));
-                        wn.Callback(ev);
+                        wn.Callback(new MouseButtonReleasedEvent(SCAST<MouseButton>(button)));
                         break;
                 }
                 }
@@ -141,21 +134,18 @@ void Window::Init()
                                            double yoffset){
                 Window& wn = *SCAST<Window*>(glfwGetWindowUserPointer(window));
                 
-                MouseScrolledEvent ev(xoffset, yoffset);
-                wn.Callback(ev);
+                wn.Callback(new MouseScrolledEvent(xoffset, yoffset));
         });
         glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x,
                                               double y){
                 Window& wn = *SCAST<Window*>(glfwGetWindowUserPointer(window));
                 
-                MouseMovedEvent ev(x, y);
-                wn.Callback(ev);
+                wn.Callback(new MouseMovedEvent(x, y));
         });
         glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned c){
                 Window& wn = *SCAST<Window*>(glfwGetWindowUserPointer(window));
 
-                KeyTypedEvent ev(SCAST<KeyCode>(c));
-                wn.Callback(ev);
+                wn.Callback(new KeyTypedEvent(SCAST<KeyCode>(c)));
         });
 }
 void Window::Shutdown()

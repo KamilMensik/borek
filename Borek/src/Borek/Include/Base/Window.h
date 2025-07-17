@@ -13,7 +13,7 @@ namespace Borek
 
 class AbstractWindow {
     public:
-        using CallbackFn = std::function<void(Event &)>;
+        using CallbackFn = std::function<void(Event*)>;
 
         AbstractWindow(unsigned width, unsigned height,
                        const std::string &name)

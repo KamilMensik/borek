@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Include/Engine/Node.h"
 #include <Borek/Include/Base/Entity.h>
 #include <Include/Core.h>
 
@@ -13,12 +14,13 @@ public:
         Scene();
         void OnImguiRender();
         void SendOnSelectionChangeEvent();
-        inline Entity GetSelectedEntity() { return m_SelectedEntity; }
+        inline Entity GetSelectedEntity() { return m_SelectedEntity->entity; }
 
 private:
-        Entity m_SelectedEntity;
+        Node* m_SelectedEntity;
+        Node* m_RootNode;
 
-        void DrawTreeNode(Entity e);
+        void DrawTreeNode(Node* node);
 };
 
 }  // namespace Panels

@@ -1,11 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include <cstring>
-#include <iostream>
 
 #include "Archetype.h"
 #include "World.h"
-#include <ostream>
+#include "Component.h"
 
 namespace ECS {
 
@@ -21,19 +20,17 @@ Archetype::Archetype(const ArchetypeType& type)
 {
 }
 
+
 void Archetype::init(uint32_t id, World& world)
 {
         this->id = id;
         this->max_size = 0;
 
         for (uint32_t i = 0; ComponentId c : type) {
-                ComponentData& cdata =
-                        world.m_ComponentData[world.m_WorldData[c]
-                                                   .component_data_index];
+                ComponentData& cdata = s_ComponentData[c];
 
                 components.emplace_back(cdata.size, cdata.alignment,
-                                        cdata.constructor, cdata.destructor,
-                                        cdata.to_s);
+                                        cdata.constructor, cdata.destructor);
                 
                 world.m_ComponentColumn[world.GetCAId(c, id)] = i;
                 i++;
@@ -57,17 +54,6 @@ ArchetypeId Archetype::get_edge(ComponentId c, World& world, bool is_adding)
         return find;
 }
 
-template <class T>
-std::ostream& operator <<(std::ostream& str, std::vector<T> vec)
-{
-        str << "[";
-        for (auto& el : vec) {
-                str << el << " ";
-        }
-        str << "]";
-
-        return str;
-}
 uint32_t Archetype::add_entity(EntityId e, bool init_values)
 {
         if (entities.size() >= max_size)
@@ -125,13 +111,17 @@ void Archetype::remove_entity(EntityId e, uint32_t row, World& world,
                 return;
         }
 
-        uint32_t replaceworldith = entities.size() - 1;
-        for (auto& column : components) {
-                std::memcpy(column[row], column[replaceworldith],
-                            column.element_size);
+        if (row != (entities.size() - 1)) {
+                uint32_t replaceworldith = entities.size() - 1;
+                for (auto& column : components) {
+                        std::memcpy(column[row], column[replaceworldith],
+                                    column.element_size);
+                }
+
+                entities[row] = entities.back();
+                world.m_WorldData[entities.back()].archetype_row = row;
         }
 
-        world.m_WorldData[entities.back()].archetype_row = row;
         entities.pop_back();
 
         if (max_size / entities.size() >= 8)

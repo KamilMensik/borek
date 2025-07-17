@@ -29,4 +29,28 @@ private:
         std::string m_ScenePath;
 };
 
+class AddComponentEvent : public CustomEvent<AddComponentEvent> {
+public:
+        AddComponentEvent(uint32_t id, uint32_t entity_id) : m_EntityId(entity_id), m_Id(id) {}
+
+        inline uint32_t GetEntityId() { return m_EntityId; }
+        inline uint32_t GetId() { return m_Id; }
+
+private:
+        uint32_t m_EntityId;
+        uint32_t m_Id;
+};
+
+class RemoveComponentEvent : public CustomEvent<RemoveComponentEvent> {
+public:
+        RemoveComponentEvent(uint32_t id, uint32_t entity_id) : m_EntityId(entity_id), m_Id(id) {}
+
+        inline uint32_t GetEntityId() { return m_EntityId; }
+        inline uint32_t GetId() { return m_Id; }
+
+private:
+        uint32_t m_EntityId;
+        uint32_t m_Id;
+};
+
 }  // namespace Borek

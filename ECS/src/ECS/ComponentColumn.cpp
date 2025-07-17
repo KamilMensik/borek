@@ -1,21 +1,12 @@
-#include <string>
-#include <sstream>
+// Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "ComponentColumn.h"
 
 namespace ECS {
 
-std::string ComponentColumn::to_s(int until) const
+void* ComponentColumn::operator[] (uint32_t index)
 {
-        std::stringstream s;
-        s << "Col size: " << element_size << " [";
-
-        for (int j = 0; j < until; j++) {
-                s << "{ " << to_s_internal(&((char*)data)[element_size * j]) << "}, ";
-        }
-
-        s << "]";
-        return s.str();
+        return (uint8_t*)data + (element_size * index);
 }
 
 }  // namespace ECS

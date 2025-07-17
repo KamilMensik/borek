@@ -1,12 +1,84 @@
 Scene: Jmeno
-Entities:
-  - Name: Player
-    Components:
-      Transform:
-        Position: [-1.3788768, 0.09689654, 0]
-        Scale: [0.16, 0.16, 0.0025]
-        Rotation: [0, 0, 0]
-      Sprite:
-        Color: [1, 1, 1, 1]
-      Script:
-        Has script: Yes
+Root:
+  Name: Root
+  Type: Node
+  Components:
+    ID:
+      Value: 814878820306461256
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: [0, 0, 0]
+  Children:
+    - Name: Background
+      Type: Node
+      Components:
+        ID:
+          Value: 16127170144483546128
+        Transform:
+          Position: [0, 0]
+          Scale: [3.2, 2]
+          Rotation: [0, 0, 0]
+        Sprite:
+          Color: [0.31227452, 0.6676923, 0, 1]
+    - Name: Ball
+      Type: Node
+      Components:
+        ID:
+          Value: 12047493541401519864
+        Transform:
+          Position: [0, 0]
+          Scale: [0.075, 0.075]
+          Rotation: [0, 0, 0]
+        Sprite:
+          Color: [1, 1, 1, 1]
+        Script:
+          ClassName: Ball
+    - Name: Player 2
+      Type: Node
+      Components:
+        ID:
+          Value: 2724182340398874220
+        Transform:
+          Position: [0.75, 0]
+          Scale: [0.125, 0.75]
+          Rotation: [0, 0, 0]
+        Sprite:
+          Color: [0.83692306, 0.09270531, 0.09270531, 1]
+        Script:
+          ClassName: PaddleR
+    - Name: Player 1
+      Type: Node
+      Components:
+        ID:
+          Value: 2540527617633143354
+        Transform:
+          Position: [-0.75, 0]
+          Scale: [0.125, 0.75]
+          Rotation: [0, 0, 0]
+        Sprite:
+          Color: [0.06288282, 0.12267717, 0.7569231, 1]
+        Script:
+          ClassName: PaddleL
+    - Name: Camera
+      Type: Node
+      Components:
+        ID:
+          Value: 18296403526784021102
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: [0, 0, 0]
+        Camera:
+          IsActive: true
+Assets:
+  - Type: Texture2D
+    Path: retro-mario.png
+  - Type: Texture2D
+    Path: tilemap.png
+  - Type: Script
+    Path: /home/kamil/bakalarka/borek/TestProject/scripts/paddle_r.rb
+  - Type: Script
+    Path: /home/kamil/bakalarka/borek/TestProject/scripts/paddle_l.rb
+  - Type: Script
+    Path: /home/kamil/bakalarka/borek/TestProject/scripts/ball.rb

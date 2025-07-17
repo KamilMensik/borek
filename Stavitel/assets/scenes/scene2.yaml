@@ -2,17 +2,19 @@ Scene: Jmeno
 Entities:
   - Name: Camera
     Components:
+      ID:
+        Value: 3992516327571756255
       Transform:
-        Position: [0, 0, 0]
+        Position: [0.10746269, 0.6181818, 0]
         Scale: [1, 1, 1]
-        Rotation: [0, 0, 0]
-      Camera:
-        IsActive: true
-  - Name: Player
+        Rotation: [0, -0, 0]
+  - Name: Entity 11
     Components:
+      ID:
+        Value: 3656016005287547591
       Transform:
-        Position: [-0.12452423, 0.24662173, 0]
-        Scale: [0.16, 0.16, 1.72224]
+        Position: [0.17910442, 0.85194814, 0]
+        Scale: [0.16, 0.425, 1]
         Rotation: [0, -0, 0]
       Sprite:
         Color: [1, 1, 1, 1]
@@ -29,15 +31,61 @@ Entities:
         Size: [0.5, 0.5]
   - Name: Ground
     Components:
+      ID:
+        Value: 2361351594519717130
       Transform:
-        Position: [0.037480824, -0.37609565, 0]
-        Scale: [2.532465, 0.042499997, 1]
-        Rotation: [0, -0, 16.879683]
+        Position: [0.26180422, -0.34422314, 0]
+        Scale: [2.532464, 0.042499997, 1]
+        Rotation: [0, -0, -1.1947773]
       Sprite:
         Color: [1, 1, 1, 1]
       RigidBody2D:
         FixedRotation: false
         Type: kStatic
+      BoxCollider2D:
+        Restitution: 0
+        RestitutionTreshold: 0.5
+        Friction: 0.5
+        Density: 1
+        Offset: [0, 0]
+        Size: [0.5, 0.5]
+  - Name: Entity 4
+    Components:
+      ID:
+        Value: 13067614321191259949
+      Transform:
+        Position: [0, 0, 0]
+        Scale: [0.25, 0.25, 1]
+        Rotation: [0, 0, 0]
+      Sprite:
+        Color: [1, 1, 1, 1]
+        AssetID: 4
+      RigidBody2D:
+        FixedRotation: false
+        Type: kDynamic
+      BoxCollider2D:
+        Restitution: 0
+        RestitutionTreshold: 0.5
+        Friction: 0.5
+        Density: 1
+        Offset: [0, 0]
+        Size: [0.5, 0.5]
+  - Name: Kamylek
+    Components:
+      ID:
+        Value: 16633761357319087844
+      Transform:
+        Position: [0.5220909, -0.15375084, 0]
+        Scale: [0.16000004, 0.16000004, 1.7222397]
+        Rotation: [0, -0, -111.24057]
+      Sprite:
+        Color: [1, 1, 1, 1]
+        AssetID: 5
+      Camera:
+        IsActive: true
+      RigidBody2D:
+        FixedRotation: false
+        Type: kDynamic
       BoxCollider2D:
         Restitution: 0
         RestitutionTreshold: 0.5

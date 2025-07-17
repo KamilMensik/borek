@@ -18,7 +18,6 @@ public:
 
 private:
         Ref<Scene> m_Scene;
-        Query m_SceneQuery;
 };
 
 }  // namespace Borek

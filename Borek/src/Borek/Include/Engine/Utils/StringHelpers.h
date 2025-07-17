@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "ECS/Component.h"
+#include <string_view>
+
 namespace Borek {
 
-template <class T>
-using Component = ECS::Component<T>;
+std::string to_snake_case(const std::string_view& str);
 
 }  // namespace Borek

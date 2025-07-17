@@ -3,8 +3,6 @@
 #pragma once
 
 #include <memory>
-#include <sstream>
-#include <string>
 #include <unordered_set>
 #include <unordered_map>
 #include <cstdint>
@@ -32,6 +30,7 @@ struct Archetype {
         Archetype() : type() {};
         Archetype(const std::initializer_list<Id>& type);
         Archetype(const ArchetypeType& type);
+
         void init(uint32_t id, class World& world);
         bool operator ==(const Archetype& other);
         ArchetypeId get_edge(ComponentId c, class World& world, bool is_adding);
@@ -40,15 +39,6 @@ struct Archetype {
         void remove_entity(EntityId e, uint32_t row, class World& world,
                            bool destruct_values = true);
         void resize(uint32_t new_size);
-        std::string to_s() const {
-                std::stringstream s;
-                s << "Archetype " << id << " {\n";
-                for (auto& ccol : components) {
-                        s << "\t" << ccol.to_s(entities.size()) << "\n";
-                }
-                s << "}";
-                return s.str();
-        }
 };
 
 bool operator ==(std::shared_ptr<Archetype> a, std::shared_ptr<Archetype> b);

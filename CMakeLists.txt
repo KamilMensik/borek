@@ -16,13 +16,14 @@ endif()
 
 if(CMAKE_HOST_SYSTEM MATCHES Linux)
    message(STATUS "Build host runs Linux")
-   set(CMAKE_C_FLAGS "-g -Wall -O0 -fPIC")
-   set(CMAKE_CXX_FLAGS "-g -Wall -O0 -fPIC")
+   set(CMAKE_C_FLAGS "-g -Wall -fPIC")
+   set(CMAKE_CXX_FLAGS "-g -Wall -fPIC")
 endif()
 
 add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 
 add_subdirectory(ECS)
+add_subdirectory(MRBCPP)
 add_subdirectory(Borek)
 add_subdirectory(Sandbox)
 add_subdirectory(Stavitel)

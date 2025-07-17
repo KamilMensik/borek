@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Include/Engine/AssetManager.h"
 #include <string>
 #include <cstdint>
 
 #include "Include/Core.h"
-#include "Include/Engine/Asset.h"
+#include "Include/Engine/Assets/AssetManager.h"
+#include "Include/Engine/Assets/Asset.h"
 
 namespace Borek {
 

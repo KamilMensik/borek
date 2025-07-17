@@ -35,4 +35,28 @@ public:
         Ref<Scene> GetScene();
 };
 
+class ComponentAddedEvent : public CustomEvent<ComponentAddedEvent> {
+public:
+        ComponentAddedEvent(uint32_t id, uint32_t entity_id) : m_EntityId(entity_id), m_Id(id) {}
+
+        inline uint32_t GetEntityId() { return m_EntityId; }
+        inline uint32_t GetId() { return m_Id; }
+
+private:
+        uint32_t m_EntityId;
+        uint32_t m_Id;
+};
+
+class ComponentRemovedEvent : public CustomEvent<ComponentRemovedEvent> {
+public:
+        ComponentRemovedEvent(uint32_t id, uint32_t entity_id) : m_EntityId(entity_id), m_Id(id) {}
+
+        inline uint32_t GetEntityId() { return m_EntityId; }
+        inline uint32_t GetId() { return m_Id; }
+
+private:
+        uint32_t m_EntityId;
+        uint32_t m_Id;
+};
+
 }  // namespace Borek

@@ -1,7 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "World.h"
+#include "ECS/Query.h"
 #include <iostream>
+#include <ostream>
+
+#include "World.h"
 
 namespace ECS {
 
@@ -67,7 +70,7 @@ void World::remove_component(EntityId entity, ComponentId component)
         auto old_a = m_RegisteredArchetypes[m_WorldData[entity].archetype_id];
         auto edge = m_RegisteredArchetypes[old_a->get_edge(component, *this, false)];
 
-        m_ComponentData[m_WorldData[component].component_data_index]
+        s_ComponentData[component]
                 .destructor(old_a->components[GetCColumn(component, old_a->id)][m_WorldData[entity].archetype_row]);
         
         old_a->move_entity(entity, *edge, *this);
@@ -93,23 +96,6 @@ void* World::get_component(EntityId entity, ComponentId component)
         return m_RegisteredArchetypes[archetype_id]->components[res->second][row_id];
 }
 
-ComponentId World::component(uint32_t size, uint32_t alignment,
-                             void(*constructor)(void*),
-                             void(*destructor)(void*),
-                             std::string(*to_s)(void*))
-{
-        Id id = GetId();
-        m_WorldData[id].component_data_index = m_ComponentData.size();
-        m_ComponentData.emplace_back(ComponentData{
-                .size = size,
-                .alignment = alignment,
-                .constructor = constructor,
-                .destructor = destructor,
-                .to_s = to_s,
-        });
-        return id;
-}
-
 ArchetypeId World::get_archetype(const std::initializer_list<Id>& type)
 {
         auto tryfind = m_Archetypes.find(type);
@@ -120,12 +106,11 @@ ArchetypeId World::get_archetype(const std::initializer_list<Id>& type)
         auto a = std::make_shared<Archetype>(type);
         m_RegisteredArchetypes.emplace_back(a);
         a->init(m_RegisteredArchetypes.size() - 1, *this);
-        for (auto& query : m_LQueries) {
-                query.TryAdd(*a);
-        }
+        TryAddArchetypeToQueries(*a);
         m_Archetypes[a->type] = a->id;
         return a->id;
 }
+
 ArchetypeId World::get_archetype(ArchetypeType& type)
 {
         auto tryfind = m_Archetypes.find(type);
@@ -136,17 +121,9 @@ ArchetypeId World::get_archetype(ArchetypeType& type)
         auto archetype = std::make_shared<Archetype>(type);
         m_RegisteredArchetypes.emplace_back(archetype);
         archetype->init(m_RegisteredArchetypes.size() - 1, *this);
-        for (auto& query : m_LQueries) {
-                query.TryAdd(*archetype);
-        }
+        TryAddArchetypeToQueries(*archetype);
         m_Archetypes[archetype->type] = archetype->id;
         return archetype->id;
-}
-
-Query World::new_query(const std::initializer_list<ComponentId>& components)
-{
-        m_LQueries.emplace_back(QueryL(components, *this));
-        return Query(m_LQueries.size() - 1, this);
 }
 
 Id World::GetId()
@@ -163,6 +140,13 @@ Id World::GetId()
 uint32_t World::GetCColumn(uint32_t component_id, uint32_t archetype_id)
 {
         return m_ComponentColumn[GetCAId(component_id, archetype_id)];
+}
+
+void World::TryAddArchetypeToQueries(const Archetype& a)
+{
+        QueryInternal::SetWorld(this);
+        for (auto query : QueryInternal::GetDefinedQueries())
+                query.TryAdd(a);
 }
 
 }  // namespace ECS

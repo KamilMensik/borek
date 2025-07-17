@@ -55,7 +55,6 @@ void OpenGLFrameBuffer::OnChange()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
                                GL_TEXTURE_2D, m_EntityIndexAttachment, 0);
 
-
         glCreateTextures(GL_TEXTURE_2D, 1, &m_DepthAttachment);
         glBindTexture(GL_TEXTURE_2D, m_DepthAttachment);
         glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_Settings.width,

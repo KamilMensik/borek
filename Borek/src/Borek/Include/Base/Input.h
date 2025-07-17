@@ -62,8 +62,6 @@ enum class KeyCode {
         GRAVE_ACCENT  =    96,  /* ` */
         WORLD_1       =    161, /* non-US #1 */
         WORLD_2       =    162, /* non-US #2 */
-
-        /* Function keys */
         ESCAPE        =    256,
         ENTER         =    257,
         TAB           =    258,
@@ -156,14 +154,14 @@ public:
         static bool IsMouseButtonPressed(MouseButton button);
         static inline double GetMouseX()
         {
-                return GetMousePos().first;
+                return GetMousePos().x;
         }
         static inline double GetMouseY()
         {
-                return GetMousePos().second;
+                return GetMousePos().y;
         }
 
-        static std::pair<double, double> GetMousePos();
+        static glm::vec2 GetMousePos();
         static glm::vec2 GetAxis();
 };
 

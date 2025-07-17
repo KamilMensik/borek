@@ -11,7 +11,6 @@
 #include "Include/Graphics/Renderer.h"
 #include "Include/Scripting/ScriptableObject.h"
 #include "Panels/ToolbarPanel.h"
-#include "glm/ext/vector_float3.hpp"
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imguismo/ImGuizmo.h>
@@ -37,7 +36,7 @@ public:
         {
                 if (!Input::IsKeyPressed(KeyCode::ENTER)) {
                         auto& t = GetComponent<TransformComponent>();
-                        t.position += (glm::vec3{ Input::GetAxis(), 0.0f } * 100.0f * delta);
+                        t.position += Input::GetAxis() * 100.0f * delta;
                 }
         }
 
@@ -53,8 +52,8 @@ EditorLayer::EditorLayer()
         : Borek::Layer("TestLayer")
 {
         ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/Segoe UI Bold.ttf"), 24.0f);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/Segoe UI.ttf"), 24.0f);
+        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Bold.ttf"), 24.0f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 24.0f);
 
         if (Utils::Settings::Instance().last_scene_opened_path != "") {
                 auto new_scene = SceneSerializer().Deserialize(Utils::Settings::Instance().last_scene_opened_path);
@@ -218,6 +217,7 @@ void EditorLayer::OnImGuiRender()
         m_ScenePanel.OnImguiRender();
         m_PropertiesPanel.OnImguiRender();
         m_AssetsPanel.OnImguiRender();
+        m_Repl.OnImguiRender();
 }
 
 bool EditorLayer::OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev)
@@ -232,7 +232,23 @@ bool EditorLayer::OnSceneChangedEvent(SceneChangedEvent& ev)
 {
         m_ScenePanel = Panels::Scene();
         m_PropertiesPanel.ChangeEntity(Entity());
+        m_GizmoPanel.ChangeEntity(Entity());
         return false;
+}
+
+
+void EditorLayer::OnGameStarted()
+{
+        m_GizmoPanel.ChangeEntity(Entity());
+        m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
+}
+
+void EditorLayer::OnGameEnded()
+{
+        m_GizmoPanel.ChangeEntity(Entity());
+        m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
+        m_PropertiesPanel.ChangeEntity(Entity());
+        m_GizmoPanel.ChangeEntity(Entity());
 }
 
 }  // namespace Borek

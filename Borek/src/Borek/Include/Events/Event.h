@@ -73,6 +73,7 @@ class Event {
         friend class EventCaller;
 
 public:
+        virtual ~Event() = default;
         inline bool GetHandled() { return m_Handled; }
         inline void Handle() { m_Handled = true; }
 

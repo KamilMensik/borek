@@ -6,7 +6,7 @@
 
 namespace Borek {
 
-using Query = ECS::Query;
-using View = ECS::View;
+template <typename ... components>
+using Query = ECS::Query<components...>;
 
 }  // namespace Borek

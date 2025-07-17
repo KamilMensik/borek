@@ -2,68 +2,55 @@
 
 #pragma once
 
-#include "box2d/id.h"
-#include "glm/ext/matrix_float4x4.hpp"
 #include <concepts>
 
-#include <format>
 #include <glm/ext/vector_float3.hpp>
+#include "glm/ext/matrix_float4x4.hpp"
 #include <glm/ext/vector_float4.hpp>
 #include <glm/ext/vector_float2.hpp>
+#include <box2d/id.h>
 
 #include "Include/Core.h"
 #include "Include/Events/WindowEvents.h"
 #include "Include/Graphics/Camera.h"
-#include "Include/Base/Component.h"
 #include "Include/Objects/Sprite.h"
 #include "Include/Base/String.h"
 #include "Include/Base/Colors.h"
 #include "Include/Scripting/ScriptableObject.h"
+#include "Include/Base/UUID.h"
 
-static std::string to_s(glm::vec4& in)
-{
-        return std::format("[{}, {}, {}, {}]", in.r, in.g, in.b, in.a);
-}
-
-static std::string to_s(glm::vec3& in)
-{
-        return std::format("[{}, {}, {}]", in.r, in.g, in.b);
-}
-
-static std::string to_s(glm::vec2& in)
-{
-        return std::format("[{}, {}]", in.r, in.g);
-}
+struct RClass;
 
 namespace Borek {
 
-struct TransformComponent : Component<TransformComponent> {
-        glm::vec3 position;
-        glm::vec3 rotation;
-        glm::vec3 scale;
+struct IDComponent {
+        UUID id;
+        uint32_t ecs_id;
 
-        TransformComponent(glm::vec3 pos = glm::vec3(0.0f),
+        IDComponent() : id() {}
+        IDComponent(UUID id) : id(id) {}
+        operator uint64_t() { return id; }
+        operator UUID() { return id; }
+};
+
+struct TransformComponent {
+        glm::vec2 position;
+        glm::vec3 rotation;
+        glm::vec2 scale;
+
+        TransformComponent(glm::vec2 pos = glm::vec2(0.0f),
                            glm::vec3 rot = glm::vec3(0.0f),
-                           glm::vec3 scale = glm::vec3(1.0f))
+                           glm::vec2 scale = glm::vec2(1.0f))
                 : position(pos), rotation(rot), scale(scale) {}
 
         TransformComponent& Move(float x, float y);
-        TransformComponent& Move(float x, float y, float z);
         TransformComponent& Move(const glm::vec2& xy);
-        TransformComponent& Move(const glm::vec3& xyz);
 
-        glm::mat4 GetTransformMat() const;
-        glm::mat4 GetPixelTransformMat() const;
-
-        std::string to_s() override
-        {
-                return std::format("pos: {}, rot: {}, scale: {}",
-                                   ::to_s(position), ::to_s(rotation),
-                                   ::to_s(scale));
-        }
+        glm::mat4 GetTransformMat(const glm::vec2& offset = glm::vec2()) const;
+        glm::mat4 GetPixelTransformMat(const glm::vec2& offset = glm::vec2()) const;
 };
 
-struct SpriteComponent : Component<SpriteComponent> {
+struct SpriteComponent {
         Ref<Sprite> sprite;
         glm::vec4 color;
 
@@ -71,27 +58,28 @@ struct SpriteComponent : Component<SpriteComponent> {
         SpriteComponent(const Ref<Sprite>& sprite,
                         glm::vec4 color = Colors::WHITE)
                 : sprite(sprite), color(color) {}
-
-        std::string to_s() override
-        {
-                return std::format("asset_id: {}, color: {})",
-                                   0, ::to_s(color));
-        }
 };
 
-struct TagComponent : Component<TagComponent> {
+struct LineComponent {
+        Ref<Sprite> sprite;
+        glm::vec4 color;
+        float length;
+
+
+        LineComponent() : color(Colors::WHITE) {}
+        LineComponent(const Ref<Sprite>& sprite,
+                      glm::vec4 color = Colors::WHITE)
+                : sprite(sprite), color(color) {}
+};
+
+struct TagComponent {
         String value;
 
         TagComponent() : value() {}
         TagComponent(const std::string& value) : value(value) {}
-
-        std::string to_s() override
-        {
-                return value.c_str();
-        }
 };
 
-struct CameraComponent : Component<CameraComponent> {
+struct CameraComponent {
         float aspect_ratio;
         float zoom;
         Graphics::Camera camera;
@@ -107,14 +95,9 @@ struct CameraComponent : Component<CameraComponent> {
         {
                 return camera.GetProjectionMatrix();
         }
-
-        std::string to_s() override
-        {
-                return "Camera";
-        }
 };
 
-struct ScriptComponent : Component<ScriptComponent> {
+struct ScriptComponent {
         ScriptableObject* instance;
 
         ScriptComponent() {}
@@ -131,28 +114,32 @@ struct ScriptComponent : Component<ScriptComponent> {
                 instance->m_Entity = e;
                 instance->OnCreate();
         }
-
-        std::string to_s() override
-        {
-                return "Script";
-        }
 };
 
-struct RigidBody2DComponent : Component<RigidBody2DComponent> {
+struct RubyScriptComponent {
+        RubyScriptComponent();
+
+        void Initialize(Entity e);
+        void OnUpdate(float delta);
+        void OnDestroy();
+
+        std::string ruby_class = "";
+        uint64_t ruby_instance = 0;
+        Entity entity;
+
+        static RClass* s_RubyEntityClass;
+};
+
+struct RigidBody2DComponent {
         enum class Type { kStatic, kDynamic, kKinematic };
         Type type;
         bool fixed_rotation;
         b2BodyId runtime_body;
 
         RigidBody2DComponent() = default;
-
-        std::string to_s() override
-        {
-                return "RigidBody";
-        }
 };
 
-struct BoxCollider2DComponent : Component<BoxCollider2DComponent> {
+struct BoxCollider2DComponent {
         glm::vec2 offset = glm::vec2();
         glm::vec2 size = glm::vec2(0.5f);
 
@@ -163,12 +150,6 @@ struct BoxCollider2DComponent : Component<BoxCollider2DComponent> {
         b2ShapeId runtime_collider;
 
         BoxCollider2DComponent() = default;
-
-        std::string to_s() override
-        {
-                return "BoxCollider";
-        }
-
 };
 
 }  // namespace Borek

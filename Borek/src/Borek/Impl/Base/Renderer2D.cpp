@@ -19,6 +19,7 @@
 #include "Include/Graphics/Shader.h"
 #include "Include/Graphics/VertexArray.h"
 #include "Include/Graphics/VertexBuffer.h"
+#include "Include/Base/Scene.h"
 
 #define _BOREK_BATCH_RENDER_SIZE 40000
 #define _BOREK_MAX_TEXTURES_COUNT 32
@@ -44,15 +45,12 @@ struct QuadVertex {
         glm::vec4 color;
         glm::vec2 tex_cord;
         float tex_id;
-        uint32_t entity_id;
 
         QuadVertex(const glm::vec3& pos, const glm::vec4& color,
                    const glm::vec2& tex_cord, float tex,
                    uint32_t entity_id = UINT32_MAX) : pos(pos), color(color),
                                                       tex_cord(tex_cord),
-                                                      tex_id(tex),
-                                                      entity_id(entity_id)
-        {
+                                                      tex_id(tex)        {
         }
 
         QuadVertex() {}
@@ -108,7 +106,6 @@ public:
                         { Datatype::Float4, "a_Color" },
                         { Datatype::Float2, "a_TexCord" },
                         { Datatype::Float, "a_TextureId" },
-                        { Datatype::Int, "a_EntityId"},
                 });
 
                 s_IndexBuffer = Graphics::IndexBuffer::Create(s_Indexes, _BOREK_BATCH_RENDER_SIZE * 6, true);
@@ -256,11 +253,10 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size,
 }
 
 void Renderer2D::DrawQuad(const TransformComponent& transform,
-                          const SpriteComponent& sprite,
-                          uint32_t id)
+                          const SpriteComponent& sprite)
 {
         float texture_index = sprite.sprite == nullptr ? 0 : BatchRenderer::Add(sprite.sprite->GetTexture());
-        glm::mat4 trans = transform.GetTransformMat();
+        glm::mat4 trans = transform.GetTransformMat(s_GlobalPos);
 
         for (int i = 0; i < 4; i++) {
                 BatchRenderer::Add(QuadVertex{
@@ -268,16 +264,42 @@ void Renderer2D::DrawQuad(const TransformComponent& transform,
                         sprite.color,
                         quad_tex_cords[i],
                         texture_index,
-                        id
                 });
         }
 
         BatchRenderer::AddQuadIndexes();
 }
 
+void Renderer2D::DrawScene(Ref<Scene> scene)
+{
+        DrawSceneNode(*scene->m_RootNode);
+}
+
+void Renderer2D::DrawSceneNode(Node& node)
+{
+        Entity& e = node.entity;
+        TransformComponent& trans = e.GetComponent<TransformComponent>();
+        s_GlobalPos += trans.position;
+
+        if (node.entity.HasComponent<SpriteComponent>()) {
+                DrawQuad(trans,
+                         e.GetComponent<SpriteComponent>());
+        }
+
+        if (node.first_child) {
+                node.EachChildReverse([](Node* child){
+                        DrawSceneNode(*child);
+                });
+        }
+
+        s_GlobalPos -= trans.position;
+}
+
 Ref<Graphics::Texture2D> Renderer2D::WhiteTexture()
 {
         return data.white_texture;
 }
+
+glm::vec2 Renderer2D::s_GlobalPos = glm::vec2(0.0f);
 
 }  // namespace Borek

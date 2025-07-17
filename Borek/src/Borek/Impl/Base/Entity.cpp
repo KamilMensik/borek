@@ -1,5 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "ECS/Component.h"
+#include "Include/Base/Application.h"
+#include "Include/Events/ApplicationEvents.h"
+#include <box2d/box2d.h>
+
 #include "Include/Base/Entity.h"
 #include "Include/Base/Scene.h"
 
@@ -16,12 +21,14 @@ void* Entity::GetComponent(ECS::ComponentId cid)
 Entity& Entity::AddComponent(ECS::ComponentId cid)
 {
         m_Scene->m_World.add_component(m_Id, cid);
+        Application::SendEvent(new ComponentAddedEvent(cid, m_Id));
         return *this;
 }
 
 Entity& Entity::RemoveComponent(ECS::ComponentId cid)
 {
         m_Scene->m_World.remove_component(m_Id, cid);
+        Application::SendEvent(new ComponentRemovedEvent(cid, m_Id));
         return *this;
 }
 
@@ -33,6 +40,20 @@ bool Entity::HasComponent(ECS::ComponentId cid)
 void Entity::Delete()
 {
         m_Scene->DeleteEntity(*this);
+}
+
+TransformComponent& Entity::Transform()
+{
+        return GetComponent<TransformComponent>();
+}
+const char* Entity::GetName()
+{
+        return GetComponent<TagComponent>().value;
+}
+
+UUID Entity::GetUUID()
+{
+        return GetComponent<IDComponent>();
 }
 
 }  // namespace Borek

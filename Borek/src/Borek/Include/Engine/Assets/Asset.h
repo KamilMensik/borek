@@ -9,6 +9,11 @@ namespace Borek {
 
 class Asset {
 public:
+        enum Type : uint32_t {
+                kImage,
+                kScript,
+        };
+
         Asset(unsigned id) : m_Id(id) {}
         Asset() = default;
 

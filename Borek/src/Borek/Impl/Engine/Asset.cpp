@@ -1,7 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Engine/Asset.h"
-#include "Include/Engine/AssetManager.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/AssetManager.h"
 
 namespace Borek {
 

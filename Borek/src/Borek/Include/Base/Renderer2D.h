@@ -9,6 +9,7 @@
 #include "Include/Objects/Sprite.h"
 #include "Include/Base/Components.h"
 #include "Include/Objects/SpriteSheet.h"
+#include "Include/Engine/Node.h"
 
 namespace Borek {
 
@@ -30,10 +31,15 @@ public:
         static void DrawQuad(const glm::vec2& position, const glm::vec2& size,
                              Ref<SubSprite> subsprite, unsigned zindex = 0);
         static void DrawQuad(const TransformComponent& transform,
-                             const SpriteComponent& sprite,
-                             uint32_t entity_id = UINT32_MAX);
+                             const SpriteComponent& sprite);
+        static void DrawLine(const TransformComponent& transform,
+                             const LineComponent& line);
+        static void DrawScene(Ref<Scene> scene);
+        static void DrawSceneNode(Node& node);
 
         static Ref<Graphics::Texture2D> WhiteTexture();
+
+        static glm::vec2 s_GlobalPos;
 };
 
 }  // namespace Borek

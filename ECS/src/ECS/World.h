@@ -134,19 +134,40 @@
  *      # Creates a new / returns an existing archetype for given components
  *      # Really slow operation. If you want to reuse it. Save it somewhere.
  *      ECS::Archetype enemy = world.get_archetype({ HP, Transform, Sprite });
+ *      =======================================================================
+ *
+ *
+ *      ECS::Query
+ *      =======================================================================
+ *      # Query through entities with given components
+ *      
+ *      -----------------------------------------------------------------------
+ *      ==> Creating a new Query
+ *
+ *      # Creates a new query
+ *      # Compile time operation
+ *
+ *      struct Transform {
+ *              int x, y;
+ *      };
+ *
+ *      ECS::Query = Query<Transform>();
+ *
+ *      -----------------------------------------------------------------------
+ *      ==> Iterating over query
+ *
+ *      for (auto& [trans, sprite] : Query<Transform, Sprite>()) {
+ *              RenderSprite(trans, sprite);
+ *      }
  *
  */
 
-#include <concepts>
 #include <cstdint>
 #include <vector>
 #include <memory>
-#include <iostream>
-#include <typeinfo>
 
 #include "Archetype.h"
 #include "Component.h"
-#include "Query.h"
 
 namespace ECS {
 
@@ -159,16 +180,13 @@ using ArchetypeId = Id;
 using __AType_IList = std::initializer_list<Id>;
 
 struct WData {
-        union {
-                struct { uint32_t archetype_id; uint32_t archetype_row; };
-                uint32_t component_data_index;
-        };
+        uint32_t archetype_id;
+        uint32_t archetype_row;
 };
+
 
 class World {
 friend Archetype;
-friend QueryL;
-friend Query;
 public:
         World();
 
@@ -185,16 +203,16 @@ public:
         // Setting components
         void set_components(EntityId entity, const __AType_IList& components);
         void set_components(EntityId entity, ArchetypeId archetype);
-        template <class T> requires std::derived_from<T, Component<T>>
+        template <class T>
         inline void add_component(EntityId entity)
         {
-                add_component(entity, T::component_id);
+                add_component(entity, GetId<T>());
         }
         void add_component(EntityId entity, ComponentId component);
-        template <class T> requires std::derived_from<T, Component<T>>
+        template <class T>
         inline void remove_component(EntityId entity)
         {
-                remove_component(entity, T::component_id);
+                remove_component(entity, GetId<T>());
         }
         void remove_component(EntityId entity, ComponentId component);
 
@@ -205,45 +223,39 @@ public:
         T& get_component(EntityId e, ComponentId c) {
                 return *reinterpret_cast<T*>(get_component(e, c));
         }
-        template <class T> requires std::derived_from<T, Component<T>>
+        template <class T>
         T& get_component(EntityId e) {
-                return *reinterpret_cast<T*>(get_component(e, T::component_id));
+                return *reinterpret_cast<T*>(get_component(e, GetId<T>()));
         }
 
         /*
          *      Components
          */
 
-        // Create Components
-        template <class T>
-        requires std::derived_from<T, Component<T>>
-        ComponentId component()
-        {
-                if (T::component_id != UINT32_MAX)
-                        return T::component_id;
-
-                void (*constructor)(void*) = [](void* address){
-                        new(address) T();
-                };
-                void (*destructor)(void*) = [](void* address){
-                        reinterpret_cast<T*>(address)->~T();
-                };
-                std::string (*to_s)(void*) = [](void* address){
-                        return reinterpret_cast<T*>(address)->to_s();
-                };
-                T::component_id = component(sizeof(T), alignof(T),
-                                            constructor, destructor, to_s);
-                return T::component_id;
-        }
-        ComponentId component(uint32_t size, uint32_t alignment,
-                              void(*constructor)(void*),
-                              void(*destructor)(void*),
-                              std::string(*to_s)(void*));
-
         // Archetypes
         // Extremely slow. Try to save result somewhere.
+
         ArchetypeId get_archetype(const __AType_IList& type);
-        Query new_query(const std::initializer_list<ComponentId>& components);
+
+
+        template<typename...components>
+        ArchetypeId get_archetype()
+        {
+                ArchetypeType type = { ::ECS::GetId<components>()... };
+                auto tryfind = m_Archetypes.find(type);
+                if (tryfind != m_Archetypes.end()) {
+                        return tryfind->second;
+                }
+
+                auto a = std::make_shared<Archetype>(type);
+                m_RegisteredArchetypes.emplace_back(a);
+                a->init(m_RegisteredArchetypes.size() - 1, *this);
+                m_Archetypes[a->type] = a->id;
+                return a->id;
+        }
+
+        void test() {
+        }
 
 public:
         uint32_t m_CurrentId;
@@ -252,13 +264,12 @@ public:
         std::unordered_map<uint64_t, uint32_t> m_ComponentColumn;
         std::vector<std::shared_ptr<Archetype>> m_RegisteredArchetypes;
         std::unordered_map<ArchetypeType, uint32_t, __ArchetypeHash> m_Archetypes;
-        std::vector<ComponentData> m_ComponentData;
-        std::vector<QueryL> m_LQueries;
 
         Id GetId();
         constexpr uint64_t GetCAId(ComponentId c, uint32_t archetype_id) {
                 return ((uint64_t)(c) << 32) ^ archetype_id;
         }
+        void TryAddArchetypeToQueries(const Archetype& a);
         uint32_t GetCColumn(uint32_t component_id, uint32_t archetype_id);
 
         // @param [Archetype&] must be top of m_RegisteredArchetypes

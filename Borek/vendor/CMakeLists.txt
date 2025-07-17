@@ -22,6 +22,11 @@ target_link_libraries(BOREK spdlog)
 add_subdirectory(Box2D)
 target_link_libraries(BOREK box2d)
 
+add_subdirectory(msdf-atlas-gen)
+target_link_libraries(BOREK msdf-atlas-gen)
+
+target_link_libraries(BOREK ${CMAKE_SOURCE_DIR}/Borek/vendor/mruby/build/host/lib/libmruby.a)
+
 target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./../vendor"
                                         "./magic_enum/include"
@@ -31,4 +36,6 @@ target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./glm"
                                         "./stb"
                                         "./Box2D/include"
-                                        "./yaml-cpp/include")
+                                        "./yaml-cpp/include"
+                                        "./mruby/include"
+                                        "./msdf-atlas-gen")
