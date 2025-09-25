@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Include/Events/ApplicationEvents.h"
-#include "Include/Scripting/Ruby/RubyEngine.h"
 #include <utility>
 
 #include "Include/Base/Components.h"
@@ -14,6 +12,11 @@
 #include "Include/Events/WindowEvents.h"
 #include "Include/Base/Window.h"
 #include "Include/Base/LayerStack.h"
+#include "Include/Engine/FZX/CGrid.h"
+#include "Include/Base/Popup.h"
+#include "Include/Events/ApplicationEvents.h"
+#include "Include/Events/MouseEvents.h"
+#include "Include/Scripting/Ruby/RubyEngine.h"
 
 namespace Borek {
 
@@ -32,34 +35,42 @@ public:
         static Ref<Scene> GetScene();
         static Ref<Graphics::FrameBuffer> GetFramebuffer();
         static void SendEvent(Event* e);
+        static void OpenPopup(Popup* popup);
         static RubyEngine& GetRubyEngine();
+        static std::pair<glm::vec2, glm::vec2> GetMouseOffset();
+        static void Log(const std::string& str);
+        static FZX::CGrid& GetSpriteGrid();
 
         void Run();
 
 protected:
         static Application* s_Instance;
+        static std::function<void(const std::string&)> s_LogFunc;
 
         LayerStack m_Layers;
         Uniq<AbstractWindow> m_Window;
 
         CameraComponent* m_Camera;
-        TransformComponent* m_CameraTransform;
+        TransformComponent m_CameraTransform;
 
         ImGuiLayer* m_ImGuiLayer;
 
         Ref<Scene> m_CurrentScene;
         Ref<Graphics::FrameBuffer> m_FrameBuffer;
 
-        std::vector<Event*> m_Events;
+        std::vector<Event*> m_Events = {};
+        std::vector<Popup*> m_ActivePopups = {};
 
         RubyEngine m_RubyEngine;
+
+        FZX::CGrid m_SpriteGrid;
 
         float m_AspectRatio = 1.6f;
         bool m_Running = true;
 
         bool OnWindowClose(WindowCloseEvent& e);
         bool OnWindowResize(WindowResizeEvent& e);
-        bool OnComponentAdded(ComponentAddedEvent& e);
+        bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
         void RunEntityScripts(double delta);
         void DrawEntities();
@@ -74,6 +85,7 @@ protected:
         virtual bool IsPlaying() { return true; }
         virtual void SetCamera();
         virtual void HandleEvents();
+        virtual std::pair<glm::vec2, glm::vec2> GetMouseOffsetInternal();
 };
 
 }

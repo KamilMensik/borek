@@ -8,7 +8,6 @@
 #include "glm/ext/matrix_float4x4.hpp"
 #include <glm/ext/vector_float4.hpp>
 #include <glm/ext/vector_float2.hpp>
-#include <box2d/id.h>
 
 #include "Include/Core.h"
 #include "Include/Events/WindowEvents.h"
@@ -35,19 +34,39 @@ struct IDComponent {
 
 struct TransformComponent {
         glm::vec2 position;
-        glm::vec3 rotation;
+        float rotation;
         glm::vec2 scale;
 
         TransformComponent(glm::vec2 pos = glm::vec2(0.0f),
-                           glm::vec3 rot = glm::vec3(0.0f),
+                           float rot = 0,
                            glm::vec2 scale = glm::vec2(1.0f))
-                : position(pos), rotation(rot), scale(scale) {}
+                : position(pos), rotation(rot), scale(scale)
+        {
+        }
 
         TransformComponent& Move(float x, float y);
         TransformComponent& Move(const glm::vec2& xy);
+        TransformComponent& Rotate(float value);
+        TransformComponent& Scale(float x, float y);
+        TransformComponent& Scale(const glm::vec2& value);
 
-        glm::mat4 GetTransformMat(const glm::vec2& offset = glm::vec2()) const;
-        glm::mat4 GetPixelTransformMat(const glm::vec2& offset = glm::vec2()) const;
+        glm::mat4 GetTransformMat() const;
+
+        void
+        operator +=(const TransformComponent& other)
+        {
+                position += other.position;
+                rotation += other.rotation;
+                scale *= other.scale;
+        }
+
+        void
+        operator -=(const TransformComponent& other)
+        {
+                position -= other.position;
+                rotation -= other.rotation;
+                scale /= other.scale;
+        }
 };
 
 struct SpriteComponent {
@@ -130,26 +149,13 @@ struct RubyScriptComponent {
         static RClass* s_RubyEntityClass;
 };
 
-struct RigidBody2DComponent {
-        enum class Type { kStatic, kDynamic, kKinematic };
-        Type type;
-        bool fixed_rotation;
-        b2BodyId runtime_body;
+struct Text2DComponent {
+        Ref<class Font> font;
+        String value;
+        glm::vec4 color;
+        float size;
 
-        RigidBody2DComponent() = default;
-};
-
-struct BoxCollider2DComponent {
-        glm::vec2 offset = glm::vec2();
-        glm::vec2 size = glm::vec2(0.5f);
-
-        float density = 1.0f;
-        float friction = 0.5f;
-        float restitution = 0.0f;
-        float restitution_treshold = 0.5f;
-        b2ShapeId runtime_collider;
-
-        BoxCollider2DComponent() = default;
+        Text2DComponent() = default;
 };
 
 }  // namespace Borek

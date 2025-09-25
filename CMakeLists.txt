@@ -16,8 +16,8 @@ endif()
 
 if(CMAKE_HOST_SYSTEM MATCHES Linux)
    message(STATUS "Build host runs Linux")
-   set(CMAKE_C_FLAGS "-g -Wall -fPIC")
-   set(CMAKE_CXX_FLAGS "-g -Wall -fPIC")
+   set(CMAKE_C_FLAGS "-g -Wall -fPIC -msse4.1")
+   set(CMAKE_CXX_FLAGS "-g -Wall -fPIC -msse4.1")
 endif()
 
 add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)

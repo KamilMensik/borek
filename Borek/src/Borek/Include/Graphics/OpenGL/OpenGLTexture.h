@@ -13,7 +13,8 @@ namespace Graphics {
 class OpenGLTexture2D : public Texture2D {
 public:
         OpenGLTexture2D(const std::string& path);
-        OpenGLTexture2D(uint32_t width, uint32_t height, const uint8_t* data);
+        OpenGLTexture2D(uint32_t width, uint32_t height, const uint8_t* data,
+                        int channels = 4);
         ~OpenGLTexture2D() override;
         void Bind(uint32_t slot = 0) const override;
         uint32_t GetId() const override;

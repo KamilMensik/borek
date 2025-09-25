@@ -8,6 +8,7 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "ECS/World.h"
 #include "ECS/Component.h"
@@ -58,10 +59,8 @@ public:
                         id = s_DefinedQueries.size();
                         QueryInternal res;
                         res.m_Type = { GetId<components>()... };
-                        if (s_World) {
-                                for (auto& atype : s_World->m_RegisteredArchetypes) {
-                                        res.TryAdd(*atype);
-                                }
+                        for (auto& atype : ArchetypeInternal::s_CreatedArchetypes) {
+                                res.TryAdd(atype.m_Id);
                         }
                         s_DefinedQueries.emplace_back(res);
                 }
@@ -83,28 +82,28 @@ public:
                         return nullptr;
 
                 static std::array<uint32_t, sizeof...(comps)> cid_in_arch;
-                static std::shared_ptr<Archetype> curr;
+                static Archetype curr;
                 static View<comps*...> res;
 
                 if (m_CurrentArchetypeIndex == UINT32_MAX) {
                         m_CurrentArchetypeIndex = 0;
                         m_CurrentIndexInArchetype = 0;
-                        curr = s_World->m_RegisteredArchetypes[m_ArchetypeIds[0]];
-                        cid_in_arch = { s_World->GetCColumn(ECS::GetId<comps>(), m_ArchetypeIds[m_CurrentArchetypeIndex])... };
+                        curr = m_ArchetypeIds[0];
+                        cid_in_arch = { curr.GetComponentColumn(ECS::GetId<comps>())... };
                 }
 
-                if (m_CurrentIndexInArchetype >= curr->entities.size()) {
+                if (m_CurrentIndexInArchetype >= curr.GetEntitySize()) {
                         if (++m_CurrentArchetypeIndex >= m_ArchetypeIds.size()) {
                                 return nullptr;
                         }
 
                         m_CurrentIndexInArchetype = 0;
-                        cid_in_arch = { s_World->GetCColumn(ECS::GetId<comps>(), m_ArchetypeIds[m_CurrentArchetypeIndex])... };
-                        curr = s_World->m_RegisteredArchetypes[m_ArchetypeIds[0]];
+                        curr = m_ArchetypeIds[m_CurrentArchetypeIndex];
+                        cid_in_arch = { curr.GetComponentColumn(ECS::GetId<comps>())... };
                 }
                 
                 for (size_t i = 0; i < cid_in_arch.size(); i++) {
-                        res.items[i] = curr->components[cid_in_arch[i]][m_CurrentIndexInArchetype];
+                        res.items[i] = curr.GetComponentsRaw(cid_in_arch[i])[m_CurrentIndexInArchetype];
                 }
 
                 m_CurrentIndexInArchetype++;
@@ -112,8 +111,8 @@ public:
                 return &res;
         }
 
-        void TryAdd(const Archetype& archetype);
-        static void SetWorld(World* world) { s_World = world; }
+        static void
+        TryAddArchetypeToQueries(Archetype archetype);
 
         static std::vector<QueryInternal>& GetDefinedQueries();
 
@@ -124,8 +123,9 @@ private:
         std::vector<ComponentId> m_Type;
         std::vector<uint32_t> m_ArchetypeIds;
         
-        static World* s_World;
         static std::vector<QueryInternal> s_DefinedQueries;
+
+        void TryAdd(Archetype archetype);
 };
 
 template<typename...components>

@@ -11,7 +11,15 @@ namespace Utils {
 
 std::string OpenFileDialog(const char* filter, const char* default_path)
 {
-        return tinyfd_openFileDialog("Open file", default_path, 0, NULL, "", 0);
+        char* res;
+        const char* filters[1] = { filter };
+        if (filter) {
+                res = tinyfd_openFileDialog("Open file", default_path, 1, filters, NULL, 0);       
+        } else {
+                res = tinyfd_openFileDialog("Open file", default_path, 0, NULL, "", 0);       
+        }
+
+        return res == nullptr ? "" : res;
 }
 
 std::string SaveFileDialog(const char* filter, const char* default_path)

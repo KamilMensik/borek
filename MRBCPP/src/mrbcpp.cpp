@@ -46,9 +46,19 @@ Class& Class::define_class_method(const std::string& name, mrbcpp_func_t func, F
         mrb_define_class_method(m_VM, m_Self, name.c_str(), func, args);
         return *this;
 }
+
 Class& Class::define_const(const std::string& name, mrb_value val)
 {
         mrb_define_const(m_VM, m_Self, name.c_str(), val);
+        return *this;
+}
+
+Class& Class::define_class_iv(const std::string& name, mrb_value val)
+{
+        mrb_value v;
+        v.w = reinterpret_cast<uintptr_t>(m_Self);
+
+        mrb_iv_set(m_VM, v, mrb_intern_cstr(m_VM, name.c_str()), val);
         return *this;
 }
 

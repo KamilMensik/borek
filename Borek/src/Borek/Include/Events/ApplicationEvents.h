@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "Include/Base/Scene.h"
 #include "Include/Events/CustomEvent.h"
 #include "Include/Events/Event.h"
+#include "Include/Core.h"
 
 namespace Borek {
 
@@ -28,6 +28,8 @@ class RenderEvent : public Event {
 
         RenderEvent() {}
 };
+
+class Scene;
 
 class SceneChangedEvent : public CustomEvent<SceneChangedEvent> {
 public: 

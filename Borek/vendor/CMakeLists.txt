@@ -19,11 +19,17 @@ target_link_libraries(BOREK imguismo)
 add_subdirectory(spdlog)
 target_link_libraries(BOREK spdlog)
 
-add_subdirectory(Box2D)
-target_link_libraries(BOREK box2d)
-
 add_subdirectory(msdf-atlas-gen)
 target_link_libraries(BOREK msdf-atlas-gen)
+
+add_subdirectory(freetype)
+target_link_libraries(BOREK freetype)
+
+# Add ImSearch - Cant bother to fork it.
+add_library(imsearch STATIC "./imsearch/imsearch.cpp")
+target_include_directories(imsearch PRIVATE "./imsearch"
+                                            "./imgui")
+target_link_libraries(BOREK imsearch)
 
 target_link_libraries(BOREK ${CMAKE_SOURCE_DIR}/Borek/vendor/mruby/build/host/lib/libmruby.a)
 
@@ -35,7 +41,7 @@ target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./imgui"
                                         "./glm"
                                         "./stb"
-                                        "./Box2D/include"
                                         "./yaml-cpp/include"
                                         "./mruby/include"
-                                        "./msdf-atlas-gen")
+                                        "./msdf-atlas-gen"
+                                        "./freetype/include")

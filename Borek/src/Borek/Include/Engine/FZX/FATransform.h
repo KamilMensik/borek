@@ -3,13 +3,11 @@
 #pragma once
 
 namespace Borek {
-namespace Panels {
+namespace FZX {
 
-class Repl {
-public:
-        Repl();
-        void OnImguiRender();
+struct FATransform {
+        float x, y, rot;
 };
 
-}  // namespace Panels
+}  // namespace FZX
 }  // namespace Borek

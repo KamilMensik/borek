@@ -8,32 +8,58 @@
 #include "Include/Base/Application.h"
 
 namespace Borek {
-        bool Input::IsKeyPressed(KeyCode key)
-        {
-                void* window_impl = Application::GetWindow().WindowImpl();
 
-                return glfwGetKey(SCAST<GLFWwindow*>(window_impl),
-                                  SCAST<unsigned>(key));
-        }
+bool Input::IsKeyPressed(KeyCode key)
+{
+        void* window_impl = Application::GetWindow().WindowImpl();
 
-        bool Input::IsMouseButtonPressed(MouseButton button)
-        {
-                void* window_impl = Application::GetWindow().WindowImpl();
-
-                return glfwGetMouseButton(SCAST<GLFWwindow*>(window_impl),
-                                          SCAST<unsigned>(button));
-        }
-
-        glm::vec2 Input::GetMousePos()
-        {
-                std::pair<double, double> res;
-                void* window_impl = Application::GetWindow().WindowImpl();
-
-                glfwGetCursorPos(SCAST<GLFWwindow*>(window_impl),
-                                 &res.first, &res.second);
-
-                return glm::vec2(res.first, res.second);
-        }
+        return glfwGetKey(SCAST<GLFWwindow*>(window_impl),
+                          SCAST<unsigned>(key));
 }
+
+bool Input::IsMouseButtonPressed(MouseButton button)
+{
+        void* window_impl = Application::GetWindow().WindowImpl();
+
+        return glfwGetMouseButton(SCAST<GLFWwindow*>(window_impl),
+                                  SCAST<unsigned>(button));
+}
+
+glm::vec2 Input::GetMousePos()
+{
+        std::pair<double, double> dres;
+        auto& window = Application::GetWindow();
+        void* window_impl = window.WindowImpl();
+
+        glfwGetCursorPos(SCAST<GLFWwindow*>(window_impl),
+                         &dres.first, &dres.second);
+
+        glm::vec2 res(dres.first, dres.second);
+        auto offset = Application::GetMouseOffset();
+        res -= offset.first;
+        res.y = offset.second.y - res.y;
+
+        return res;
+}
+
+glm::vec2 Input::GetMousePosRelative()
+{
+        std::pair<double, double> dres;
+        auto& window = Application::GetWindow();
+        void* window_impl = window.WindowImpl();
+
+        glfwGetCursorPos(SCAST<GLFWwindow*>(window_impl),
+                         &dres.first, &dres.second);
+
+        glm::vec2 res(dres.first, dres.second);
+        auto offset = Application::GetMouseOffset();
+        res -= offset.first;
+        res.y = offset.second.y - res.y;
+        res = glm::vec2(2) * (res / offset.second) - glm::vec2(1);
+
+        return res;
+}
+
+}  // namespace Borek
 
 #endif

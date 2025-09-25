@@ -5,9 +5,8 @@
 #include <cstdint>
 
 #include "Include/Core.h"
-#include "Include/Graphics/Camera.h"
+#include "Include/Debug/Assert.h"
 #include "Include/Debug/WithChange.h"
-#include <stdint.h>
 
 namespace Borek {
 namespace Graphics {

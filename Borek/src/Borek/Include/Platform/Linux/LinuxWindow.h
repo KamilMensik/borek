@@ -10,7 +10,7 @@ namespace Borek {
 
 class Window : public AbstractWindow {
 public:
-        Window(unsigned width = 1280, unsigned height = 720,
+        Window(unsigned width = 1600, unsigned height = 900,
                const std::string& title = "Borek!", bool vsync = true);
         ~Window() override;
         void OnUpdate() override;

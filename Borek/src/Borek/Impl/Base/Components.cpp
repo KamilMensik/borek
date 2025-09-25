@@ -2,7 +2,6 @@
 
 #include "Include/Base/Components.h"
 #include "Include/Base/Application.h"
-#include "Include/Debug/Log.h"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/trigonometric.hpp"
 
@@ -14,10 +13,6 @@ namespace Borek {
 
 using Cam = CameraComponent;
 using Trans = TransformComponent;
-
-constexpr static glm::vec2 FromPixels(const glm::vec2& pixels) {
-        return pixels / 400.0f;
-}
 
 Trans& Trans::Move(float x, float y)
 {
@@ -32,54 +27,41 @@ Trans& Trans::Move(const glm::vec2& xy)
         return *this;
 }
 
-glm::mat4 Trans::GetTransformMat(const glm::vec2& offset) const
+TransformComponent& TransformComponent::Rotate(float value)
 {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f),
-                                             glm::vec3(position + offset, 0.0f));
+        rotation = value;
+        return *this;
+}
 
-        if (rotation.x != 0) {
-                transform = glm::rotate(transform, glm::radians(rotation.x),
-                                        glm::vec3(1.0f, 0.0f, 0.0f));
-        }
-        if (rotation.y != 0) {
-                transform = glm::rotate(transform, glm::radians(rotation.y),
-                                        glm::vec3(0.0f, 1.0f, 0.0f));
-        }
-        if (rotation.z != 0) {
-                transform = glm::rotate(transform, glm::radians(rotation.z),
+TransformComponent& TransformComponent::Scale(float x, float y)
+{
+        scale = glm::vec2{x, y};
+        return *this;
+}
+
+TransformComponent& TransformComponent::Scale(const glm::vec2& value)
+{
+        scale = value;
+        return *this;
+}
+
+glm::mat4 Trans::GetTransformMat() const
+{
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f));
+
+        if (rotation != 0) {
+                transform = glm::rotate(transform, glm::radians(rotation),
                                         glm::vec3(0.0f, 0.0f, 1.0f));
         }
 
         return glm::scale(transform, glm::vec3(scale, 1.0f));
 }
 
-glm::mat4 Trans::GetPixelTransformMat(const glm::vec2& offset) const
-{
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(FromPixels(position + offset), 0));
-
-        if (rotation.x != 0) {
-                transform = glm::rotate(transform, glm::radians(rotation.x),
-                                        glm::vec3(1.0f, 0.0f, 0.0f));
-        }
-        if (rotation.y != 0) {
-                transform = glm::rotate(transform, glm::radians(rotation.y),
-                                        glm::vec3(0.0f, 1.0f, 0.0f));
-        }
-        if (rotation.z != 0) {
-                transform = glm::rotate(transform, glm::radians(rotation.z),
-                                        glm::vec3(0.0f, 0.0f, 1.0f));
-        }
-
-        return glm::scale(transform, glm::vec3(FromPixels(scale), 0.0f));
-}
-
-
 Cam::CameraComponent(float aspect_ratio, float zoom)
         : aspect_ratio(aspect_ratio), zoom(zoom),
         camera(-aspect_ratio * zoom, aspect_ratio * zoom, -zoom, zoom),
         is_active(false)
 {
-        BOREK_LOG_INFO("Set aspect ratio to: {}", aspect_ratio);
 }
 
 const glm::mat4& Cam::GetViewProjectionMatrix(const Trans& transform)
@@ -99,9 +81,9 @@ bool Cam::OnWindowResized(WindowResizeEvent& ev)
 
 void Cam::Recalculate(const Trans& transform)
 {
-        camera.SetProjection(-aspect_ratio * zoom, aspect_ratio * zoom,
-                             -zoom, zoom);
-        camera.Recalculate(glm::vec3(transform.position, 0.0f), transform.rotation);
+        camera.SetProjection(-640 * zoom, 640 * zoom,
+                             -360 * zoom, 360 * zoom);
+        camera.Recalculate(glm::vec3(transform.position, 0.0f), glm::vec3(0, 0, transform.rotation));
 }
 
 RubyScriptComponent::RubyScriptComponent()
@@ -119,7 +101,10 @@ void RubyScriptComponent::Initialize(Entity e)
 
         mrb_value entity_id = mrb_fixnum_value(e.GetId());
         mrb_value ruby_entity = mrb_class_new_instance(mrb, 1, &entity_id, s_RubyEntityClass);
-        mrb_value instance = mrb_class_new_instance(mrb, 1, &ruby_entity, mrb_class_get(mrb, ruby_class.c_str()));
+        mrb_value instance = mrb_class_new_instance(mrb, 0, nullptr, mrb_class_get(mrb, ruby_class.c_str()));
+        MRB_SET_IV(instance, "@entity", ruby_entity);
+        MRB_FUNCALL(instance, "on_create");
+        
         ruby_instance = instance.w;
 }
 

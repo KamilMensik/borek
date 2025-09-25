@@ -31,7 +31,6 @@ void OpenGLFrameBuffer::OnChange()
                 glDeleteTextures(1, &m_DepthAttachment);
                 glDeleteTextures(1, &m_EntityIndexAttachment);
         }
-        BOREK_ENGINE_TRACE("Width: {}, height: {}", m_Settings.width, m_Settings.height);
         glCreateFramebuffers(1, &m_Id);
         glBindFramebuffer(GL_FRAMEBUFFER, m_Id);
 

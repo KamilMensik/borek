@@ -1,12 +1,14 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "glm/trigonometric.hpp"
-#include <print>
+#include "Include/Base/Input.h"
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Utils/GeometryUtils.h"
+#include "Include/Events/MouseEvents.h"
+#include <iostream>
 #include <ranges>
 
-#include <box2d/box2d.h>
-#include <box2d/id.h>
 #include <ECS/World.h>
+#include <glm/trigonometric.hpp>
 
 #include "Include/Core.h"
 #include "Include/Graphics/Renderer.h"
@@ -18,7 +20,7 @@
 #include "Include/ImGui/ImGuiLayer.h"
 #include "Include/Base/Query.h"
 #include "Include/Base/Components.h"
-#include "Include/Debug/Log.h"
+#include "Include/Debug/Assert.h"
 
 #ifndef BR_PLATFORM_WINDOWS
         #include "Include/Platform/Linux/LinuxWindow.h"
@@ -29,7 +31,8 @@
 namespace Borek {
 Application* Application::s_Instance = nullptr;
 
-static inline double GetDelta(AbstractWindow& window) {
+static inline double
+GetDelta(AbstractWindow& window) {
         static Time prev_time = window.GetTime();
         Time new_time = window.GetTime();
         double delta = new_time.Seconds() - prev_time.Seconds();
@@ -37,32 +40,19 @@ static inline double GetDelta(AbstractWindow& window) {
         return delta;
 }
 
-constexpr static b2BodyType to_b2(RigidBody2DComponent::Type type)
-{
-        switch (type) {
-        case RigidBody2DComponent::Type::kStatic:
-                return b2BodyType::b2_staticBody;
-        case RigidBody2DComponent::Type::kDynamic:
-                return b2BodyType::b2_dynamicBody;
-        case RigidBody2DComponent::Type::kKinematic:
-                return b2BodyType::b2_kinematicBody;
-        default:
-                BOREK_ASSERT(false, "Invalid rigidbody2d type!");
-                return b2BodyType::b2_bodyTypeCount;
-        }
-}
-
 Application::Application(const std::string& name)
+        : m_SpriteGrid(-1536, -864, 1536, 864, 96, 96)
 {
         s_Instance = this;
-        m_Window.reset(new Window(1280, 720, name));
+
+        m_Window.reset(new Window(1920, 1080, name));
         Renderer2D::Init();
         m_Window->SetCallback(std::bind(&Application::SendEvent,
                                         std::placeholders::_1));
         m_ImGuiLayer = new ImGuiLayer();
         PushOverlay(m_ImGuiLayer);
 
-        m_CurrentScene = NewRef<Scene>();
+        SetScene(NewRef<Scene>());
 
         Graphics::FrameBufferSettings fb_settings;
         fb_settings.width = 1280;
@@ -76,12 +66,13 @@ Application::~Application()
         Renderer2D::Shutdown();
 }
 
-void Application::SetCamera() {
-        auto query = Query<TransformComponent, CameraComponent>();
-        for (auto [transform, camera] : query) {
+void
+Application::SetCamera() {
+        auto query = Query<IDComponent, TransformComponent, CameraComponent>();
+        for (auto [id, transform, camera] : query) {
                 if (camera->is_active) {
                         m_Camera = camera;
-                        m_CameraTransform = transform;
+                        m_CameraTransform = Entity(id->ecs_id).GlobalTransform();
                         break;
                 }
         }
@@ -89,7 +80,8 @@ void Application::SetCamera() {
         BOREK_ASSERT(m_Camera, "Couldnt find an active camera in scene");
 }
 
-void Application::OnRenderBegin()
+void
+Application::OnRenderBegin()
 {
         SetCamera();
         m_Camera->aspect_ratio = m_AspectRatio;
@@ -97,24 +89,28 @@ void Application::OnRenderBegin()
         Graphics::Renderer::Clear();
 }
 
-void Application::OnRenderEnd()
+void
+Application::OnRenderEnd()
 {
         m_FrameBuffer->Unbind();
 }
 
-void Application::Run()
+void
+Application::Run()
 {
         while (m_Running)
         {
                 // Handle deltatime
                 double delta = GetDelta(*m_Window);
+                if (delta > 0.2f)
+                        continue;
 
                 // Called before every render
                 OnRenderBegin();
 
                 BOREK_ENGINE_ASSERT(m_Camera != nullptr, "Camera not set.");
                 // Begin rendering
-                Renderer2D::Begin(*m_Camera, *m_CameraTransform);
+                Renderer2D::Begin(*m_Camera, m_CameraTransform);
 
                 // Custom application OnUpdate call
                 OnUpdate(delta);
@@ -124,35 +120,40 @@ void Application::Run()
                                 layer->OnUpdate(delta);
                 }
 
-                if (!IsPlaying()) {
-                        auto query = Query<IDComponent, TransformComponent, RigidBody2DComponent>();
-                        for (auto [id, transform, rb2d] : query) {
-                                Entity e(id->ecs_id, m_CurrentScene.get());
-                                if (B2_IS_NULL(rb2d->runtime_body))
-                                        return;
+                //if (!IsPlaying()) {
+                //        auto query = Query<IDComponent, TransformComponent, RigidBody2DComponent>();
+                //        for (auto [id, transform, rb2d] : query) {
+                //                Entity e(id->ecs_id);
+                //                if (B2_IS_NULL(rb2d->runtime_body))
+                //                        return;
 
-                                b2Body_SetTransform(rb2d->runtime_body,
-                                                    b2Vec2(transform->position.x,
-                                                           transform->position.y),
-                                                    b2MakeRot(glm::radians(transform->rotation.z)));
-                        };
-                }
+                //                b2Body_SetTransform(rb2d->runtime_body,
+                //                                    b2Vec2(transform->position.x,
+                //                                           transform->position.y),
+                //                                    b2MakeRot(glm::radians(transform->rotation)));
+                //        };
+                //}
 
                 if (IsPlaying()) {
                         RunEntityScripts(delta);
-                        int sub_step_count = 4;
-                        b2World_Step(m_CurrentScene->m_PhysicsWorld, delta, sub_step_count);
-                        auto query = Query<IDComponent, TransformComponent, RigidBody2DComponent>();
-                        for (auto [id, transform, rb2d] : query) {
-                                Entity e(id->ecs_id, m_CurrentScene.get());
 
-                                auto pos = b2Body_GetPosition(rb2d->runtime_body);
-                                transform->position.x = pos.x;
-                                transform->position.y = pos.y;
+                        TransformComponent global_tran;
+                        GetScene()->TraverseScene([&global_tran](Entity e) {
+                                auto& transform = e.Transform();
+                                global_tran += transform;
+                                if (e.HasComponent<FZX::BodyComponent>()) {
+                                        auto& body = e.GetComponent<FZX::BodyComponent>();
 
-                                auto rot = b2Body_GetRotation(rb2d->runtime_body);
-                                transform->rotation.z = glm::degrees(b2Rot_GetAngle(rot));
-                        };
+                                        GetScene()->GetPhysicsWorld().Update(e, body, global_tran.position,
+                                                                             global_tran.scale);
+                                }
+                        }, [&global_tran](Entity e) {
+                                global_tran -= e.GetComponent<TransformComponent>();
+                        });
+
+                        for (auto& [id, body] : Query<IDComponent, FZX::BodyComponent>()) {
+                                auto collisions = GetScene()->GetPhysicsWorld().GetCollisions(id->ecs_id, *body);
+                        }
                 }
 
                 HandleEvents();
@@ -174,6 +175,14 @@ void Application::Run()
                         layer->OnImGuiRender();
                 }
 
+                for (int i = 0; auto popup : m_ActivePopups) {
+                        if (popup->Tick()) {
+                                delete popup;
+                                m_ActivePopups.erase(m_ActivePopups.begin() + i);
+                        }
+                        i++;
+                }
+
                 OnImguiRenderEnd();
 
                 // Draw ImGui
@@ -182,15 +191,16 @@ void Application::Run()
                 m_Window->OnUpdate();
 
                 // Set Camera to nullptr to force camera updating.
-                m_Camera = nullptr; m_CameraTransform = nullptr;
+                m_Camera = nullptr;
         }
 }
 
-void Application::RunEntityScripts(double delta)
+void
+Application::RunEntityScripts(double delta)
 {
         for (auto [id, script] : Query<IDComponent, RubyScriptComponent>()) {
                 if (!script->ruby_instance) {
-                        script->Initialize(Entity(id->ecs_id, m_CurrentScene.get()));
+                        script->Initialize(Entity(id->ecs_id));
                 }
 
                 script->OnUpdate(delta);
@@ -200,26 +210,43 @@ void Application::RunEntityScripts(double delta)
         };
 }
 
-void Application::DrawEntities()
+void
+Application::DrawEntities()
 {
+        for (auto [id, sprite] : Query<IDComponent, SpriteComponent>()) {
+                const auto global_tran = Entity(id->ecs_id).GlobalTransform();
+                glm::vec2 res = global_tran.position;
+                glm::vec2 size = global_tran.scale * 0.5f;
+                SimdVec4f new_rect(res.x - size.x, res.y - size.y,
+                                   res.x + size.x, res.y + size.y);
+
+                if (!m_SpriteGrid.Contains(id->ecs_id)) {
+                        m_SpriteGrid.Insert(id->ecs_id, new_rect);
+                } else {
+                        m_SpriteGrid.Update(id->ecs_id, new_rect);
+                }
+        }
+
         Renderer2D::DrawScene(m_CurrentScene);
 }
 
-void Application::SendEventToEntities(Event& e)
+void
+Application::SendEventToEntities(Event& e)
 {
         for (auto [script] : Query<RubyScriptComponent>()) {
                 //script->instance->OnEvent(e);
         }
 }
 
-void Application::OnEvent(Event& e)
+void
+Application::OnEvent(Event& e)
 {
         using std::ranges::views::reverse;
 
         EventCaller ec(e);
         ec.TryCall<WindowCloseEvent>(EVENT_FN(Application::OnWindowClose));
         ec.TryCall<WindowResizeEvent>(EVENT_FN(Application::OnWindowResize));
-        ec.TryCall<ComponentAddedEvent>(EVENT_FN(Application::OnComponentAdded));
+        ec.TryCall<MouseButtonPressedEvent>(EVENT_FN(Application::OnMouseButtonPressed));
 
         for (auto layer : reverse(m_Layers)) {
                 layer->OnEvent(e);
@@ -230,72 +257,36 @@ void Application::OnEvent(Event& e)
         SendEventToEntities(e);
 }
 
-bool Application::OnWindowClose(WindowCloseEvent& e)
+bool
+Application::OnWindowClose(WindowCloseEvent& e)
 {
         m_Running = false;
         return true;
 }
 
-bool Application::OnWindowResize(WindowResizeEvent& e)
+bool
+Application::OnWindowResize(WindowResizeEvent& e)
 {
         Graphics::Renderer::ResizeWindow(e.GetWidth(), e.GetHeight());
         m_AspectRatio = SCAST<float>(e.GetWidth()) / e.GetHeight();
-        return false; }
+        return false;
+}
 
-bool Application::OnComponentAdded(ComponentAddedEvent& e)
+bool
+Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 {
-        if (e.GetId() == ECS::GetId<IDComponent>() ||
-            e.GetId() == ECS::GetId<TransformComponent>() ||
-            e.GetId() == ECS::GetId<TagComponent>())
-                return true;
+        if (!IsPlaying())
+                return false;
 
-        Entity entity = Entity(e.GetEntityId(), m_CurrentScene.get());
-        if (e.GetId() == ECS::GetId<RigidBody2DComponent>()) {
-                auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
-                auto& tran = entity.GetComponent<TransformComponent>();
+        glm::vec2 pos = Utils::Geometry::rotate_point(
+                glm::vec2(0), Input::GetMousePosRelative() * glm::vec2(1280 / 4, 720 / 4),
+                m_CameraTransform.rotation
+        );
 
-                b2BodyDef def = b2DefaultBodyDef();
-                def.type = to_b2(rb2d.type);
-                def.position = { tran.position.x, tran.position.y };
-                def.rotation = b2MakeRot(glm::radians(tran.rotation.z));
-                def.motionLocks.angularZ = rb2d.fixed_rotation;
+        pos += m_CameraTransform.position;
 
-                rb2d.runtime_body = b2CreateBody(m_CurrentScene->m_PhysicsWorld,
-                                                 &def);
-
-                if (entity.HasComponent<BoxCollider2DComponent>()) {
-                        auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-                        auto& tran = entity.GetComponent<TransformComponent>();
-
-                        b2Polygon poly = b2MakeBox(bc2d.size.x * tran.scale.x,
-                                                   bc2d.size.y * tran.scale.y);
-                        b2ShapeDef shape = b2DefaultShapeDef();
-                        shape.density = bc2d.density;
-                        shape.material.friction = bc2d.friction;
-                        shape.material.restitution = bc2d.restitution;
-
-                        b2BodyId body = entity.GetComponent<RigidBody2DComponent>()
-                                              .runtime_body;
-                        bc2d.runtime_collider = b2CreatePolygonShape(body, &shape, &poly);
-                        BOREK_ENGINE_INFO("Initialized physics for entity {}", e.GetEntityId());
-                }
-        } else if (e.GetId() == ECS::GetId<BoxCollider2DComponent>()) {
-                if (entity.HasComponent<RigidBody2DComponent>()) {
-                        auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
-                        auto& tran = entity.GetComponent<TransformComponent>();
-
-                        b2Polygon poly = b2MakeBox(bc2d.size.x * tran.scale.x,
-                                                   bc2d.size.y * tran.scale.y);
-                        b2ShapeDef shape = b2DefaultShapeDef();
-                        shape.density = bc2d.density;
-                        shape.material.friction = bc2d.friction;
-                        shape.material.restitution = bc2d.restitution;
-
-                        b2BodyId body = entity.GetComponent<RigidBody2DComponent>()
-                                              .runtime_body;
-                        bc2d.runtime_collider = b2CreatePolygonShape(body, &shape, &poly);
-                        BOREK_ENGINE_INFO("Initialized physics for entity {}", e.GetEntityId());
-                }
+        for (auto clicked : m_CurrentScene->GetPhysicsWorld().GetCollisions(pos)) {
+                //BOREK_ENGINE_INFO("Clicked: {}, at pos: [{}, {}]", clicked, pos.x, pos.y);
         }
 
         return false;
@@ -307,73 +298,121 @@ bool Application::OnComponentAdded(ComponentAddedEvent& e)
  *
  */
 
-void Application::PushLayer(Layer* layer)
+void
+Application::PushLayer(Layer* layer)
 {
         s_Instance->m_Layers.Push(layer);
         layer->OnAttach();
 }
 
-void Application::PushOverlay(Layer* layer)
+void
+Application::PushOverlay(Layer* layer)
 {
         s_Instance->m_Layers.PushOverlay(layer);
         layer->OnAttach();
 }
 
-AbstractWindow& Application::GetWindow()
+AbstractWindow&
+Application::GetWindow()
 {
         return *s_Instance->m_Window;
 }
 
-std::pair<CameraComponent*, TransformComponent*> Application::GetCamera()
+std::pair<CameraComponent*, TransformComponent*>
+Application::GetCamera()
 {
-        return { s_Instance->m_Camera, s_Instance->m_CameraTransform };
+        return { s_Instance->m_Camera, &s_Instance->m_CameraTransform };
 }
 
-void Application::Shutdown()
+void
+Application::Shutdown()
 {
+        BOREK_ENGINE_INFO("Ran shutdown");
         s_Instance->m_Running = false;
 }
 
-ImGuiLayer& Application::GetImguiLayer()
+ImGuiLayer&
+Application::GetImguiLayer()
 {
         return *s_Instance->m_ImGuiLayer;
 }
 
-void Application::SetScene(Ref<Scene> scene)
+void
+Application::SetScene(Ref<Scene> scene)
 {
         s_Instance->m_CurrentScene = scene;
+        scene->Init();
         SendEvent(new SceneChangedEvent);
 }
 
-Ref<Scene> Application::GetScene()
+Ref<Scene>
+Application::GetScene()
 {
         return s_Instance->m_CurrentScene;
 }
 
-Ref<Graphics::FrameBuffer> Application::GetFramebuffer()
+Ref<Graphics::FrameBuffer>
+Application::GetFramebuffer()
 {
         return s_Instance->m_FrameBuffer;
 }
 
-void Application::SendEvent(Event* e)
+void
+Application::SendEvent(Event* e)
 {
         s_Instance->m_Events.emplace_back(e);
 }
 
-RubyEngine& Application::GetRubyEngine()
+void
+Application::OpenPopup(Popup* popup)
+{
+        s_Instance->m_ActivePopups.emplace_back(popup);
+}
+
+RubyEngine&
+Application::GetRubyEngine()
 {
         return s_Instance->m_RubyEngine;
 }
 
-
-void Application::HandleEvents()
+std::pair<glm::vec2, glm::vec2>
+Application::GetMouseOffset()
 {
-        for (auto event : m_Events) {
-                OnEvent(*event);
-                delete event;
+        return s_Instance->GetMouseOffsetInternal();
+}
+
+void
+Application::Log(const std::string& str)
+{
+        s_LogFunc(str);
+}
+
+FZX::CGrid&
+Application::GetSpriteGrid()
+{
+        return s_Instance->m_SpriteGrid;
+}
+
+void
+Application::HandleEvents()
+{
+        for (size_t i = 0; i < m_Events.size(); i++) {
+                OnEvent(*m_Events[i]);
+                delete m_Events[i];
         }
 
         m_Events.clear();
 }
+
+std::pair<glm::vec2, glm::vec2>
+Application::GetMouseOffsetInternal()
+{
+        return { glm::vec2(0), {m_Window->GetWidth(), m_Window->GetHeight()} };
+}
+
+std::function<void(const std::string&)>
+Application::s_LogFunc = [](const std::string& str) {
+        std::cout << str << "\033[39m\033[49m\n";
+};
 
 }  // namespace Borek

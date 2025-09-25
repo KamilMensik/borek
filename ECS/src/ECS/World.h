@@ -164,10 +164,8 @@
 
 #include <cstdint>
 #include <vector>
-#include <memory>
 
 #include "Archetype.h"
-#include "Component.h"
 
 namespace ECS {
 
@@ -175,9 +173,7 @@ namespace ECS {
 using Id = uint32_t;
 using EntityId = Id;
 using ComponentId = Id;
-using ArchetypeId = Id;
 
-using __AType_IList = std::initializer_list<Id>;
 
 struct WData {
         uint32_t archetype_id;
@@ -186,9 +182,10 @@ struct WData {
 
 
 class World {
-friend Archetype;
+friend class ArchetypeInternal;
 public:
         World();
+        ~World();
 
         /*
          *      Entities
@@ -196,13 +193,13 @@ public:
         
         // Entity creation
         EntityId entity();
-        EntityId entity(const __AType_IList& components);
-        EntityId entity(ArchetypeId archetype);
+        EntityId entity(const ArchetypeType& components);
+        EntityId entity(Archetype archetype);
         void remove(EntityId);
 
         // Setting components
-        void set_components(EntityId entity, const __AType_IList& components);
-        void set_components(EntityId entity, ArchetypeId archetype);
+        void set_components(EntityId entity, const ArchetypeType& components);
+        void set_components(EntityId entity, Archetype archetype);
         template <class T>
         inline void add_component(EntityId entity)
         {
@@ -228,53 +225,12 @@ public:
                 return *reinterpret_cast<T*>(get_component(e, GetId<T>()));
         }
 
-        /*
-         *      Components
-         */
-
-        // Archetypes
-        // Extremely slow. Try to save result somewhere.
-
-        ArchetypeId get_archetype(const __AType_IList& type);
-
-
-        template<typename...components>
-        ArchetypeId get_archetype()
-        {
-                ArchetypeType type = { ::ECS::GetId<components>()... };
-                auto tryfind = m_Archetypes.find(type);
-                if (tryfind != m_Archetypes.end()) {
-                        return tryfind->second;
-                }
-
-                auto a = std::make_shared<Archetype>(type);
-                m_RegisteredArchetypes.emplace_back(a);
-                a->init(m_RegisteredArchetypes.size() - 1, *this);
-                m_Archetypes[a->type] = a->id;
-                return a->id;
-        }
-
-        void test() {
-        }
-
 public:
         uint32_t m_CurrentId;
         std::vector<WData> m_WorldData;
         std::vector<Id> m_Reusable;
-        std::unordered_map<uint64_t, uint32_t> m_ComponentColumn;
-        std::vector<std::shared_ptr<Archetype>> m_RegisteredArchetypes;
-        std::unordered_map<ArchetypeType, uint32_t, __ArchetypeHash> m_Archetypes;
 
         Id GetId();
-        constexpr uint64_t GetCAId(ComponentId c, uint32_t archetype_id) {
-                return ((uint64_t)(c) << 32) ^ archetype_id;
-        }
-        void TryAddArchetypeToQueries(const Archetype& a);
-        uint32_t GetCColumn(uint32_t component_id, uint32_t archetype_id);
-
-        // @param [Archetype&] must be top of m_RegisteredArchetypes
-        // @returns [Archetype&] either supplied archetype, or already existing one with same type.
-        ArchetypeId get_archetype(ArchetypeType& type);
 };
 
 }  // namespace ECS

@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Node.h"
+#include "glm/ext/vector_float2.hpp"
 #include <cstdint>
 
 #include <ECS/Archetype.h>
@@ -18,21 +20,17 @@ struct TransformComponent;
 class Entity {
 friend class Scene;
 public:
-        enum class Type : uint32_t {
-                Node,
-        };
-
         Entity() : m_Id(UINT32_MAX) {}
-        Entity(ECS::EntityId id, class Scene* scene);
+        Entity(ECS::EntityId id);
 
         bool operator ==(const Entity& other)
         {
-                return m_Id == other.m_Id && m_Scene == other.m_Scene;
+                return m_Id == other.m_Id;
         }
 
         bool operator !=(const Entity& other)
         {
-                return m_Id != other.m_Id || m_Scene != other.m_Scene;
+                return m_Id != other.m_Id;
         }
 
         template <class T>
@@ -63,13 +61,41 @@ public:
         operator uint32_t() const { return GetId(); }
 
         TransformComponent& Transform();
+        const TransformComponent GlobalTransform();
         const char* GetName();
         UUID GetUUID();
 
+        bool
+        HasParent();
+
+        Entity
+        GetParent();
+
+        bool
+        HasChildren();
+
+        NodeType
+        GetNodeType();
+
+        // @return [bool] - Returns true if node type changed.
+        bool
+        InitializeNode(NodeType type);
+
+        void
+        DeinitializeNode();
+
+        /*
+         * Physics engine API
+         */
+
+        //
+        // ENTITY NEEDS TO BE CHARACTER BODY!
+        //
+        glm::vec2
+        MoveAndCollide(float x, float y);
+
 public:
-        class Scene* m_Scene;
         ECS::EntityId m_Id;
-        Type m_Type;
 };
 
 }  // namespace Borek

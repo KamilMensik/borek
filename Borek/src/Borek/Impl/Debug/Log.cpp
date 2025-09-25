@@ -1,20 +1,26 @@
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/spdlog.h>
+#include <chrono>
+#include <ctime>
 
 #include "Include/Debug/Log.h"
+#include "Include/Base/Application.h"
 
 namespace Borek {
 
-void Log::Init() {
-        spdlog::set_pattern("%^[%T %n]: %v%$");
-        s_Client = spdlog::stdout_color_mt("Client");
-        s_Client->set_level(spdlog::level::trace);
-
-        s_Engine = spdlog::stdout_color_mt("BorekEngine");
-        s_Engine->set_level(spdlog::level::trace);
+void Log::Send(const std::string& str)
+{
+        Application::Log(str);       
 }
 
-Ref<spdlog::logger> Log::s_Client;
-Ref<spdlog::logger> Log::s_Engine;
+std::string
+Log::GetTime()
+{
+        const auto timenow = std::chrono::system_clock::now();
+        const time_t t = std::chrono::system_clock::to_time_t(timenow);
+        const std::tm* time_info = std::localtime(&t);
+
+        std::ostringstream res;
+        res << std::put_time(time_info, "%H:%M:%S");
+        return res.str();
+}
 
 }  // namespace Borek

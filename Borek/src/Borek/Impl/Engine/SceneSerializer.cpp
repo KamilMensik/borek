@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Application.h"
+#include "Include/Base/Node.h"
 #include <fstream>
 #include <memory>
 #include <variant>
@@ -117,8 +119,6 @@ SceneSerializer::SceneSerializer(Ref<Scene> scene) : m_Scene(scene)
 {
 }
 
-SceneSerializer::SceneSerializer() {}
-
 void SerializeID(YAML::Emitter& out, Entity e)
 {
         auto& t= e.GetComponent<IDComponent>();
@@ -184,32 +184,30 @@ void SerializeCamera(YAML::Emitter& out, Entity e)
 
 void SerializeRigidBody2D(YAML::Emitter& out, Entity e)
 {
-        if (!e.HasComponent<RigidBody2DComponent>())
+        if (!e.HasComponent<FZX::BodyComponent>())
                 return;
 
-        auto& rb2d = e.GetComponent<RigidBody2DComponent>();
+        auto& body = e.GetComponent<FZX::BodyComponent>();
         out << YAML::Key << "RigidBody2D" << YAML::BeginMap;
 
-        out << YAML::Key << "FixedRotation" << YAML::Value << rb2d.fixed_rotation;
-        out << YAML::Key << "Type" << YAML::Value << magic_enum::enum_name(rb2d.type);
+        out << YAML::Key << "BodyType" << YAML::Value << magic_enum::enum_name(body.body_type);
+        out << YAML::Key << "ColliderType" << YAML::Value << magic_enum::enum_name(body.collider_type);
+        out << YAML::Key << "CollisionMask" << YAML::Value << body.collision_mask;
 
         out << YAML::EndMap;
 }
 
-void SerializeBoxCollider2D(YAML::Emitter& out, Entity e)
+void SerializeText2D(YAML::Emitter& out, Entity e)
 {
-        if (!e.HasComponent<BoxCollider2DComponent>())
+        if (!e.HasComponent<Text2DComponent>())
                 return;
 
-        auto& bc2d = e.GetComponent<BoxCollider2DComponent>();
-        out << YAML::Key << "BoxCollider2D" << YAML::BeginMap;
+        auto& text2d = e.GetComponent<Text2DComponent>();
+        out << YAML::Key << "Text2D" << YAML::BeginMap;
 
-        out << YAML::Key << "Restitution" << YAML::Value << bc2d.restitution;
-        out << YAML::Key << "RestitutionTreshold" << YAML::Value << bc2d.restitution_treshold;
-        out << YAML::Key << "Friction" << YAML::Value << bc2d.friction;
-        out << YAML::Key << "Density" << YAML::Value << bc2d.density;
-        out << YAML::Key << "Offset" << YAML::Value << bc2d.offset;
-        out << YAML::Key << "Size" << YAML::Value << bc2d.size;
+        out << YAML::Key << "Size" << YAML::Value << text2d.size;
+        out << YAML::Key << "Value" << YAML::Value << text2d.value.c_str();
+        out << YAML::Key << "Color" << YAML::Value << text2d.color;
 
         out << YAML::EndMap;
 }
@@ -224,27 +222,26 @@ void SerializeComponents(YAML::Emitter& out, Entity e)
         SerializeScript(out, e);
         SerializeCamera(out, e);
         SerializeRigidBody2D(out, e);
-        SerializeBoxCollider2D(out, e);
+        SerializeText2D(out, e);
 
         out << YAML::EndMap;
 }
 template<class... Ts>
 struct overloads : Ts... { using Ts::operator()...; };
 
-void SerializeNode(YAML::Emitter& out, Node n)
+void SerializeEntity(YAML::Emitter& out, Entity e)
 {
-        Entity e = n.entity;
         out << YAML::BeginMap << YAML::Key << "Name";
         out << YAML::Value << e.GetComponent<TagComponent>().value.c_str();
-        out << YAML::Key << "Type" << YAML::Value << "Node";
+        out << YAML::Key << "Type" << YAML::Value << get_node_type_string(e.GetNodeType());
         SerializeComponents(out, e);
 
-        if (n.first_child) {
+        if (e.HasChildren()) {
                 out << YAML::Key << "Children" << YAML::BeginSeq;
 
-                n.EachChild([&out](Node* child){
-                        SerializeNode(out, *child);
-                });
+                for (uint32_t id : *Application::GetScene()->GetEntityChildren(e)) {
+                        SerializeEntity(out, Entity(id));
+                }
 
                 out << YAML::EndSeq;
         }
@@ -259,7 +256,7 @@ void SceneSerializer::Serialize(const std::string& path)
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Jmeno";
         out << YAML::Key << "Root";
-        SerializeNode(out, *m_Scene->m_RootNode);
+        SerializeEntity(out, m_Scene->RootEntity());
         out << YAML::Key << "Assets" << YAML::BeginSeq;
         for (unsigned i = 0; auto& asset : AssetManager::s_Assets) {
                 out << YAML::BeginMap << YAML::Key << "Type" << YAML::Value;
@@ -293,14 +290,13 @@ void DeserializeTransform(YAML::Node& data, Entity e)
         auto tdata = data["Transform"];
         t.position = tdata["Position"].as<glm::vec2>();
         t.scale = tdata["Scale"].as<glm::vec2>();
-        t.rotation = tdata["Rotation"].as<glm::vec3>();
+        t.rotation = tdata["Rotation"].as<float>();
 }
 
 void DeserializeSprite(YAML::Node& data, Entity e)
 {
         if (auto spr = data["Sprite"]) {
-                auto& t = e.AddComponent<SpriteComponent>()
-                           .GetComponent<SpriteComponent>();
+                auto& t = e.GetComponent<SpriteComponent>();
 
                 t.color = spr["Color"].as<glm::vec4>();
                 if (spr["AssetID"])
@@ -311,13 +307,12 @@ void DeserializeSprite(YAML::Node& data, Entity e)
 void DeserializeCamera(YAML::Node& data, Entity e)
 {
         if (auto cam = data["Camera"]) {
-                auto& c = e.AddComponent<CameraComponent>()
-                           .GetComponent<CameraComponent>();
+                auto& c = e.GetComponent<CameraComponent>();
 
                 auto cdata = data["Camera"];
                 c.is_active = cdata["IsActive"].as<bool>();
 
-                BOREK_LOG_INFO("Implement camera deserialization");
+                //BOREK_LOG_INFO("Implement camera deserialization");
         }
 }
 
@@ -334,59 +329,53 @@ void DeserializeScript(YAML::Node& data, Entity e)
 void DeserializeRigidBody2D(YAML::Node& data, Entity e)
 {
         if (auto cam = data["RigidBody2D"]) {
-                auto& rb2d = e.AddComponent<RigidBody2DComponent>()
-                              .GetComponent<RigidBody2DComponent>();
+                auto& body = e.GetComponent<FZX::BodyComponent>();
 
                 auto rbdata = data["RigidBody2D"];
-                rb2d.fixed_rotation = rbdata["FixedRotation"].as<bool>();
-                rb2d.type = magic_enum::enum_cast<RigidBody2DComponent::Type>(
-                        rbdata["Type"].as<std::string>()).value_or(RigidBody2DComponent::Type::kStatic);
+                body.collision_mask = rbdata["CollisionMask"].as<uint16_t>();
+                body.body_type = magic_enum::enum_cast<FZX::BodyType>(
+                        rbdata["BodyType"].as<std::string>()).value_or(FZX::BodyType::Static);
+                body.collider_type = magic_enum::enum_cast<FZX::ColliderType>(
+                        rbdata["ColliderType"].as<std::string>()).value_or(FZX::ColliderType::Rectangle);
         }
 }
 
-void DeserializeBoxCollider2D(YAML::Node& data, Entity e)
+void DeserializeText2D(YAML::Node& data, Entity e)
 {
-        if (auto cam = data["BoxCollider2D"]) {
-                auto& rb2d = e.AddComponent<BoxCollider2DComponent>()
-                              .GetComponent<BoxCollider2DComponent>();
+        if (auto textd = data["Text2D"]) {
+                auto& text2d = e.GetComponent<Text2DComponent>();
 
-                auto bcdata = data["BoxCollider2D"];
-                rb2d.density = bcdata["Density"].as<float>();
-                rb2d.friction = bcdata["Friction"].as<float>();
-                rb2d.restitution = bcdata["Restitution"].as<float>();
-                rb2d.restitution_treshold = bcdata["RestitutionTreshold"].as<float>();
-                rb2d.size = bcdata["Size"].as<glm::vec2>();
-                rb2d.offset = bcdata["Offset"].as<glm::vec2>();
+                text2d.value = textd["Value"].as<std::string>();
+                text2d.size = textd["Size"].as<float>();
+                text2d.color = textd["Color"].as<glm::vec4>();
+                text2d.font = nullptr;
         }
 }
 
-Node* DeserializeNode(YAML::Node ynode, Scene& scene)
+Entity DeserializeEntity(YAML::Node ynode, Scene& scene)
 {
-        Entity e = scene.NewEntity(ynode["Name"].as<std::string>());
-        e.m_Type = Entity::Type::Node;
+        Entity e = scene.NewEntity(ynode["Name"].as<std::string>(),
+                                   get_node_type(ynode["Type"].as<std::string>()));
         auto components = ynode["Components"];
         DeserializeTransform(components, e);
         DeserializeSprite(components, e);
         DeserializeCamera(components, e);
         DeserializeScript(components, e);
         DeserializeRigidBody2D(components, e);
-        DeserializeBoxCollider2D(components, e);
-
-        Node* node = new Node(e);
+        DeserializeText2D(components, e);
 
         auto children = ynode["Children"];
         if (children) {
                 for (auto child : children) {
-                        node->ChildAppend(DeserializeNode(child, scene));
+                        scene.EntityAppendChild(DeserializeEntity(child, scene), e);
                 };
         }
 
-        return node;
+        return e;
 }
 
-Ref<Scene> SceneSerializer::Deserialize(const std::string& path)
+void SceneSerializer::Deserialize(const std::string& path)
 {
-        auto scene = std::make_shared<Scene>();
         AssetManager::Reset();
 
         YAML::Node data = YAML::LoadFile(path);
@@ -399,15 +388,16 @@ Ref<Scene> SceneSerializer::Deserialize(const std::string& path)
                         if (asset["Type"].as<std::string>() == "Texture2D") {
                                 AssetManager::GetTexture(asset["Path"].as<std::string>());
                         } else if (asset["Type"].as<std::string>() == "Script") {
-                                AssetManager::RefreshScript(asset["Path"].as<std::string>());
+                                std::filesystem::path path = asset["Path"].as<std::string>();
+                                std::filesystem::path real_path = std::filesystem::path(Utils::Settings::Instance().current_project_path) / path;
+                                std::filesystem::path asset_path = real_path;
+                                asset_path.replace_extension("scr");
+                                AssetManager::RefreshScript(real_path, asset_path);
                         }
                 }
         }
-        
-        scene->m_RootNode->Delete();
-        scene->m_RootNode = DeserializeNode(data["Root"], *scene);
 
-        return scene;
+        m_Scene->RootEntity() = DeserializeEntity(data["Root"], *m_Scene);
 }
 
 }  // namespace Borek

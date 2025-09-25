@@ -4,8 +4,6 @@
 
 #include <glm/ext/matrix_float4x4.hpp>
 
-#include "Include/Debug/Assert.h"
-
 
 namespace Borek {
 
@@ -25,7 +23,7 @@ public:
 
         inline const glm::mat4& GetViewProjectionMatrix() const
         {
-                BOREK_ENGINE_ASSERT(m_Valid, "Camera isn't recalculated");
+                //BOREK_ENGINE_ASSERT(m_Valid, "Camera isn't recalculated");
                 return m_ProjectionViewMatrix;
         }
 

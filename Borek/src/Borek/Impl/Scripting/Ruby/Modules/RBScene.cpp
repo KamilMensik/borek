@@ -21,18 +21,11 @@ namespace RBModules {
 using namespace mrbcpp;
 
 MRB_FUNC(GetChild) {
-        Node* child = Application::GetScene()->m_RootNode->first_child;
         std::string name = mrb_str_to_cstr(mrb, MRB_ARG1);
+        Entity child = Application::GetScene()->EntityFindFirstChild(name);
 
-        while (child != nullptr) {
-                if (child->entity.GetName() == name)
-                        break;
-
-                child = child->next;
-        }
-
-        if (child) {
-                mrb_value val = MRB_NUM(child->entity.GetId());
+        if (!child.IsNil()) {
+                mrb_value val = MRB_NUM(child.GetId());
                 return mrb_class_new_instance(mrb, 1, &val, Application::GetRubyEngine().GetBorekModule().get_class("Entity"));
         } else {
                 return MRB_NIL;

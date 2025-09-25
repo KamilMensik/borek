@@ -2,14 +2,12 @@
 
 #include "Events/Events.h"
 #include "Include/Base/Application.h"
-#include "Include/Base/Input.h"
 #include "Include/Core.h"
 #include "Include/Debug/Log.h"
 #include "Include/Engine/SceneSerializer.h"
 #include "Include/Engine/Utils/Settings.h"
 #include "Include/Events/EventCaller.h"
 #include "Include/Graphics/Renderer.h"
-#include "Include/Scripting/ScriptableObject.h"
 #include "Panels/ToolbarPanel.h"
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -22,31 +20,9 @@
 #include <Borek/Include/Base/Entity.h>
 
 #include "EditorLayer.h"
+#include "Popups/EditorSettingsPopup.h"
 
 namespace Borek {
-
-class PlayerController : public ScriptableObject {
-public:
-        void OnCreate() override
-        {
-                BOREK_LOG_INFO("Player has been created");
-        }
-
-        void OnUpdate(float delta) override
-        {
-                if (!Input::IsKeyPressed(KeyCode::ENTER)) {
-                        auto& t = GetComponent<TransformComponent>();
-                        t.position += Input::GetAxis() * 100.0f * delta;
-                }
-        }
-
-        void OnEvent(Event& e) override
-        {
-                if (e.GetEventType() == MouseButtonPressedEvent::ClassEventType()) {
-                        BOREK_LOG_INFO("I have been clicked");
-                }
-        }
-};
 
 EditorLayer::EditorLayer()
         : Borek::Layer("TestLayer")
@@ -54,10 +30,13 @@ EditorLayer::EditorLayer()
         ImGuiIO& io = ImGui::GetIO();
         io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Bold.ttf"), 24.0f);
         io.FontDefault = io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 24.0f);
+        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 32.0f);
 
         if (Utils::Settings::Instance().last_scene_opened_path != "") {
-                auto new_scene = SceneSerializer().Deserialize(Utils::Settings::Instance().last_scene_opened_path);
-                Application::SetScene(new_scene);
+                Application::SetScene(NewRef<Scene>());
+                SceneSerializer(Application::GetScene())
+                        .Deserialize(Utils::Settings::Instance()
+                                                    .last_scene_opened_path);
         }
 
 }
@@ -69,6 +48,8 @@ void EditorLayer::OnEvent(Event& ev)
         EventCaller ec(ev);
         ec.TryCall<ScenePanelSelectedEvent>(EVENT_FN(EditorLayer::OnScenePanelSelectedEvent));
         ec.TryCall<SceneChangedEvent>(EVENT_FN(EditorLayer::OnSceneChangedEvent));
+        ec.TryCall<RemoveEntityEvent>(EVENT_FN(EditorLayer::OnRemoveEntity));
+        ec.TryCall<AssetPanelSelectedEvent>(EVENT_FN(EditorLayer::OnAssetPanelSelected));
 }
 
 void EditorLayer::BeginDockspace()
@@ -122,8 +103,8 @@ void EditorLayer::OnImGuiRender()
                                 Application::Shutdown();
                         if (ImGui::MenuItem("Open")) {
                                 auto path = Utils::OpenFileDialog("", ASSET_PATH());
-                                auto new_scene = SceneSerializer().Deserialize(path);
-                                Application::SetScene(new_scene);
+                                Application::SetScene(NewRef<Scene>());
+                                SceneSerializer(Application::GetScene()).Deserialize(path);
                                 WITH_CHANGE(Utils::Settings::InstanceM(), {
                                         Utils::Settings::InstanceM().last_scene_opened_path = path;
                                 });
@@ -139,46 +120,29 @@ void EditorLayer::OnImGuiRender()
                         ImGui::EndMenu();
                 }
 
+                if (ImGui::BeginMenu("Editor")) {
+                        if (ImGui::MenuItem("Editor Settings")) {
+                                Application::OpenPopup(new Popups::EditorSettingsPopup());
+                        }
+                        ImGui::EndMenu();
+                }
+
                 ImGui::EndMenuBar();
         }
 
-        m_ToolbarPanel.OnImguiRender(m_GizmoPanel);
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        if (ImGui::Begin("Viewport")) {
-                m_IsFocused = ImGui::IsWindowFocused();
-                Application::GetImguiLayer().SetEventBlocking(!m_IsFocused);
+        if (ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_MenuBar)) {
+                //m_IsFocused = ImGui::IsItemHovered();
+                //Application::GetImguiLayer().SetEventBlocking(!m_IsFocused);
+
+                // Toolbar
+                m_ToolbarPanel.OnImguiRender(m_GizmoPanel);
 
                 ImVec2 viewport_size = ImGui::GetContentRegionAvail();
 
-                /* TODO: ENTITY HOVERING
-                ImVec2 pos = ImGui::GetWindowPos();
-                BOREK_LOG_INFO("Window pos: [{}, {}]", pos.x, pos.y);
-                ImVec2 mouse_pos = ImGui::GetMousePos();
-                mouse_pos.x -= pos.x;
-                mouse_pos.y -= pos.y;
-                mouse_pos.y = viewport_size.y - mouse_pos.y;
-
-                BOREK_LOG_INFO("READING FROM MOUSE POS: [{}, {}]", mouse_pos.x, mouse_pos.y);
-
-                static Query editor_query = m_Scene->Query(TransformComponent::Id());
-                m_HoveredEntity = Entity();
-
-                editor_query.each([mouse_pos, this](ECS::View& view){
-                        TransformComponent& tc = view.get<TransformComponent>();
-                        glm::mat2 bounds = glm::mat2(tc.position.x, tc.position.y,
-                                                     tc.position.x + tc.scale.x,
-                                                     tc.position.y + tc.scale.y);
-                        if (bounds[0].x <= mouse_pos.x && bounds[1].x >= mouse_pos.x && bounds[0].y <= mouse_pos.y && bounds[1].y >= mouse_pos.y)
-                                m_HoveredEntity = Entity(view.current_entity_id, m_Scene.get());
-                });
-                if (!m_HoveredEntity.IsNil()) {
-                        BOREK_LOG_INFO("HOVERING OVER ENTITY: {}", m_HoveredEntity.GetComponent<TagComponent>().value.c_str());
-                } else {
-                        BOREK_LOG_INFO("HOVERING OVER NOTHING");
-                }
-
-                */
+                ImVec2 cpos = ImGui::GetCursorScreenPos();
+                m_ViewportPosition = { cpos.x, cpos.y };
 
                 uint32_t texture_id = Application::GetFramebuffer()->GetColorAttachmentId();
                 ImGui::Image(texture_id, ImVec2(m_ViewportSize.x, m_ViewportSize.y),
@@ -217,7 +181,10 @@ void EditorLayer::OnImGuiRender()
         m_ScenePanel.OnImguiRender();
         m_PropertiesPanel.OnImguiRender();
         m_AssetsPanel.OnImguiRender();
-        m_Repl.OnImguiRender();
+        m_TestPanel.OnImguiRender();
+        m_Console.OnImguiRender();
+        m_ImportPanel.OnImguiRender();
+        m_TilesetPanel.OnImGuiRender();
 }
 
 bool EditorLayer::OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev)
@@ -228,12 +195,29 @@ bool EditorLayer::OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev)
         return false;
 }
 
+bool
+EditorLayer::OnRemoveEntity(RemoveEntityEvent& ev)
+{
+        m_ScenePanel.SetSelectedEntity(Entity());
+        m_PropertiesPanel.ChangeEntity(Entity());
+        m_GizmoPanel.ChangeEntity(Entity());
+        Entity(ev.GetEntityId()).Delete();
+        return true;
+}
+
+
 bool EditorLayer::OnSceneChangedEvent(SceneChangedEvent& ev)
 {
-        m_ScenePanel = Panels::Scene();
+        m_ScenePanel.SetSelectedEntity(Entity());
         m_PropertiesPanel.ChangeEntity(Entity());
         m_GizmoPanel.ChangeEntity(Entity());
         return false;
+}
+bool
+EditorLayer::OnAssetPanelSelected(AssetPanelSelectedEvent& ev)
+{
+        m_ImportPanel.SetSelectedAsset(ev.GetAssetPath());
+        return true;
 }
 
 
@@ -249,6 +233,29 @@ void EditorLayer::OnGameEnded()
         m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
         m_PropertiesPanel.ChangeEntity(Entity());
         m_GizmoPanel.ChangeEntity(Entity());
+}
+
+void EditorLayer::SetSelectedEntity(Entity e)
+{
+        m_ScenePanel.SetSelectedEntity(e);
+}
+
+Panels::ConsolePanel&
+EditorLayer::GetConsole()
+{
+        return m_Console;
+}
+
+const glm::vec2&
+EditorLayer::GetViewportSize()
+{
+        return m_ViewportSize;
+}
+
+const glm::vec2&
+EditorLayer::GetViewportPosition()
+{
+        return m_ViewportPosition;
 }
 
 }  // namespace Borek

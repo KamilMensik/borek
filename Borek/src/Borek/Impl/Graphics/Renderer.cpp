@@ -2,6 +2,7 @@
 
 #include "Include/Graphics/Renderer.h"
 #include "Impl/Graphics/OpenGL/OpenGLRendererImpl.cpp"
+#include "Include/Debug/Log.h"
 
 namespace Borek {
 namespace Graphics {

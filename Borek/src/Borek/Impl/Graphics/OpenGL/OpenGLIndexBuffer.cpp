@@ -1,9 +1,9 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Graphics/Camera.h"
 #include <glad/glad.h>
 
 #include "Include/Graphics/OpenGL/OpenGLIndexBuffer.h"
+#include "Include/Debug/Assert.h"
 
 namespace Borek {
 namespace Graphics {

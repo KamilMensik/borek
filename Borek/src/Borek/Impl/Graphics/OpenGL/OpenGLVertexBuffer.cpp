@@ -5,6 +5,7 @@
 
 #include "Include/Graphics/OpenGL/OpenGLVertexBuffer.h"
 #include "Include/Debug/Assert.h"
+#include <iostream>
 
 namespace Borek {
 namespace Graphics {
@@ -50,7 +51,7 @@ void OpenGLVertexBuffer::Bind()
                                       GetOpenGLType(el.datatype),
                                       el.is_normalized ? GL_TRUE : GL_FALSE,
                                       m_Descriptor.Size(),
-                                      (void*)el.offset);
+                                      (void*)(uint64_t)el.offset);
                 i++;
         }
 }
@@ -63,6 +64,7 @@ void OpenGLVertexBuffer::Unbind()
 void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
 {
         BOREK_ENGINE_ASSERT(size < m_Size, "Trying to write into vertex buffer data that is larger than its size");
+
         glBindBuffer(GL_ARRAY_BUFFER, m_Id);
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }

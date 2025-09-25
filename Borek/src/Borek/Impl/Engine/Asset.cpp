@@ -10,4 +10,9 @@ Ref<Graphics::Texture2D> Asset::Tex() const
         return AssetManager::GetTexture(m_Id);
 }
 
+Asset::Type Asset::GetAssetType()
+{
+        return AssetManager::GetAssetType(m_Id);
+}
+
 }  // namespace Borek

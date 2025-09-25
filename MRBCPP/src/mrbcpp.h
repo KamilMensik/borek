@@ -49,6 +49,9 @@ if (mrb_undef_p(kw_values[_index])) { kw_values[_index] = MRB_NUM(UINT32_MAX); }
 #define MRB_GET_IV(_obj, _name) \
         mrb_iv_get(mrb, _obj, mrb_intern_cstr(mrb, _name))
 
+#define MRB_IV_DEFINED(_obj, _name) \
+        mrb_iv_defined(mrb, _obj, mrb_intern_cstr(mrb, _name))
+
 #define MRB_CONST_GET(_obj, _name) \
         mrb_const_get(mrb, _obj, mrb_intern_cstr(mrb, _name))
 
@@ -101,6 +104,7 @@ public:
         Class& define_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
         Class& define_class_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
         Class& define_const(const std::string& name, mrb_value val);
+        Class& define_class_iv(const std::string& name, mrb_value val);
         
         template <FixedString name>
         Class& define_attr_reader()

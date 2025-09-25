@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Include/Scripting/Ruby/Compiler.h"
 #include <mrbcpp.h>
 
 struct mrb_state;
@@ -16,12 +17,16 @@ public:
         ~RubyEngine();
         mrbcpp::VM& GetRubyVM();
         mrbcpp::Module& GetBorekModule();
-        std::vector<const char*>& GetClasses();
+        Compiler& GetCompiler();
+        std::vector<std::string>& GetClasses();
+        void Run(const std::string& code);
 
 private:
         mrbcpp::VM m_RubyVM;
         mrbcpp::Module m_BorekModule;
-        std::vector<const char*> m_DefinedClasses;
+        Compiler m_Compiler;
+        std::vector<std::string> m_DefinedClasses;
+
         void InitModules();
 };
 

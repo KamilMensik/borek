@@ -40,12 +40,15 @@ void GizmoPanel::DrawGizmo()
                                      ImGuizmo::MODE::WORLD,
                                      glm::value_ptr(trans_mat));
 
+                glm::vec3 rotation(0, 0, trans.rotation);
                 if (ImGuizmo::IsUsing()) {
                         ImGuizmo::DecomposeMatrixToComponents(
                                 glm::value_ptr(trans_mat),
                                 glm::value_ptr(trans.position),
-                                glm::value_ptr(trans.rotation),
+                                glm::value_ptr(rotation),
                                 glm::value_ptr(trans.scale));
+
+                        trans.rotation = rotation.z;
                 }
         }
 }

@@ -7,7 +7,7 @@ namespace Borek {
 
 struct String {
         std::vector<char> value;
-        String() {};
+        String() { *this = ""; };
         String(const std::string& val) : value(val.begin(), val.end()) {}
 
         operator std::string() { return std::string(value.data()); }

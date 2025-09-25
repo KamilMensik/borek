@@ -19,7 +19,7 @@ public:
 
         void SetDefaultColors();
 private:
-        bool m_BlockEvents;
+        bool m_BlockEvents = false;
 };
 
 }

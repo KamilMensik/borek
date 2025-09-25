@@ -5,14 +5,12 @@
 
 namespace ECS {
 
-void QueryInternal::TryAdd(const Archetype& archetype)
+void
+QueryInternal::TryAddArchetypeToQueries(Archetype archetype)
 {
-        for (auto& component : m_Type) {
-                if (!archetype.type.contains(component))
-                        return;
+        for (auto& query : s_DefinedQueries) {
+                query.TryAdd(archetype);
         }
-
-        m_ArchetypeIds.emplace_back(archetype.id);
 }
 
 std::vector<QueryInternal>& QueryInternal::GetDefinedQueries()
@@ -20,7 +18,16 @@ std::vector<QueryInternal>& QueryInternal::GetDefinedQueries()
         return s_DefinedQueries;
 }
 
-World* QueryInternal::s_World;
+void QueryInternal::TryAdd(Archetype archetype)
+{
+        for (auto& component : m_Type) {
+                if (!archetype.HasComponent(component))
+                        return;
+        }
+
+        m_ArchetypeIds.emplace_back(archetype.GetId());
+}
+
 std::vector<QueryInternal> QueryInternal::s_DefinedQueries;
 
 }  // namespace ECS

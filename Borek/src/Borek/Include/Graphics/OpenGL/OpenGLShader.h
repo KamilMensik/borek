@@ -17,6 +17,7 @@ public:
         ~OpenGLShader() override;
         void Bind() const override;
         const std::string& GetName() const override { return m_Name; }
+        uint32_t GetId() const override { return m_Id; };
 
         void SetUniform(const std::string name,
                         const glm::mat4& mat) override;

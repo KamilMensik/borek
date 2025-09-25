@@ -20,39 +20,8 @@ namespace Borek {
 namespace RBModules {
 
 using namespace mrbcpp;
-/*
-*/
 
-/*
- * class Borek::Enity
- *      attr_reader :id
- *
- *      def initialize(id = UINT32_MAX)
- *              @id = id
- *      end
- *
- *      # entity comparison
- *      def equal(entity other)
- *
- *      def get_component(component)
- *           component.new(self.id)
- *      end
- *
- *      def add_component(component)
- *      end
- *
- *      def remove_component(component)
- *      end
- *
- *      def delete(component)
- *      end
- *
- *      def has_component(component)
- *      end
- *
- *      def to_s
- */
-MRB_FUNC(Initialize)
+static MRB_FUNC(Initialize)
 {
         mrb_uint id = UINT32_MAX;
         
@@ -85,31 +54,27 @@ static MRB_FUNC(GetTransform)
 
 static MRB_FUNC(AddComponent)
 {
-        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")),
-                        Application::GetScene().get());
+        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")));
         e.AddComponent(mrb_integer(MRB_CONST_GET(MRB_ARG1, "COMPONENT_ID")));
         return self;
 }
 
 static MRB_FUNC(RemoveComponent)
 {
-        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")),
-                        Application::GetScene().get());
+        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")));
         e.RemoveComponent(mrb_integer(MRB_CONST_GET(MRB_ARG1, "COMPONENT_ID")));
         return self;
 }
 
 static MRB_FUNC(Delete)
 {
-        Borek::Entity(mrb_integer(MRB_GET_IV(self, "@id")),
-                      Application::GetScene().get()).Delete();
+        Borek::Entity(mrb_integer(MRB_GET_IV(self, "@id"))).Delete();
         return MRB_NIL;
 }
 
 static MRB_FUNC(HasComponent)
 {
-        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")),
-                        Application::GetScene().get());
+        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")));
         return mrb_bool_value(e.HasComponent(mrb_integer(MRB_CONST_GET(MRB_ARG1, "COMPONENT_ID"))));
 }
 
@@ -123,6 +88,17 @@ static MRB_FUNC(ToS)
 {
         return MRB_STRING(std::format("Borek::Entity {}",
                                       mrb_integer(MRB_GET_IV(self, "@id"))).c_str());
+}
+
+static MRB_FUNC(Move)
+{
+        mrb_float x, y;
+        
+        mrb_get_args(mrb, "ff", &x, &y);
+        Borek::Entity e(mrb_integer(MRB_GET_IV(self, "@id")));
+        e.MoveAndCollide(x, y);
+
+        return self;
 }
 
 void Entity::Init(RubyEngine& engine)
@@ -139,6 +115,7 @@ void Entity::Init(RubyEngine& engine)
                 .define_method("nil?", IsNil)
                 .define_method("delete", Delete)
                 .define_method("to_s", ToS)
+                .define_method("move", Move, FuncArgs().Required(2))
                 .define_attr_accessor<"id">();
 
 }

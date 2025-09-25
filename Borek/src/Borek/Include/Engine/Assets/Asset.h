@@ -2,8 +2,10 @@
 
 #pragma once
 
-#include "Include/Graphics/Texture.h"
 #include <cstdint>
+#include <cstdio>
+
+#include "Include/Graphics/Texture.h"
 
 namespace Borek {
 
@@ -15,7 +17,7 @@ public:
         };
 
         Asset(unsigned id) : m_Id(id) {}
-        Asset() = default;
+        Asset() : m_Id(UINT32_MAX) {}
 
         Ref<Graphics::Texture2D> Tex() const;
         operator Ref<Graphics::Texture2D>() const
@@ -25,6 +27,8 @@ public:
         inline unsigned Id() const { return m_Id; }
         operator unsigned() const { return Id(); }
 
+        Type GetAssetType();
+        bool IsNil() { return m_Id == UINT32_MAX; }
 
 private:
         uint32_t m_Id;

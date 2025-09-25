@@ -1,8 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#pragma once
-
 #include <cctype>
+#include <cstring>
 #include <string>
 
 #include "Include/Engine/Utils/StringHelpers.h"

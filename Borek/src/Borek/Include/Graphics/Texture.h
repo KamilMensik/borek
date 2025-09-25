@@ -25,12 +25,13 @@ public:
         uint32_t GetWidth() const override { return m_Width; }
         uint32_t GetHeight() const override { return m_Height; }
         static Ref<Texture2D> Create(uint32_t width, uint32_t height,
-                                     const uint8_t* data);
+                                     const uint8_t* data, int channels = 4);
         static Ref<Texture2D> Create(const std::string& path);
 
 protected:
         uint32_t m_Width;
         uint32_t m_Height;
+        uint32_t m_Channels;
 };
 
 }  // namespace Graphics

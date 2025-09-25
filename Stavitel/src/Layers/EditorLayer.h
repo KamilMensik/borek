@@ -3,7 +3,10 @@
 #pragma once
 
 #include "Include/Events/ApplicationEvents.h"
-#include "Panels/ReplPanel.h"
+#include "Panels/ConsolePanel.h"
+#include "Panels/Import.h"
+#include "Panels/Test.h"
+#include "Panels/TilesetPanel.h"
 #include "Panels/ToolbarPanel.h"
 #include <glm/ext/vector_float2.hpp>
 
@@ -32,6 +35,12 @@ public:
         void OnEvent(Event &e) override;
         void OnGameStarted();
         void OnGameEnded();
+        void SetSelectedEntity(Entity e);
+
+        Panels::ConsolePanel& GetConsole();
+
+        const glm::vec2& GetViewportSize();
+        const glm::vec2& GetViewportPosition();
 
 private:
         Panels::Properties m_PropertiesPanel;
@@ -39,14 +48,20 @@ private:
         Panels::GizmoPanel m_GizmoPanel;
         Panels::Assets m_AssetsPanel;
         Panels::Toolbar m_ToolbarPanel;
-        Panels::Repl m_Repl;
+        Panels::Test m_TestPanel;
+        Panels::ConsolePanel m_Console;
+        Panels::Import m_ImportPanel;
+        Panels::Tileset m_TilesetPanel;
 
         glm::vec2 m_ViewportSize = glm::vec2(1280, 720);
+        glm::vec2 m_ViewportPosition;
         bool m_IsFocused;
 
 private:
         bool OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev);
         bool OnSceneChangedEvent(SceneChangedEvent& ev);
+        bool OnRemoveEntity(RemoveEntityEvent& ev);
+        bool OnAssetPanelSelected(AssetPanelSelectedEvent& ev);
 };
 
 }  // namespace Borek

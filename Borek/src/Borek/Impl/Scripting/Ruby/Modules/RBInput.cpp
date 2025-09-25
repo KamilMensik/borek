@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Debug/Log.h"
+#include <ostream>
 #define MAGIC_ENUM_RANGE_MIN 0
 #define MAGIC_ENUM_RANGE_MAX 400
 
@@ -24,6 +25,10 @@ namespace Borek {
 namespace RBModules {
 
 using namespace mrbcpp;
+
+static mrb_value keycodes;
+static mrb_value mouse_buttons;
+
 
 static Class vec2;
 
@@ -56,13 +61,13 @@ MRB_FUNC(InputGetMouseY) {
 }
 
 MRB_FUNC(InputIsKeyPressed) {
-        int val = mrb_integer(MRB_ARG1);
-        bool res = Borek::Input::IsKeyPressed(magic_enum::enum_value<KeyCode>(val));
+        int val = mrb_integer(mrb_hash_get(mrb, keycodes, MRB_ARG1));
+        bool res = Borek::Input::IsKeyPressed(SCAST<KeyCode>(val));
         return MRB_BOOL(res);
 }
 
 MRB_FUNC(InputIsMouseButtonPressed) {
-        int val = mrb_integer(MRB_ARG1);
+        int val = mrb_integer(mrb_hash_get(mrb, mouse_buttons, MRB_ARG1));
         bool res = Borek::Input::IsMouseButtonPressed(magic_enum::enum_value<MouseButton>(val));
         return MRB_BOOL(res);
 }
@@ -74,8 +79,8 @@ void Input::Init(RubyEngine& engine)
 
         vec2 = borek.get_class("Vec2");
 
-        mrb_value keycodes = mrb_hash_new(mrb);
-        magic_enum::enum_for_each<KeyCode>([&mrb, &keycodes] (auto val) {
+        keycodes = mrb_hash_new(mrb);
+        magic_enum::enum_for_each<KeyCode>([&mrb] (auto val) {
                 constexpr KeyCode keycode = val;
 
                 std::string key_code = to_snake_case(magic_enum::enum_name(keycode));
@@ -85,9 +90,8 @@ void Input::Init(RubyEngine& engine)
                              mrb_symbol_value(MRB_SYM(key_code.c_str())), num);
         });
         mrb_obj_freeze(mrb, keycodes);
-
-        mrb_value mouse_buttons = mrb_hash_new(mrb);
-        magic_enum::enum_for_each<MouseButton>([&mrb, &mouse_buttons] (auto val) {
+        mouse_buttons = mrb_hash_new(mrb);
+        magic_enum::enum_for_each<MouseButton>([&mrb] (auto val) {
                 constexpr MouseButton mousebutton = val;
 
                 std::string mouse_button = to_snake_case(magic_enum::enum_name(mousebutton));

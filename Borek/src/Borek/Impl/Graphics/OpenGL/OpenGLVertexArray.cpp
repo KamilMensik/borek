@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include <glad/glad.h>
 
 #include "Include/Graphics/OpenGL/OpenGLVertexArray.h"
@@ -25,9 +26,9 @@ uint32_t OpenGLVertexArray::VertexCount() const
 
 void OpenGLVertexArray::Bind() const
 {
+        glBindVertexArray(m_Id);
         for (auto& vb: m_VertexBuffers) vb->Bind();
         m_IndexBuffer->Bind();
-        glBindVertexArray(m_Id);
 }
 
 void OpenGLVertexArray::Unbind() const

@@ -42,7 +42,6 @@ MRB_FUNC(ComponentInitialize)
         
         Entity* entity = RCAST<Entity*>(malloc(sizeof(Entity)));
         entity->m_Id = entity_id;
-        entity->m_Scene = Application::GetScene().get();
 
         mrb_data_init(self, entity, &component_type);
         
@@ -134,6 +133,28 @@ MRB_FUNC(TransformSetPosition)
         return self;
 }
 
+MRB_FUNC(TextGetText)
+{
+        Entity *e;
+
+        Data_Get_Struct(mrb, self, &component_type, e);
+        Text2DComponent& text = e->GetComponent<Text2DComponent>();
+
+        return MRB_STRING(text.value);
+}
+
+MRB_FUNC(TextSetText)
+{
+        Entity *e;
+        mrb_value value = MRB_ARG1;
+
+        Data_Get_Struct(mrb, self, &component_type, e);
+        Text2DComponent& text = e->GetComponent<Text2DComponent>();
+        text.value = mrb_str_to_cstr(mrb, value);
+
+        return self;
+}
+
 MRB_FUNC(TransformGetScale)
 {
         Entity *e;
@@ -193,6 +214,13 @@ void Component::Init(RubyEngine& engine)
                 .define_method("scale", TransformGetScale)
                 .define_method("scale=", TransformSetScale, FuncArgs().Required(1))
                 .define_const("COMPONENT_ID", MRB_NUM(ECS::GetId<TransformComponent>()));
+
+        borek.define_class("TextComponent")
+                .define_method("initialize", ComponentInitialize,
+                               FuncArgs().Required(1))
+                .define_method("text", TextGetText)
+                .define_method("text=", TextSetText, FuncArgs().Required(1))
+                .define_const("COMPONENT_ID", MRB_NUM(ECS::GetId<Text2DComponent>()));
 }
 
 }  // namespace RBModules

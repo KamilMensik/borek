@@ -13,7 +13,6 @@
 #define BOREK_APPLICATION(_application_class)   \
 int main(int argc, char** argv)                 \
 {                                               \
-        Borek::Log::Init();                     \
         auto app = new _application_class();    \
         app->Run();                             \
         delete app;                             \
@@ -36,7 +35,7 @@ inline Ref<T> NewRef(Args&&... args)
 }
 
 template <class T, class ... Args>
-inline Ref<T> NewUniq(Args&&... args)
+inline Uniq<T> NewUniq(Args&&... args)
 {
         return std::make_unique<T>(std::forward<Args>(args)...);
 }

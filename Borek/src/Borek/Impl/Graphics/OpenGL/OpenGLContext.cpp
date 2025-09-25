@@ -44,12 +44,13 @@ void OpenGLContext::Init()
                           (char*)glGetString(GL_RENDERER));
 
         glEnable(GL_BLEND);
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
         //glEnable(GL_ALPHA_TEST);
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDebugMessageCallback(MessageCallback, 0);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
 void OpenGLContext::SwapBuffers()

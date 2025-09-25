@@ -2,12 +2,13 @@
 
 #include "Include/Objects/Camera2D.h"
 #include "Include/Events/EventCaller.h"
+#include "Include/Core.h"
 
 namespace Borek {
 
 Camera2D::Camera2D(float aspect_ratio)
         : m_AspectRatio(aspect_ratio),
-        m_Camera(-aspect_ratio * m_Zoom, aspect_ratio * m_Zoom, -m_Zoom, m_Zoom)
+        m_Camera(-640 * m_Zoom, 640 * m_Zoom, -360 * m_Zoom, 360 * m_Zoom)
 {
         Recalculate();
 }
@@ -36,8 +37,8 @@ Camera2D& Camera2D::Rotate(float rotation)
 Camera2D& Camera2D::SetZoom(float zoom)
 {
         m_Zoom = zoom;
-        m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom,
-                               -m_Zoom, m_Zoom);
+        m_Camera.SetProjection(-640 * m_Zoom, 640 * m_Zoom,
+                               -360 * m_Zoom, 360 * m_Zoom);
         return *this;
 }
 
@@ -58,8 +59,10 @@ const glm::mat4& Camera2D::GetViewProjectionMatrix()
 bool Camera2D::OnWindowResized(WindowResizeEvent& ev)
 {
         m_AspectRatio = ((float)ev.GetWidth() / ev.GetHeight());
-        m_Camera.SetProjection(-m_AspectRatio * m_Zoom, m_AspectRatio * m_Zoom,
-                               -m_Zoom, m_Zoom);
+        float size_x = ev.GetWidth() / 2.0;
+        float size_y = ev.GetHeight() / 2.0;
+        m_Camera.SetProjection(-size_x * m_Zoom, size_x * m_Zoom,
+                               -size_y * m_Zoom, size_y * m_Zoom);
         return false;
 }
 

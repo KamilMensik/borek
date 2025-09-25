@@ -1,166 +1,297 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "ECS/Query.h"
+#include "ECS/World.h"
 #include <cstring>
 
 #include "Archetype.h"
-#include "World.h"
 #include "Component.h"
 
 namespace ECS {
 
 using ArchetypeType = std::unordered_set<ComponentId>;
 
-Archetype::Archetype(const std::initializer_list<Id>& type)
-        : type(type)
+Id
+ArchetypeInternal::Get(const ArchetypeType& type)
 {
+        auto tryfind = s_ArchetypesByType.find(type);
+        if (tryfind != s_ArchetypesByType.end()) {
+                return tryfind->second;
+        }
+
+        uint32_t id = s_CreatedArchetypes.size();
+        s_CreatedArchetypes.emplace_back(type);
+        s_CreatedArchetypes[id].Init(id);
+        return id;
 }
 
-Archetype::Archetype(const ArchetypeType& type)
-        : type(type)
+ArchetypeInternal::ArchetypeInternal(const ArchetypeType& type) : m_Type(type) {}
+
+void
+ArchetypeInternal::Init(uint32_t id)
 {
-}
+        m_Id = id;
+        m_MaxSize = 0;
+        s_ArchetypesByType[m_Type] = id;
 
-
-void Archetype::init(uint32_t id, World& world)
-{
-        this->id = id;
-        this->max_size = 0;
-
-        for (uint32_t i = 0; ComponentId c : type) {
+        for (int i = 0; ComponentId c : m_Type) {
                 ComponentData& cdata = s_ComponentData[c];
 
-                components.emplace_back(cdata.size, cdata.alignment,
-                                        cdata.constructor, cdata.destructor);
-                
-                world.m_ComponentColumn[world.GetCAId(c, id)] = i;
+                m_Components.emplace_back(cdata.size, cdata.alignment,
+                                          cdata.constructor, cdata.destructor);
+                s_ComponentColumn[GetCAId(c, id)] = i;
                 i++;
         }
+
+        QueryInternal::TryAddArchetypeToQueries(Archetype(m_Id));
 }
 
-ArchetypeId Archetype::get_edge(ComponentId c, World& world, bool is_adding)
+Id
+ArchetypeInternal::GetEdge(ComponentId c, bool is_adding)
 {
-        if (auto edge = edges.find(c); edge != edges.end()) {
+        if (auto edge = m_Edges.find(c); edge != m_Edges.end()) {
                 return edge->second;
         }
 
-        ArchetypeType test = type;
+        ArchetypeType test = m_Type;
         if (is_adding)
                 test.emplace(c);
         else
                 test.erase(c);
 
-        ArchetypeId find = world.get_archetype(test);
-        edges[c] = find;
+        int keep_id = m_Id;
+
+        // ArchetypeInternal::Get may invalidate this object
+        Id find = ArchetypeInternal::Get(test);
+
+        s_CreatedArchetypes[find].m_Edges[c] = m_Id;
+        s_CreatedArchetypes[keep_id].m_Edges[c] = find;
+
         return find;
 }
 
-uint32_t Archetype::add_entity(EntityId e, bool init_values)
+uint32_t
+ArchetypeInternal::AddEntity(EntityId e, World& world, bool init_values)
 {
-        if (entities.size() >= max_size)
-                resize((max_size << 2) + 5);
+        if (m_Entities.size() >= m_MaxSize)
+                ChangeSize((m_MaxSize << 2) + 5);
 
-        uint32_t row = entities.size();
-        entities.emplace_back(e);
+        uint32_t row = m_Entities.size();
+        m_Entities.emplace_back(e);
+
+        world.m_WorldData[e].archetype_row = row;
+        world.m_WorldData[e].archetype_id = m_Id;
 
         if (!init_values)
                 return row;
 
-        for (auto& column : components) {
+        for (auto& column : m_Components) {
                 column.constructor(column[row]);
         }
 
         return row;
 }
 
-uint32_t Archetype::move_entity(EntityId e, Archetype& dest, World& world)
+uint32_t
+ArchetypeInternal::MoveEntity(EntityId e, ArchetypeInternal& dest,
+                              World& world)
 {
-        uint32_t dest_row = dest.add_entity(e, false);
         uint32_t from_row = world.m_WorldData[e].archetype_row;
-        world.m_WorldData[e].archetype_id = dest.id;
-        world.m_WorldData[e].archetype_row = dest_row;
+        uint32_t dest_row = dest.AddEntity(e, world, false);
 
-        for (ComponentId c : dest.type) {
-                auto& to = dest.components[world.m_ComponentColumn[world.GetCAId(c, dest.id)]];
-                auto from_col = world.m_ComponentColumn.find(world.GetCAId(c, id));
-                if (from_col == world.m_ComponentColumn.end()) {
+        for (ComponentId c : dest.m_Type) {
+                auto& to = dest.m_Components[s_ComponentColumn[GetCAId(c, dest.m_Id)]];
+                auto from_col = s_ComponentColumn.find(GetCAId(c, m_Id));
+                if (from_col == s_ComponentColumn.end()) {
                         to.constructor(to[dest_row]);
                 } else {
                         std::memcpy(to[dest_row],
-                                    components[from_col->second][from_row],
+                                    m_Components[from_col->second][from_row],
                                     to.element_size);
                 }
         }
 
-        remove_entity(e, from_row, world, false);
+        RemoveEntity(e, from_row, world, false);
         return dest_row;
 }
 
-void Archetype::remove_entity(EntityId e, uint32_t row, World& world,
-                             bool destruct_values)
+void ArchetypeInternal::RemoveEntity(EntityId e, uint32_t row, World& world,
+                                     bool destruct_values)
 {
-        if (entities.size() == 0)
+        if (m_Entities.size() == 0)
                 return;
 
         if (destruct_values) {
-                for (auto& c : components)
+                for (auto& c : m_Components)
                         c.destructor(c[row]);
         }
 
-        if (entities.size() <= 1) {
-                entities.pop_back();
+        if (m_Entities.size() <= 1) {
+                m_Entities.pop_back();
                 return;
         }
 
-        if (row != (entities.size() - 1)) {
-                uint32_t replaceworldith = entities.size() - 1;
-                for (auto& column : components) {
+        if (row != (m_Entities.size() - 1)) {
+                uint32_t replaceworldith = m_Entities.size() - 1;
+                for (auto& column : m_Components) {
                         std::memcpy(column[row], column[replaceworldith],
                                     column.element_size);
                 }
 
-                entities[row] = entities.back();
-                world.m_WorldData[entities.back()].archetype_row = row;
+                m_Entities[row] = m_Entities.back();
+                world.m_WorldData[m_Entities.back()].archetype_row = row;
         }
 
-        entities.pop_back();
+        m_Entities.pop_back();
 
-        if (max_size / entities.size() >= 8)
-                resize((max_size - 5) >> 2);
+        if (m_MaxSize / m_Entities.size() >= 8)
+                ChangeSize((m_MaxSize - 5) >> 2);
 }
 
-void Archetype::resize(uint32_t new_size)
+void ArchetypeInternal::ChangeSize(uint32_t new_size)
 {
-        uint8_t *data_to_free = max_size == 0 ? nullptr :
-                reinterpret_cast<uint8_t*>(components.front().data);
+        uint8_t *data_to_free = nullptr;
+        if (m_MaxSize != 0 && m_Components.size() > 0)
+                data_to_free = reinterpret_cast<uint8_t*>(m_Components.front().data);
 
         uint32_t component_sizes = 0;
-        for (auto& component : components)
+        for (auto& component : m_Components)
                 component_sizes += component.element_size;
         uint8_t* data = new uint8_t[component_sizes * new_size];
 
-        for (uint32_t offset = 0; auto& component : components) {
+        for (uint32_t offset = 0; auto& component : m_Components) {
                 uint8_t *new_cdata = &data[offset];
                 std::memcpy(new_cdata, component.data,
-                            component.element_size * max_size);
+                            component.element_size * m_MaxSize);
                 component.data = new_cdata;
 
                 offset += component.element_size * new_size;
         }
 
-        max_size = new_size;
+        m_MaxSize = new_size;
 
         if (data_to_free)
                 delete[] data_to_free;
 }
 
-bool Archetype::operator ==(const Archetype& other)
+bool ArchetypeInternal::operator ==(const ArchetypeInternal& other)
 {
-        return type == other.type;
+        return m_Type == other.m_Type;
 }
 
-bool operator ==(std::shared_ptr<Archetype> a, std::shared_ptr<Archetype> b)
+uint32_t
+ArchetypeInternal::GetComponentColumn(ComponentId component)
 {
-        return a->type == b->type;
+        return s_ComponentColumn[GetCAId(component, m_Id)];
+}
+
+void
+ArchetypeInternal::Reset()
+{
+        size_t archetype_sizes = s_CreatedArchetypes.size();
+        for (unsigned i = 0; i < archetype_sizes; i++) {
+                auto& atype = s_CreatedArchetypes[i];
+                for (unsigned row = 0; row < atype.m_Entities.size(); row++) {
+                        for (auto& c : atype.m_Components) {
+                                c.destructor(c[row]);
+                        }
+                }
+
+                atype.m_Entities.clear();
+                s_CreatedArchetypes[i].ChangeSize(5);
+        }
+}
+
+std::vector<ArchetypeInternal>
+ArchetypeInternal::s_CreatedArchetypes = { ArchetypeInternal() };
+
+std::unordered_map<ArchetypeType, Id, __ArchetypeHash>
+ArchetypeInternal::s_ArchetypesByType = { { {}, 0 } };
+
+std::unordered_map<uint64_t, uint32_t> ArchetypeInternal::s_ComponentColumn;
+
+uint32_t
+Archetype::GetComponentColumn(ComponentId component)
+{
+        return GetInternal().GetComponentColumn(component);
+}
+
+uint32_t
+Archetype::AddEntity(EntityId e, World& world)
+{
+        return GetInternal().AddEntity(e, world, true);
+}
+
+uint32_t
+Archetype::MoveEntity(EntityId e, Archetype dest, World& world)
+{
+        ArchetypeInternal& dest_int = dest.GetInternal();
+        return GetInternal().MoveEntity(e, dest_int, world);
+}
+
+void
+Archetype::RemoveEntity(EntityId e, uint32_t row, World& world)
+{
+        return GetInternal().RemoveEntity(e, row, world, true);
+}
+
+ArchetypeInternal&
+Archetype::GetInternal()
+{
+        return ArchetypeInternal::s_CreatedArchetypes[m_Id];
+}
+
+EntityId
+Archetype::GetEntity(uint32_t index)
+{
+        return GetInternal().m_Entities[index];
+}
+
+uint32_t
+Archetype::GetEntitySize()
+{
+        return GetInternal().m_Entities.size();
+}
+
+ComponentColumn&
+Archetype::GetComponents(uint32_t component_id)
+{
+        auto res = ArchetypeInternal::s_ComponentColumn.find(GetCAId(component_id, m_Id));
+        if (res == ArchetypeInternal::s_ComponentColumn.end()) {
+                std::cerr << "Entity doesnt have this component\n";
+        }
+
+        return GetInternal().m_Components[res->second];
+}
+
+ComponentColumn&
+Archetype::GetComponentsRaw(uint32_t component_index)
+{
+        return GetInternal().m_Components[component_index];
+}
+
+uint32_t
+Archetype::GetId()
+{
+        return m_Id;
+}
+
+Archetype
+Archetype::GetEdge(ComponentId component, bool is_adding)
+{
+        return GetInternal().GetEdge(component, is_adding);
+}
+
+bool
+Archetype::HasComponent(ComponentId component)
+{
+        return GetInternal().m_Type.contains(component);
+}
+
+ComponentColumn&
+Archetype::operator [](unsigned component_index)
+{
+        return GetComponents(component_index);
 }
 
 uint32_t

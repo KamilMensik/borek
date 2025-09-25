@@ -20,10 +20,6 @@
 	path = Borek/vendor/imguismo
 	url = https://github.com/KamilMensik/Borek-ImGuizmo
 	branch = borek
-[submodule "Borek/vendor/Box2D"]
-	path = Borek/vendor/Box2D
-	url = git@github.com:KamilMensik/BorekBox2D.git
-	branch = borek
 [submodule "Borek/vendor/mruby"]
 	path = Borek/vendor/mruby
 	url = git@github.com:KamilMensik/Borek-mruby.git
@@ -31,3 +27,12 @@
 [submodule "Borek/vendor/msdf-atlas-gen"]
 	path = Borek/vendor/msdf-atlas-gen
 	url = git@github.com:KamilMensik/Borek-msdf-atlas-gen.git
+[submodule "Borek/vendor/freetype"]
+	path = Borek/vendor/freetype
+	url = git@github.com:KamilMensik/Borek-freetype.git
+[submodule "Borek/vendor/octree"]
+	path = Borek/vendor/octree
+	url = https://github.com/attcs/Octree.git
+[submodule "Borek/vendor/imsearch"]
+	path = Borek/vendor/imsearch
+	url = https://github.com/GuusKemperman/imsearch.git

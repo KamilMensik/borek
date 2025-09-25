@@ -18,6 +18,15 @@ private:
         Entity m_Entity;
 };
 
+class AssetPanelSelectedEvent : public CustomEvent<AssetPanelSelectedEvent> {
+public:
+        AssetPanelSelectedEvent(const std::string& path) : m_AssetPath(path) {}
+        inline const std::string& GetAssetPath() { return m_AssetPath; }
+
+private:
+        std::string m_AssetPath;
+};
+
 class ChangeSceneEvent : public CustomEvent<ChangeSceneEvent> {
 public:
         ChangeSceneEvent(const std::string& scene_path)
@@ -51,6 +60,17 @@ public:
 private:
         uint32_t m_EntityId;
         uint32_t m_Id;
+};
+
+class RemoveEntityEvent : public CustomEvent<RemoveEntityEvent> {
+public:
+        RemoveEntityEvent(uint32_t id) : m_EntityId(id) {}
+
+        inline uint32_t
+        GetEntityId() { return m_EntityId; }
+
+private:
+        uint32_t m_EntityId;
 };
 
 }  // namespace Borek

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Include/Engine/Utils/Settings.h"
 #include "Include/Scripting/Ruby/RubyScript.h"
 #include <string>
 #include <unordered_map>
@@ -18,22 +19,59 @@ std::variant<Ref<Graphics::Texture2D>, RubyScript>;
 class AssetManager {
 friend class SceneSerializer;
 public:
-        static void Reset();
-        inline static Ref<Graphics::Texture2D> GetTexture(unsigned id)
+        static void
+        Reset();
+
+        inline static Ref<Graphics::Texture2D>
+        GetTexture(unsigned id)
         {
                 return std::get<Ref<Graphics::Texture2D>>(s_Assets[id]);
         }
 
-        static Asset GetTexture(const std::string& path);
-        static inline const std::string& GetPath(unsigned id)
+        static Asset
+        GetTexture(const std::string& path);
+
+        static Asset
+        GetAsset(const std::string& path);
+
+        static Ref<Graphics::Texture2D>
+        GetTextureRaw(const std::filesystem::path& path,
+                      const std::string& extension = "tex");
+
+        static inline const std::string&
+        GetPath(unsigned id)
         {
                 return s_AssetPaths[id];
         }
 
-        static void RefreshTexture(const std::string& path);
-        static void RefreshScript(const std::string& path);
+        static Asset::Type
+        GetAssetType(unsigned id)
+        {
+                switch (s_Assets[id].index()) {
+                case 0:
+                        return Asset::Type::kImage;
+                case 1:
+                        return Asset::Type::kScript;
+                }
 
-        static void AssetifyWorkspace(const std::string& path, bool force = false);
+                BOREK_ASSERT(false, "????????");
+                return Asset::Type::kImage;
+        }
+
+        static void
+        RefreshTexture(const std::filesystem::path& path,
+                       const std::filesystem::path& asset_path);
+
+        static void
+        RefreshScript(const std::filesystem::path& path,
+                      const std::filesystem::path& brass_path);
+
+        static void
+        AssetifyWorkspace(const std::string& path, bool force = false);
+
+        static void
+        AssetifyImage(const std::filesystem::path& path,
+                      const std::filesystem::path& asset_path);
 
 private:
         static std::unordered_map<std::string, unsigned> s_LoadedAssets;
