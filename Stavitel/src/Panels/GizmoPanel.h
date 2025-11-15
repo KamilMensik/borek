@@ -22,7 +22,7 @@ public:
 
 private:
         Entity m_Entity;
-        int m_CurrentMode;
+        int m_CurrentMode = -1;
 };
 
 }  // namespace Panels

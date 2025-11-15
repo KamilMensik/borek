@@ -1,8 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Base/Input.h"
+#include "Include/Base/Sound.h"
 #include "Include/Debug/Log.h"
-#include "Include/Engine/Utils/GeometryUtils.h"
+#include "Include/Drawing/Scene.h"
+#include "Include/Engine/ZIndexAssigner.h"
 #include "Include/Events/MouseEvents.h"
 #include <iostream>
 #include <ranges>
@@ -14,13 +16,16 @@
 #include "Include/Graphics/Renderer.h"
 #include "Include/Base/Application.h"
 #include "Include/Events/EventCaller.h"
-#include "Include/Base/Renderer2D.h"
 #include "Include/Events/ApplicationEvents.h"
 #include "Include/Graphics/Camera.h"
 #include "Include/ImGui/ImGuiLayer.h"
 #include "Include/Base/Query.h"
-#include "Include/Base/Components.h"
 #include "Include/Debug/Assert.h"
+#include "Include/Components/IDComponent.h"
+#include "Include/Components/RubyScriptComponent.h"
+#include "Include/Components/SpriteComponent.h"
+
+#include "Include/Drawing/BatchRenderer.h"
 
 #ifndef BR_PLATFORM_WINDOWS
         #include "Include/Platform/Linux/LinuxWindow.h"
@@ -46,7 +51,7 @@ Application::Application(const std::string& name)
         s_Instance = this;
 
         m_Window.reset(new Window(1920, 1080, name));
-        Renderer2D::Init();
+        Drawing::BatchRenderer::Init();
         m_Window->SetCallback(std::bind(&Application::SendEvent,
                                         std::placeholders::_1));
         m_ImGuiLayer = new ImGuiLayer();
@@ -55,15 +60,18 @@ Application::Application(const std::string& name)
         SetScene(NewRef<Scene>());
 
         Graphics::FrameBufferSettings fb_settings;
-        fb_settings.width = 1280;
-        fb_settings.height = 720;
+        fb_settings.width = 320;
+        fb_settings.height = 180;
 
         m_FrameBuffer = Graphics::FrameBuffer::Create(fb_settings);
+
+        SoundEngine::Init();
 }
 
 Application::~Application()
 {
-        Renderer2D::Shutdown();
+        Drawing::BatchRenderer::Deinitialize();
+        SoundEngine::Deinitialize();
 }
 
 void
@@ -73,6 +81,7 @@ Application::SetCamera() {
                 if (camera->is_active) {
                         m_Camera = camera;
                         m_CameraTransform = Entity(id->ecs_id).GlobalTransform();
+                        m_Camera->aspect_ratio = m_AspectRatio;
                         break;
                 }
         }
@@ -83,8 +92,6 @@ Application::SetCamera() {
 void
 Application::OnRenderBegin()
 {
-        SetCamera();
-        m_Camera->aspect_ratio = m_AspectRatio;
         m_FrameBuffer->Bind();
         Graphics::Renderer::Clear();
 }
@@ -105,13 +112,6 @@ Application::Run()
                 if (delta > 0.2f)
                         continue;
 
-                // Called before every render
-                OnRenderBegin();
-
-                BOREK_ENGINE_ASSERT(m_Camera != nullptr, "Camera not set.");
-                // Begin rendering
-                Renderer2D::Begin(*m_Camera, m_CameraTransform);
-
                 // Custom application OnUpdate call
                 OnUpdate(delta);
 
@@ -119,6 +119,7 @@ Application::Run()
                         for (auto layer : m_Layers)
                                 layer->OnUpdate(delta);
                 }
+
 
                 //if (!IsPlaying()) {
                 //        auto query = Query<IDComponent, TransformComponent, RigidBody2DComponent>();
@@ -156,12 +157,23 @@ Application::Run()
                         }
                 }
 
+
                 HandleEvents();
 
+
+                // Called before every render
+                OnRenderBegin();
+                SetCamera();
+                BOREK_ENGINE_ASSERT(m_Camera != nullptr, "Camera not set.");
+
+                // Begin rendering
+                Drawing::BatchRenderer::Begin(*m_Camera, m_CameraTransform);
                 DrawEntities();
 
+                BeforeRenderEnd();
+
                 // Flush renderer
-                Renderer2D::End();
+                Drawing::BatchRenderer::End();
 
                 // Called after renderer end
                 OnRenderEnd();
@@ -215,10 +227,9 @@ Application::DrawEntities()
 {
         for (auto [id, sprite] : Query<IDComponent, SpriteComponent>()) {
                 const auto global_tran = Entity(id->ecs_id).GlobalTransform();
-                glm::vec2 res = global_tran.position;
-                glm::vec2 size = global_tran.scale * 0.5f;
-                SimdVec4f new_rect(res.x - size.x, res.y - size.y,
-                                   res.x + size.x, res.y + size.y);
+                const glm::vec2& res = global_tran.position;
+                const glm::vec2& size = global_tran.scale;
+                SimdVec4f new_rect(res.x, res.y, res.x + size.x, res.y + size.y);
 
                 if (!m_SpriteGrid.Contains(id->ecs_id)) {
                         m_SpriteGrid.Insert(id->ecs_id, new_rect);
@@ -227,7 +238,8 @@ Application::DrawEntities()
                 }
         }
 
-        Renderer2D::DrawScene(m_CurrentScene);
+        ZIndexAssigner::Assign();
+        Drawing::Scene::Draw();
 }
 
 void
@@ -278,12 +290,7 @@ Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
         if (!IsPlaying())
                 return false;
 
-        glm::vec2 pos = Utils::Geometry::rotate_point(
-                glm::vec2(0), Input::GetMousePosRelative() * glm::vec2(1280 / 4, 720 / 4),
-                m_CameraTransform.rotation
-        );
-
-        pos += m_CameraTransform.position;
+        glm::vec2 pos = Input::GetMouseWorldPos();
 
         for (auto clicked : m_CurrentScene->GetPhysicsWorld().GetCollisions(pos)) {
                 //BOREK_ENGINE_INFO("Clicked: {}, at pos: [{}, {}]", clicked, pos.x, pos.y);

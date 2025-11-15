@@ -1,13 +1,12 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Core.h"
-#include <cstring>
 #include <string>
 
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include <Include/Core.h>
 #include <Include/Base/Node.h>
 #include <Include/Debug/Log.h>
 #include <Include/Base/Application.h>

@@ -367,3 +367,4 @@ FodyWeavers.xsd
 # Borek ignores:
 # Binary shader files
 *.shdr
+compile_commands.json

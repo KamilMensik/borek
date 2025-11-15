@@ -1,10 +1,13 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Application.h"
+#include "Include/Debug/Log.h"
 #include <mruby.h>
 #include <mruby/string.h>
 #include <mruby/variable.h>
 #include <mruby/value.h>
 #include <mruby/hash.h>
+#include <mruby/boxing_word.h>
 #include <mrbcpp.h>
 
 #include "Include/Scripting/Ruby/RubyEngine.h"
@@ -16,6 +19,20 @@ namespace Borek {
 namespace RBModules {
 
 using namespace mrbcpp;
+
+static MRB_FUNC(FindChild) {
+        std::string name = mrb_str_to_cstr(mrb, MRB_ARG1);
+        Borek::Entity e(mrb_integer(MRB_GET_IV(MRB_GET_IV(self, "@entity"),
+                                               "@id")));
+        Entity child = Application::GetScene()->EntityFindFirstChild(name, e);
+
+        if (!child.IsNil()) {
+                mrb_value val = MRB_NUM(child.GetId());
+                return mrb_class_new_instance(mrb, 1, &val, Application::GetRubyEngine().GetBorekModule().get_class("Entity"));
+        } else {
+                return MRB_NIL;
+        }
+}
 
 static MRB_FUNC(OnCreate)
 {
@@ -73,6 +90,23 @@ static MRB_FUNC(IsOnFloor)
         return mrb_bool_value(res);
 }
 
+static MRB_FUNC(Export)
+{
+        mrb_value export_hash;
+        if (!MRB_IV_DEFINED(self, "@_export")) {
+                export_hash = mrb_hash_new(mrb);
+                MRB_SET_IV(self, "@_export", export_hash);
+        } else {
+                export_hash = MRB_GET_IV(self, "@_export");
+        }
+
+        mrb_value type, name;
+        mrb_get_args(mrb, "oo", &type, &name);
+        mrb_hash_set(mrb, export_hash, type, name);
+
+        return MRB_NIL;
+}
+
 static MRB_FUNC(Initialize)
 {
         return self;
@@ -92,6 +126,8 @@ void Scriptable::Init(RubyEngine& engine)
              .define_method("move_and_collide", MoveAndCollide, FuncArgs().Required(1))
              .define_method("on_floor?", IsOnFloor)
              .define_method("transform", GetTransform)
+             .define_method("find_child", FindChild, FuncArgs().Required(1))
+             .define_class_method("export", Export, FuncArgs().Required(2))
              .define_attr_accessor<"entity">();
 }
 

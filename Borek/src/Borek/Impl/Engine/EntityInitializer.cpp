@@ -2,12 +2,14 @@
 
 #include "Include/Base/Application.h"
 #include "Include/Base/Entity.h"
+#include "Include/Components/SoundplayerComponent.h"
+#include "Include/Components/TilemapComponent.h"
 #include "Include/Debug/Log.h"
 #include "Include/Engine/FZX/Body.h"
 #include "Include/Graphics/Camera.h"
 
 #include "Include/Engine/EntityInitializer.h"
-#include "Include/Base/Components.h"
+#include "Include/Components/TransformComponent.h"
 
 namespace Borek {
 
@@ -27,6 +29,12 @@ EntityInitializer::InitializeBegin(Entity e)
         case NodeType::Area:
                 InitializeFZXBody(e);
                 break;
+        case NodeType::Tilemap:
+                InitializeTilemap(e);
+                break;
+        case NodeType::SoundPlayer:
+                InitializeSoundPlayer(e);
+                break;
         }
 }
 
@@ -43,6 +51,40 @@ EntityInitializer::InitializeFZXBody(Entity e)
 
         body.Update(s_GlobalTransform.position, s_GlobalTransform.scale);
         Application::GetScene()->m_PhysicsWorld.Add(e, body);
+}
+
+void
+EntityInitializer::InitializeTilemap(Entity e)
+{
+        TilemapComponent& tc = e.GetComponent<TilemapComponent>();
+        if (!tc.tilemap.IsValid())
+                return;
+
+        SpriteSheetAsset& spritesheet = tc.tilemap->sprite_sheet.Convert();
+        const glm::vec2& scale = s_GlobalTransform.scale;
+
+        for (auto it : tc.items) {
+                const auto& pos = it.first;
+                const uint16_t index = it.second;
+
+                if (!tc.tilemap->tile_coliders[index].Exists())
+                        continue;
+
+                const glm::vec2 real_pos(pos.second * tc.step_x * scale.x, pos.first * tc.step_y * scale.y);
+                FZX::Body body;
+                body.Update(real_pos, { spritesheet.step_x * scale.x,
+                                        spritesheet.step_y * scale.y });
+                Application::GetScene()->m_PhysicsWorld.Add(e, body);
+        }
+}
+
+void
+EntityInitializer::InitializeSoundPlayer(Entity e)
+{
+        auto& sp = e.GetComponent<SoundPlayerComponent>();
+        if (sp.sound.IsValid() && sp.flags.HasFlags(SoundPlayerFlags_Autoplay)) {
+                sp.Play();
+        }
 }
 
 TransformComponent EntityInitializer::s_GlobalTransform = TransformComponent();

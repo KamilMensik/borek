@@ -2,3 +2,4 @@ Borek/vendor/
 Stavitel/assets/
 Sandbox/
 compile_commands.json
+Borek/src/Borek/impl/Base/Renderer2D.cpp

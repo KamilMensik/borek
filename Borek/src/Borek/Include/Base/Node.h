@@ -15,11 +15,14 @@ enum class NodeType {
         Sprite = 4,
         Camera = 5,
         Text = 6,
+        Tilemap = 7,
+        SoundPlayer = 8,
 };
 
-static const std::array<const std::string, 7> node_type_strings = {
+static const std::array<const std::string, 9> node_type_strings = {
         "Node", "DynamicBody", "StaticBody",
         "Area", "Sprite", "Camera", "Text",
+        "Tilemap", "SoundPlayer",
 };
 
 const std::string& get_node_type_string(NodeType type);

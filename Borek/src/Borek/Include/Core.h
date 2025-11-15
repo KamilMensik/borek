@@ -50,6 +50,7 @@ enum class Datatype : uint8_t {
         Int2,
         Int3,
         Int4,
+        Sampler2D,
 };
 
 class Time {
@@ -63,6 +64,39 @@ private:
 };
 
 uint32_t DatatypeSize(Datatype d);
+
+struct BitFlags {
+        uint32_t val;
+
+        BitFlags() : val(0) {}
+        BitFlags(uint32_t val) : val(val) {} 
+
+        inline void
+        SetFlags(uint32_t flags, bool value)
+        {
+                if (value)
+                        val |= flags;
+                else
+                        val &= ~flags;
+        }
+
+        inline bool
+        HasFlags(uint32_t flags) const { return val & flags; }
+
+        inline void
+        operator=(uint32_t value) { val = value; }
+
+        inline operator uint32_t() const { return val; }
+
+        inline uint32_t
+        operator&(uint32_t value) const { return val & value; }
+
+        inline uint32_t
+        operator|(uint32_t value) const { return val | value; }
+
+        inline uint32_t
+        operator~() const { return ~val; }
+};
 
 }  // namespace Borek
 

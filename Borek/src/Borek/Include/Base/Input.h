@@ -164,6 +164,7 @@ public:
         static glm::vec2 GetMousePos();
         // Clips mouse pos between -1, 1 values
         static glm::vec2 GetMousePosRelative();
+        static glm::vec2 GetMouseWorldPos();
         static glm::vec2 GetAxis();
 };
 

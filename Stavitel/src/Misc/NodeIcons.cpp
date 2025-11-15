@@ -1,20 +1,21 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Debug/Log.h"
-#include <Include/Engine/Assets/AssetManager.h>
+#include <Include/Engine/Assets/TexAsset.h>
 
 #include "NodeIcons.h"
 
 namespace Borek {
 
 static struct {
-        Ref<Graphics::Texture2D> node;
-        Ref<Graphics::Texture2D> area;
-        Ref<Graphics::Texture2D> camera;
-        Ref<Graphics::Texture2D> dynamic_body;
-        Ref<Graphics::Texture2D> static_body;
-        Ref<Graphics::Texture2D> sprite;
-        Ref<Graphics::Texture2D> text;
+        TexAsset node;
+        TexAsset area;
+        TexAsset camera;
+        TexAsset dynamic_body;
+        TexAsset static_body;
+        TexAsset sprite;
+        TexAsset text;
+        TexAsset tilemap;
+        TexAsset sound;
 } node_icons;
 
 static void
@@ -24,13 +25,15 @@ init_node_icons()
         if (initialized)
                 return;
 
-        node_icons.node = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/Node.png"));
-        node_icons.area = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/Area.png"));
-        node_icons.camera = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/Camera.png"));
-        node_icons.dynamic_body = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/CharacterBody.png"));
-        node_icons.static_body = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/StaticBody.png"));
-        node_icons.sprite = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/Sprite.png"));
-        node_icons.text = AssetManager::GetTextureRaw(ASSET_PATH("assets/EditorIcons/Node/Text.png"));
+        node_icons.node.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Node.png"));
+        node_icons.area.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Area.png"));
+        node_icons.camera.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Camera.png"));
+        node_icons.dynamic_body.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/CharacterBody.png"));
+        node_icons.static_body.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/StaticBody.png"));
+        node_icons.sprite.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Sprite.png"));
+        node_icons.text.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Text.png"));
+        node_icons.tilemap.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Tilemap.png"));
+        node_icons.sound.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Sound.png"));
 
         initialized = true;
 }
@@ -55,6 +58,10 @@ get_node_type_icon(NodeType type)
                 return node_icons.sprite;
         case NodeType::Text:
                 return node_icons.text;
+        case NodeType::Tilemap:
+                return node_icons.tilemap;
+        case NodeType::SoundPlayer:
+                return node_icons.sound;
         default:
                 return nullptr;
         }

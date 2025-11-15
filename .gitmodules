@@ -36,3 +36,6 @@
 [submodule "Borek/vendor/imsearch"]
 	path = Borek/vendor/imsearch
 	url = https://github.com/GuusKemperman/imsearch.git
+[submodule "Borek/vendor/miniaudio"]
+	path = Borek/vendor/miniaudio
+	url = https://github.com/mackron/miniaudio

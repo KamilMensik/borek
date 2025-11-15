@@ -1,6 +1,16 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 
+#include "Include/Components/SoundplayerComponent.h"
+#include "Include/Components/TilemapComponent.h"
+#include "Include/Core.h"
+#include "Include/Debug/Log.h"
+#include "Include/Drawing/DrawingGlobals.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/SoundAsset.h"
+#include "Include/Engine/Assets/TexAsset.h"
+#include "Include/Engine/Assets/TilemapAsset.h"
+#include <cstdint>
 #include <string>
 
 #include <imgui.h>
@@ -10,9 +20,14 @@
 
 #include <ECS/World.h>
 
-#include <Include/Base/Components.h>
-#include <Include/Base/Renderer2D.h>
 #include <Include/Base/Application.h>
+#include <Include/Components/TransformComponent.h>
+#include <Include/Components/TagComponent.h>
+#include <Include/Components/IDComponent.h>
+#include <Include/Components/Text2DComponent.h>
+#include <Include/Components/SpriteComponent.h>
+#include <Include/Components/RubyScriptComponent.h>
+#include <Include/Components/ScriptComponent.h>
 
 #include "./Properties.h"
 
@@ -27,6 +42,23 @@ enum ComponentFlags {
 
 Properties::Properties() : m_Entity() {}
 
+static inline const Ref<Graphics::Texture2D>&
+get_tex_safe(const SpriteComponent& sprite)
+{
+        if (sprite.texture.IsValid())
+                return sprite.texture->texture;
+
+        return Drawing::Globals::GetData().white_tex;
+}
+
+static inline const Ref<Graphics::Texture2D>&
+get_tex_safe(const TilemapComponent& tmap)
+{
+        if (tmap.tilemap.IsValid() && tmap.tilemap->sprite_sheet.IsValid())
+                return tmap.tilemap->sprite_sheet->texture;
+
+        return Drawing::Globals::GetData().white_tex;
+}
 
 static void Control(const char* label, glm::vec3& values,
                     float reset_value = 0.0f, float column_width = 100.0f)
@@ -162,6 +194,24 @@ static void Control(const char* label, String& value,
         ImGui::PopID();
 }
 
+static void Control(const char* label, BitFlags& value, uint32_t flag,
+                    bool reset_value = false, float column_width = 100.0f)
+{
+        ImGui::PushID(label);
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, column_width);
+        ImGui::Text("%s", label);
+        ImGui::NextColumn();
+
+        bool res = value.HasFlags(flag);
+        ImGui::Checkbox("", &res);
+        value.SetFlags(flag, res);
+
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+}
+
 static const ImGuiTreeNodeFlags tflags = ImGuiTreeNodeFlags_DefaultOpen
         | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_Framed
         | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
@@ -228,12 +278,14 @@ void Properties::OnImguiRender()
 
                 DrawComponent<SpriteComponent>("Sprite", m_Entity, [](Entity e){
                         auto& sprite = e.GetComponent<SpriteComponent>();
+                        Control("FlipX", sprite.flags, SpriteComponentFlags_FlipX);
+                        Control("FlipY", sprite.flags, SpriteComponentFlags_FlipY);
                         ImGui::ColorEdit4("Color", glm::value_ptr(sprite.color));
-                        auto sprite_texture = sprite.sprite ? sprite.sprite->GetTexture() : Renderer2D::WhiteTexture();
+                        auto sprite_texture = get_tex_safe(sprite);
                         ImGui::ImageButton("SpriteImage", sprite_texture->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
                         if (ImGui::BeginDragDropTarget()) {
                                 if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
-                                        sprite.sprite = Sprite::Create(SCAST<char*>(payload->Data));
+                                        sprite.texture = AssetManager::Get<TexAsset>(SCAST<char*>(payload->Data));
                                 }
                                 ImGui::EndDragDropTarget();
                         }
@@ -268,15 +320,21 @@ void Properties::OnImguiRender()
                         if (ImGui::Button("Select Ruby Class")) {
                                 ImGui::OpenPopup("Select Ruby Class");
                         }
-
-                        if (ImGui::BeginPopup("Select Ruby Class")) {
-                                for (auto cname : Application::GetRubyEngine().GetClasses()) {
-                                        if (ImGui::MenuItem(cname.c_str())) {
-                                                rbscript.ruby_class = cname;
-                                        }
+                        if (ImGui::BeginDragDropTarget()) {
+                                if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
+                                        rbscript.script = AssetManager::Get<ScriptAsset>(SCAST<char*>(payload->Data));
                                 }
-                                ImGui::EndPopup();
+                                ImGui::EndDragDropTarget();
                         }
+
+                        //if (ImGui::BeginPopup("Select Ruby Class")) {
+                        //        for (auto cname : Application::GetRubyEngine().GetClasses()) {
+                        //                if (ImGui::MenuItem(cname.c_str())) {
+                        //                        rbscript.ruby_class = cname;
+                        //                }
+                        //        }
+                        //        ImGui::EndPopup();
+                        //}
                 });
 
                 if (m_Entity.HasComponent<Text2DComponent>()) {
@@ -288,6 +346,42 @@ void Properties::OnImguiRender()
                                 ImGui::TreePop();
                         }
                 }
+
+                if (m_Entity.HasComponent<TilemapComponent>()) {
+                        if (ImGui::TreeNodeEx(VPCAST(ECS::GetId<TilemapComponent>()), tflags, "Tag")) {
+                                auto& tc = m_Entity.GetComponent<TilemapComponent>();
+                                auto tilemap_texture = get_tex_safe(tc);
+                                ImGui::ImageButton("SpriteImage", tilemap_texture->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
+                                if (ImGui::BeginDragDropTarget()) {
+                                        if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
+                                                BOREK_ENGINE_INFO("Passed path: {}", SCAST<char*>(payload->Data));
+                                                tc.tilemap = AssetManager::Get<TilemapAsset>(SCAST<char*>(payload->Data));
+                                        }
+                                        ImGui::EndDragDropTarget();
+                                }
+
+                                int step[2] = { tc.step_x, tc.step_y };
+                                ImGui::InputInt2("Step", step);
+                                tc.step_x = step[0];
+                                tc.step_y = step[1];
+
+                                ImGui::Text("%s", tc.tilemap.IsValid() ? tc.tilemap.GetPath().c_str() : "");
+                                ImGui::TreePop();
+                        }
+                }
+
+                DrawComponent<SoundPlayerComponent>("SoundPlayer", m_Entity, [](Entity e){
+                        auto& snd = e.GetComponent<SoundPlayerComponent>();  
+
+                        ImGui::ImageButton("Audio", Drawing::Globals::GetData().white_tex->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
+                        if (ImGui::BeginDragDropTarget()) {
+                                if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
+                                        snd.sound = AssetManager::Get<SoundAsset>(SCAST<char*>(payload->Data));
+                                }
+                                ImGui::EndDragDropTarget();
+                        }
+                        Control("Autoplay", snd.flags, SoundPlayerFlags_Autoplay);
+                });
         };
 
         ImGui::End();

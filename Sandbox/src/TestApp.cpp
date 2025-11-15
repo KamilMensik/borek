@@ -12,7 +12,7 @@ public:
                 m_SpriteSheet = Borek::SpriteSheet::Create(ASSET_PATH("assets/tilemap.png"));
                 m_SpriteSheet->SetStep(16, 16);
                 m_SpriteSheet->SetGap(1);
-                m_Subsprite = Borek::SubSprite::Create(m_SpriteSheet);
+                //m_Subsprite = Borek::SubSprite::Create(m_SpriteSheet);
         }
 
         ~TestLayer() override {}
@@ -38,13 +38,13 @@ public:
                 Borek::Renderer2D::DrawQuad({ -128, -64 }, { 64, 64 },
                                             Borek::Colors::WHITE);
 
-                for (int i = 0; i < 12; i++) {
-                        for (int j = 0; j < 11; j++) {
-                                m_Subsprite->SetRowCol(i, j);
-                                Borek::Renderer2D::DrawQuad({ i * 64, j * 64 }, { 64, 64 },
-                                                            m_Subsprite);
-                        }
-                }
+                //for (int i = 0; i < 12; i++) {
+                //        for (int j = 0; j < 11; j++) {
+                //                m_Subsprite->SetRowCol(i, j);
+                //                Borek::Renderer2D::DrawQuad({ i * 64, j * 64 }, { 64, 64 },
+                //                                            m_Subsprite);
+                //        }
+                //}
         }
 
         void OnEvent(Borek::Event& e) override

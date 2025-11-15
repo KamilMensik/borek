@@ -1,5 +1,8 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Entity.h"
+#include "Include/Components/ZIndexComponent.h"
+#include "Include/Debug/Log.h"
 #include <format>
 #include <ranges>
 
@@ -8,8 +11,9 @@
 #include <ECS/Component.h>
 
 #include "Include/Base/Scene.h"
-#include "Include/Base/Components.h"
-#include "Include/Debug/Log.h"
+#include "Include/Components/TransformComponent.h"
+#include "Include/Components/IDComponent.h"
+#include "Include/Components/TagComponent.h"
 
 namespace Borek {
 
@@ -18,7 +22,7 @@ static ECS::Archetype base_entity;
 Scene::Scene()
 {
         base_entity = ECS::Archetype::Get<
-                IDComponent, TransformComponent, TagComponent
+                IDComponent, TransformComponent, TagComponent, ZIndexComponent
         >();
 }
 
@@ -59,6 +63,7 @@ Scene::ChangeEntityNodeType(Entity e, NodeType type)
 void
 Scene::DeleteEntity(Entity e)
 {
+        e.DeleteChildren();
         RemoveEntityFromGraph(e);
         m_EntityNodeTypes.erase(e);
         m_World->remove(e.m_Id);
@@ -68,6 +73,12 @@ Entity&
 Scene::RootEntity()
 {
         return m_RootEntity;
+}
+
+uint32_t
+Scene::GetEntityCount()
+{
+        return m_EntityNodeTypes.size();
 }
 
 void
@@ -145,7 +156,7 @@ Scene::EntityPrependChild(Entity entity, Entity dest)
 void
 Scene::EntityAppend(Entity entity, Entity dest)
 {
-        uint32_t dest_parent_id = GetEntityParentId(entity);
+        uint32_t dest_parent_id = GetEntityParentId(dest);
 
         if (GetEntityParentId(entity) != UINT32_MAX) {
                 if (GetEntityParentId(entity) != dest_parent_id) {
@@ -167,7 +178,7 @@ Scene::EntityAppend(Entity entity, Entity dest)
 void
 Scene::EntityPrepend(Entity entity, Entity dest)
 {
-        uint32_t dest_parent_id = GetEntityParentId(entity);
+        uint32_t dest_parent_id = GetEntityParentId(dest);
 
         if (GetEntityParentId(entity) != UINT32_MAX) {
                 if (GetEntityParentId(entity) != dest_parent_id) {
@@ -200,7 +211,7 @@ Scene::HasEntityChildren(Entity entity)
         return children != m_SceneGraph.end() && children->second.size() > 0;
 }
 
-const std::vector<uint32_t>*
+std::vector<uint32_t>*
 Scene::GetEntityChildren(Entity entity)
 {
         auto children = m_SceneGraph.find(entity);
@@ -208,7 +219,6 @@ Scene::GetEntityChildren(Entity entity)
                 return nullptr;
 
         return &children->second;
-
 }
 
 NodeType
@@ -223,7 +233,7 @@ Scene::TraverseSceneHelper(Entity e, std::function<void(Entity e)> iter_func)
         iter_func(e);
 
         if (auto children = m_SceneGraph.find(e.GetId()); children != m_SceneGraph.end()) {
-                for (uint32_t entity_id : children->second) {
+                for (uint32_t entity_id : std::ranges::views::reverse(children->second)) {
                         Entity e(entity_id);
                         TraverseSceneHelper(e, iter_func);
                 }
@@ -234,7 +244,7 @@ void
 Scene::TraverseSceneReverseHelper(Entity e, std::function<void(Entity e)> iter_func)
 {
         if (auto children = m_SceneGraph.find(e.GetId()); children != m_SceneGraph.end()) {
-                for (uint32_t entity_id : std::ranges::views::reverse(children->second)) {
+                for (uint32_t entity_id : children->second) {
                         Entity e(entity_id);
                         TraverseSceneHelper(e, iter_func);
                 }

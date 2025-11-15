@@ -1,8 +1,9 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include <unordered_map>
+
 #include "Include/Base/Node.h"
 #include "Include/Core.h"
-#include <unordered_map>
 
 namespace Borek {
 

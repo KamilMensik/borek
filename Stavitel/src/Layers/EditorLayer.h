@@ -32,6 +32,7 @@ public:
         void BeginDockspace();
         void EndDockspace();
 
+        void OnUpdate(float delta) override;
         void OnEvent(Event &e) override;
         void OnGameStarted();
         void OnGameEnded();
@@ -62,6 +63,8 @@ private:
         bool OnSceneChangedEvent(SceneChangedEvent& ev);
         bool OnRemoveEntity(RemoveEntityEvent& ev);
         bool OnAssetPanelSelected(AssetPanelSelectedEvent& ev);
+        bool OnMouseButtonPressed(MouseButtonPressedEvent& ev);
+        bool OnMouseButtonReleased(MouseButtonReleasedEvent& ev);
 };
 
 }  // namespace Borek

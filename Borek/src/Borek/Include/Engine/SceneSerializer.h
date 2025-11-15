@@ -12,8 +12,8 @@ namespace Borek {
 class SceneSerializer {
 public:
         SceneSerializer(Ref<Scene> scene);
-        void Serialize(const std::string& path);
-        void Deserialize(const std::string& path);
+        void Serialize(const std::string& path, Entity e = Entity());
+        void Deserialize(const std::string& path, Entity e = Entity());
 
 private:
         Ref<Scene> m_Scene;

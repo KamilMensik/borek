@@ -12,10 +12,13 @@ struct ComponentColumn {
         uint32_t alignment;
         void (*constructor)(void*);
         void (*destructor)(void*);
+        void (*moveop)(void*, void*);
         ComponentColumn(uint32_t element_size, uint32_t alignment,
-                        void(*constructor)(void*), void(*destructor)(void*))
+                        void(*constructor)(void*), void(*destructor)(void*),
+                        void(*moveop)(void*, void*))
                 : element_size(element_size), alignment(alignment),
-                  constructor(constructor), destructor(destructor) {}
+                  constructor(constructor), destructor(destructor),
+                  moveop(moveop) {}
 
         void* operator [](uint32_t index);
 };

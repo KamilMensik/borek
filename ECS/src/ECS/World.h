@@ -178,6 +178,9 @@ using ComponentId = Id;
 struct WData {
         uint32_t archetype_id;
         uint32_t archetype_row;
+
+        inline bool
+        Exists() const { return archetype_id != UINT32_MAX; }
 };
 
 
@@ -225,12 +228,14 @@ public:
                 return *reinterpret_cast<T*>(get_component(e, GetId<T>()));
         }
 
-public:
-        uint32_t m_CurrentId;
-        std::vector<WData> m_WorldData;
-        std::vector<Id> m_Reusable;
+private:
+        static std::vector<WData> s_WorldData;
+        static std::vector<Id> s_Reusable;
+        static uint32_t s_CurrentId;
 
-        Id GetId();
+        std::unordered_set<Id> m_WorldEntities;
+
+        static Id GetId();
 };
 
 }  // namespace ECS

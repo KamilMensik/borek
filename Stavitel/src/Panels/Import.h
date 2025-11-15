@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "Include/Graphics/Texture.h"
+#include "Include/Core.h"
+#include "Include/Engine/Assets/IAsset.h"
 #include <filesystem>
 #include <string>
 
@@ -16,8 +17,20 @@ public:
         void SetSelectedAsset(const std::string& asset_path);
 
 private:
-        std::filesystem::path m_SelectedAsset;
-        Ref<Graphics::Texture2D> m_AssetTexture;
+        std::filesystem::path m_SelectedAssetPath;
+        Uniq<IAsset> m_SelectedAsset;
+        
+        void
+        TextureImport();
+
+        void
+        SpriteSheetImport();
+
+        void
+        ScriptImport();
+
+        void
+        SoundImport();
 };
 
 }  // namespace Panels

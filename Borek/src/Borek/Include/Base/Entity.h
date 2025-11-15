@@ -1,27 +1,24 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Node.h"
-#include "glm/ext/vector_float2.hpp"
 #include <cstdint>
 
-#include <ECS/Archetype.h>
-#include <ECS/World.h>
+#include <glm/ext/vector_float2.hpp>
 #include <ECS/Component.h>
 
 #include "Include/Core.h"
+#include "Include/Base/Node.h"
 #include "Include/Base/UUID.h"
+#include "Include/Components/TransformComponent.h"
 
 #pragma once
 
 namespace Borek {
 
-struct TransformComponent;
-
 class Entity {
 friend class Scene;
 public:
         Entity() : m_Id(UINT32_MAX) {}
-        Entity(ECS::EntityId id);
+        Entity(uint32_t id);
 
         bool operator ==(const Entity& other)
         {
@@ -35,7 +32,7 @@ public:
 
         template <class T>
         T& GetComponent() { return *RCAST<T*>(GetComponent(ECS::GetId<T>())); }
-        void* GetComponent(ECS::ComponentId cid);
+        void* GetComponent(uint32_t cid);
 
         template <class T>
         Entity& AddComponent() { return AddComponent(ECS::GetId<T>()); }
@@ -46,16 +43,16 @@ public:
                 GetComponent<T>() = T(std::forward<CArgs>(args)...);
                 return *this;
         }
-        Entity& AddComponent(ECS::ComponentId cid);
+        Entity& AddComponent(uint32_t cid);
 
         template <class T>
         Entity& RemoveComponent() { return RemoveComponent(ECS::GetId<T>()); }
-        Entity& RemoveComponent(ECS::ComponentId cid);
+        Entity& RemoveComponent(uint32_t cid);
         void Delete();
 
         template <class T>
         bool HasComponent() { return HasComponent(ECS::GetId<T>()); }
-        bool HasComponent(ECS::ComponentId cid);
+        bool HasComponent(uint32_t cid);
         bool IsNil() { return m_Id == UINT32_MAX; }
         inline uint32_t GetId() const { return m_Id; }
         operator uint32_t() const { return GetId(); }
@@ -72,7 +69,19 @@ public:
         GetParent();
 
         bool
+        IsParentOf(Entity e);
+
+        bool
         HasChildren();
+
+        std::vector<uint32_t>*
+        GetChildren();
+
+        void
+        DeleteChildren();
+
+        Entity
+        FindChild(const std::string& name);
 
         NodeType
         GetNodeType();
@@ -95,7 +104,7 @@ public:
         MoveAndCollide(float x, float y);
 
 public:
-        ECS::EntityId m_Id;
+        uint32_t m_Id;
 };
 
 }  // namespace Borek

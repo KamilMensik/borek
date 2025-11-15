@@ -1,12 +1,11 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Engine/FZX/Body.h"
-#include "glm/trigonometric.hpp"
 #include <array>
 #include <cmath>
 #include <cstdint>
 #include <string>
 
+#include <glm/trigonometric.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -21,9 +20,15 @@
 #include "Include/Base/Scene.h"
 #include "Include/Base/Application.h"
 #include "Include/Base/Colors.h"
-#include "Include/Base/Components.h"
 #include "Include/Debug/Log.h"
 #include "Include/Graphics/IndexBuffer.h"
+#include "Include/Components/TransformComponent.h"
+#include "Include/Components/SpriteComponent.h"
+#include "Include/Components/Text2DComponent.h"
+#include "Include/Graphics/Texture.h"
+#include "Include/Objects/Sprite.h"
+#include "Include/Objects/SubSprite.h"
+#include "Include/Objects/Font.h"
 
 #define _BOREK_BATCH_RENDER_SIZE 40000
 #define _BOREK_MAX_TEXTURES_COUNT 32
@@ -360,6 +365,20 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size,
         BatchRenderer::AddQuadIndexes();
 }
 
+void
+Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size,
+                     const Asset<SpriteSheetAsset> spritesheet,
+                     uint16_t row, uint16_t col, unsigned zindex )
+{
+        float texture_index = BatchRenderer::Add(spritesheet->texture);
+        const glm::vec4 bounds = spritesheet->SubTextureCords(row, col);
+        BatchRenderer::Add(QuadVertex{glm::vec3(position, zindex), Colors::WHITE, { bounds.x, 1 - bounds.w }, texture_index});
+        BatchRenderer::Add(QuadVertex{glm::vec3(position.x + size.x, position.y, zindex), Colors::WHITE, { bounds.z, 1 - bounds.w }, texture_index});
+        BatchRenderer::Add(QuadVertex{glm::vec3(position.x + size.x, position.y + size.y, zindex), Colors::WHITE, { bounds.z, 1 - bounds.y }, texture_index});
+        BatchRenderer::Add(QuadVertex{glm::vec3(position.x, position.y + size.y, zindex), Colors::WHITE, { bounds.x, 1 - bounds.y }, texture_index});
+        BatchRenderer::AddQuadIndexes();
+}
+
 void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size,
                           Ref<Sprite> tex, const glm::vec4& color,
                           unsigned zindex)
@@ -375,7 +394,7 @@ void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size,
 void Renderer2D::DrawQuad(const TransformComponent& transform,
                           const SpriteComponent& sprite)
 {
-        float texture_index = sprite.sprite == nullptr ? 0 : BatchRenderer::Add(sprite.sprite->GetTexture());
+        float texture_index = sprite.texture.IsValid() ? BatchRenderer::Add(sprite.texture.Convert().texture) : 0;
         glm::mat4 trans = transform.GetTransformMat();
 
         for (int i = 0; i < 4; i++) {

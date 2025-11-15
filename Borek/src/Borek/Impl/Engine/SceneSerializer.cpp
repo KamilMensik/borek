@@ -1,10 +1,19 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Base/Application.h"
+#include "Include/Base/Entity.h"
 #include "Include/Base/Node.h"
+#include "Include/Components/PrefabComponent.h"
+#include "Include/Components/SoundplayerComponent.h"
+#include "Include/Components/TilemapComponent.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/ScriptAsset.h"
+#include "Include/Engine/Assets/SoundAsset.h"
+#include "Include/Engine/Assets/TilemapAsset.h"
+#include "Include/Engine/Assets/SceneAsset.h"
+#include <cstdint>
 #include <fstream>
 #include <memory>
-#include <variant>
 
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/emitter.h>
@@ -12,12 +21,16 @@
 #include <ECS/World.h>
 #include <magic_enum/magic_enum.hpp>
 
-#include "Include/Base/Components.h"
 #include "Include/Engine/SceneSerializer.h"
-#include "Include/Debug/Log.h"
 #include "Include/Base/UUID.h"
-#include "Include/Engine/Assets/AssetManager.h"
 #include "Include/Graphics/Camera.h"
+#include "Include/Components/TransformComponent.h"
+#include "Include/Components/IDComponent.h"
+#include "Include/Components/TagComponent.h"
+#include "Include/Components/Text2DComponent.h"
+#include "Include/Components/SpriteComponent.h"
+#include "Include/Components/CameraComponent.h"
+#include "Include/Components/RubyScriptComponent.h"
 
 namespace YAML {
 
@@ -150,8 +163,8 @@ void SerializeSprite(YAML::Emitter& out, Entity e)
         out << YAML::Key << "Sprite" << YAML::BeginMap;
 
         out << YAML::Key << "Color" << YAML::Value << spr.color;
-        if (spr.sprite)
-                out << YAML::Key << "AssetID" << YAML::Value << spr.sprite->GetAsset().Id();
+        if (spr.texture.IsValid())
+                out << YAML::Key << "AssetPath" << YAML::Value << spr.texture.GetPath();
 
         out << YAML::EndMap;
 }
@@ -164,7 +177,7 @@ void SerializeScript(YAML::Emitter& out, Entity e)
         auto& scr = e.GetComponent<RubyScriptComponent>();
         out << YAML::Key << "Script" << YAML::BeginMap;
 
-        out << YAML::Key << "ClassName" << YAML::Value << scr.ruby_class;
+        out << YAML::Key << "ScriptPath" << YAML::Value << scr.script.GetPath();
 
         out << YAML::EndMap;
 }
@@ -212,6 +225,69 @@ void SerializeText2D(YAML::Emitter& out, Entity e)
         out << YAML::EndMap;
 }
 
+void SerializeTilemap(YAML::Emitter& out, Entity e)
+{
+        if (!e.HasComponent<TilemapComponent>())
+                return;
+
+        auto& tmap = e.GetComponent<TilemapComponent>();
+        out << YAML::Key << "Tilemap" << YAML::BeginMap;
+
+        out << YAML::Key << "StepX" << YAML::Value << tmap.step_x;
+        out << YAML::Key << "StepY" << YAML::Value << tmap.step_y;
+        if (tmap.tilemap.IsValid()) {
+                out << YAML::Key << "TilemapPath" <<
+                        YAML::Value << tmap.tilemap.GetPath();
+        }
+
+        out << YAML::Key << "Tiles" << YAML::BeginSeq;
+        for (auto it : tmap.items) {
+                out << YAML::BeginMap;
+
+                out << YAML::Key << "Row" << YAML::Value << it.first.first;
+                out << YAML::Key << "Col" << YAML::Value << it.first.second;
+                out << YAML::Key << "Index" << YAML::Value << it.second;
+
+                out << YAML::EndMap;
+        }
+        out << YAML::EndSeq;
+
+        out << YAML::EndMap;
+}
+
+void SerializeSoundPlayer(YAML::Emitter& out, Entity e)
+{
+        if (!e.HasComponent<SoundPlayerComponent>())
+                return;
+
+        auto& sp = e.GetComponent<SoundPlayerComponent>();
+        out << YAML::Key << "SoundPlayer" << YAML::BeginMap;
+        out << YAML::Key << "Flags" << YAML::Value << sp.flags.val;
+
+        if (sp.sound.IsValid()) {
+                out << YAML::Key << "SoundPath" <<
+                        YAML::Value << sp.sound.GetPath();
+        }
+
+        out << YAML::EndMap;
+}
+
+void SerializePrefab(YAML::Emitter& out, Entity e)
+{
+        if (!e.HasComponent<PrefabComponent>())
+                return;
+
+        auto& pf = e.GetComponent<PrefabComponent>();
+        out << YAML::Key << "Prefab" << YAML::BeginMap;
+
+        if (pf.scene.IsValid()) {
+                out << YAML::Key << "ScenePath" <<
+                        YAML::Value << pf.scene.GetPath();
+        }
+
+        out << YAML::EndMap;
+}
+
 void SerializeComponents(YAML::Emitter& out, Entity e)
 {
         out << YAML::Key << "Components" << YAML::BeginMap;
@@ -223,6 +299,9 @@ void SerializeComponents(YAML::Emitter& out, Entity e)
         SerializeCamera(out, e);
         SerializeRigidBody2D(out, e);
         SerializeText2D(out, e);
+        SerializeTilemap(out, e);
+        SerializeSoundPlayer(out, e);
+        SerializePrefab(out, e);
 
         out << YAML::EndMap;
 }
@@ -236,7 +315,7 @@ void SerializeEntity(YAML::Emitter& out, Entity e)
         out << YAML::Key << "Type" << YAML::Value << get_node_type_string(e.GetNodeType());
         SerializeComponents(out, e);
 
-        if (e.HasChildren()) {
+        if (!e.HasComponent<PrefabComponent>() && e.HasChildren()) {
                 out << YAML::Key << "Children" << YAML::BeginSeq;
 
                 for (uint32_t id : *Application::GetScene()->GetEntityChildren(e)) {
@@ -249,27 +328,17 @@ void SerializeEntity(YAML::Emitter& out, Entity e)
         out << YAML::EndMap;
 }
 
-void SceneSerializer::Serialize(const std::string& path)
+void SceneSerializer::Serialize(const std::string& path, Entity e)
 {
         BOREK_ASSERT(m_Scene, "Trying to serialize null ptr scene");
         YAML::Emitter out;
         out << YAML::BeginMap;
         out << YAML::Key << "Scene" << YAML::Value << "Jmeno";
         out << YAML::Key << "Root";
-        SerializeEntity(out, m_Scene->RootEntity());
-        out << YAML::Key << "Assets" << YAML::BeginSeq;
-        for (unsigned i = 0; auto& asset : AssetManager::s_Assets) {
-                out << YAML::BeginMap << YAML::Key << "Type" << YAML::Value;
-                std::visit(overloads {
-                        [&out](RubyScript&){ out << "Script"; },
-                        [&out](Ref<Graphics::Texture2D>&){ out << "Texture2D"; },
-                }, asset);
-                out << YAML::Key << "Path" << AssetManager::GetPath(i);
-                out << YAML::EndMap;
-                i++;
-        }
 
-        out << YAML::EndSeq;
+        if (e.IsNil())
+                e = m_Scene->RootEntity();
+        SerializeEntity(out, e);
         out << YAML::EndMap;
 
         std::ofstream fout(path);
@@ -299,8 +368,8 @@ void DeserializeSprite(YAML::Node& data, Entity e)
                 auto& t = e.GetComponent<SpriteComponent>();
 
                 t.color = spr["Color"].as<glm::vec4>();
-                if (spr["AssetID"])
-                        t.sprite = NewRef<Sprite>(spr["AssetID"].as<unsigned>());
+                if (spr["AssetPath"])
+                        t.texture = AssetManager::Get<TexAsset>(spr["AssetPath"].as<std::string>());
         }
 }
 
@@ -319,10 +388,12 @@ void DeserializeCamera(YAML::Node& data, Entity e)
 void DeserializeScript(YAML::Node& data, Entity e)
 {
         if (auto cam = data["Script"]) {
-                auto& t = e.AddComponent<RubyScriptComponent>()
-                           .GetComponent<RubyScriptComponent>();
+                if (!e.HasComponent<RubyScriptComponent>()) {
+                        e.AddComponent<RubyScriptComponent>();
+                }
 
-                t.ruby_class = data["Script"]["ClassName"].as<std::string>();
+                auto& t = e.GetComponent<RubyScriptComponent>();
+                t.script = AssetManager::Get<ScriptAsset>(data["Script"]["ScriptPath"].as<std::string>());
         }
 }
 
@@ -352,52 +423,93 @@ void DeserializeText2D(YAML::Node& data, Entity e)
         }
 }
 
-Entity DeserializeEntity(YAML::Node ynode, Scene& scene)
+void DeserializeTilemap(YAML::Node& data, Entity e)
 {
-        Entity e = scene.NewEntity(ynode["Name"].as<std::string>(),
-                                   get_node_type(ynode["Type"].as<std::string>()));
+        if (auto tmapd = data["Tilemap"]) {
+                auto& tmap = e.GetComponent<TilemapComponent>();
+
+                tmap.step_x = tmapd["StepX"].as<uint16_t>();
+                tmap.step_y = tmapd["StepY"].as<uint16_t>();
+                if (auto asset = tmapd["TilemapPath"]) {
+                        tmap.tilemap = AssetManager::Get<TilemapAsset>(asset.as<std::string>());
+                }
+
+                for (auto item : tmapd["Tiles"]) {
+                        const short row = item["Row"].as<short>();
+                        const short col = item["Col"].as<short>();
+                        const short index = item["Index"].as<short>();
+
+                        tmap.Set(col, row, index);
+                }
+        }
+}
+
+void DeserializeSoundPlayer(YAML::Node& data, Entity e)
+{
+        if (auto spd = data["SoundPlayer"]) {
+                auto& sp = e.GetComponent<SoundPlayerComponent>();
+
+                sp.flags.val = spd["Flags"].as<uint32_t>();
+                if (spd["SoundPath"])
+                        sp.sound = AssetManager::Get<SoundAsset>(spd["SoundPath"].as<std::string>());
+        }
+}
+
+void DeserializePrefab(YAML::Node& data, Entity e)
+{
+        if (auto pfd = data["Prefab"]) {
+                auto& pf = e.AddComponent<PrefabComponent>()
+                            .GetComponent<PrefabComponent>();
+
+                if (pfd["ScenePath"])
+                        pf.scene = AssetManager::Get<SceneAsset>(pfd["ScenePath"].as<std::string>());
+
+                pf.Update(e);
+        }
+}
+
+Entity DeserializeEntity(YAML::Node ynode, Scene& scene, Entity e = Entity())
+{
+        if (e.IsNil()) {
+                e = scene.NewEntity(ynode["Name"].as<std::string>(),
+                                    get_node_type(ynode["Type"].as<std::string>()));
+        } else {
+                e.DeleteChildren();
+        }
+
         auto components = ynode["Components"];
+        DeserializePrefab(components, e);
         DeserializeTransform(components, e);
         DeserializeSprite(components, e);
         DeserializeCamera(components, e);
         DeserializeScript(components, e);
         DeserializeRigidBody2D(components, e);
         DeserializeText2D(components, e);
-
+        DeserializeTilemap(components, e);
+        DeserializeSoundPlayer(components, e);
         auto children = ynode["Children"];
         if (children) {
                 for (auto child : children) {
-                        scene.EntityAppendChild(DeserializeEntity(child, scene), e);
+                        Entity c = DeserializeEntity(child, scene);
+                        scene.EntityAppendChild(c, e);
                 };
         }
+
 
         return e;
 }
 
-void SceneSerializer::Deserialize(const std::string& path)
+void SceneSerializer::Deserialize(const std::string& path, Entity e)
 {
-        AssetManager::Reset();
-
         YAML::Node data = YAML::LoadFile(path);
         BOREK_ENGINE_ASSERT(data["Scene"], "Trying to deserialize invalid scene");
 
         std::string scene_name = data["Scene"].as<std::string>();
-        auto assets = data["Assets"];
-        if (assets) {
-                for (auto asset : assets) {
-                        if (asset["Type"].as<std::string>() == "Texture2D") {
-                                AssetManager::GetTexture(asset["Path"].as<std::string>());
-                        } else if (asset["Type"].as<std::string>() == "Script") {
-                                std::filesystem::path path = asset["Path"].as<std::string>();
-                                std::filesystem::path real_path = std::filesystem::path(Utils::Settings::Instance().current_project_path) / path;
-                                std::filesystem::path asset_path = real_path;
-                                asset_path.replace_extension("scr");
-                                AssetManager::RefreshScript(real_path, asset_path);
-                        }
-                }
-        }
 
-        m_Scene->RootEntity() = DeserializeEntity(data["Root"], *m_Scene);
+        Entity res = DeserializeEntity(data["Root"], *m_Scene, e);
+        if (e.IsNil()) {
+                m_Scene->RootEntity() = res;
+        }
 }
 
 }  // namespace Borek

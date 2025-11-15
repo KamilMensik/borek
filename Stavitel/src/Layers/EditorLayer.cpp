@@ -7,6 +7,7 @@
 #include "Include/Engine/SceneSerializer.h"
 #include "Include/Engine/Utils/Settings.h"
 #include "Include/Events/EventCaller.h"
+#include "Include/Events/MouseEvents.h"
 #include "Include/Graphics/Renderer.h"
 #include "Panels/ToolbarPanel.h"
 #include <imgui.h>
@@ -15,7 +16,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Borek.h>
-#include <Borek/Include/Base/Components.h>
 #include <Borek/Include/Engine/Utils/FileUtils.h>
 #include <Borek/Include/Base/Entity.h>
 
@@ -43,6 +43,11 @@ EditorLayer::EditorLayer()
 
 EditorLayer::~EditorLayer() {}
 
+void EditorLayer::OnUpdate(float delta)
+{
+        m_TilesetPanel.OnUpdate();
+}
+
 void EditorLayer::OnEvent(Event& ev)
 {
         EventCaller ec(ev);
@@ -50,6 +55,8 @@ void EditorLayer::OnEvent(Event& ev)
         ec.TryCall<SceneChangedEvent>(EVENT_FN(EditorLayer::OnSceneChangedEvent));
         ec.TryCall<RemoveEntityEvent>(EVENT_FN(EditorLayer::OnRemoveEntity));
         ec.TryCall<AssetPanelSelectedEvent>(EVENT_FN(EditorLayer::OnAssetPanelSelected));
+        ec.TryCall<MouseButtonPressedEvent>(EVENT_FN(EditorLayer::OnMouseButtonPressed));
+        ec.TryCall<MouseButtonReleasedEvent>(EVENT_FN(EditorLayer::OnMouseButtonReleased));
 }
 
 void EditorLayer::BeginDockspace()
@@ -191,6 +198,7 @@ bool EditorLayer::OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev)
 {
         m_PropertiesPanel.ChangeEntity(ev.GetEntity());
         m_GizmoPanel.ChangeEntity(ev.GetEntity());
+        m_TilesetPanel.SetEntity(ev.GetEntity());
 
         return false;
 }
@@ -205,7 +213,6 @@ EditorLayer::OnRemoveEntity(RemoveEntityEvent& ev)
         return true;
 }
 
-
 bool EditorLayer::OnSceneChangedEvent(SceneChangedEvent& ev)
 {
         m_ScenePanel.SetSelectedEntity(Entity());
@@ -213,11 +220,24 @@ bool EditorLayer::OnSceneChangedEvent(SceneChangedEvent& ev)
         m_GizmoPanel.ChangeEntity(Entity());
         return false;
 }
+
 bool
 EditorLayer::OnAssetPanelSelected(AssetPanelSelectedEvent& ev)
 {
         m_ImportPanel.SetSelectedAsset(ev.GetAssetPath());
         return true;
+}
+
+bool
+EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& ev)
+{
+        return m_TilesetPanel.OnMouseButtonPressed(ev);
+}
+
+bool
+EditorLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& ev)
+{
+        return m_TilesetPanel.OnMouseButtonReleased(ev);
 }
 
 

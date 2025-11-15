@@ -6,6 +6,9 @@
 #include <glm/ext/vector_float4.hpp>
 
 namespace Borek {
+
+using Color = glm::vec4;
+
 namespace Colors {
 
 static glm::vec4 FROM_RGB(uint8_t r, uint8_t g, uint8_t b)

@@ -20,7 +20,7 @@ namespace RBModules {
 
 using namespace mrbcpp;
 
-MRB_FUNC(GetChild) {
+MRB_FUNC(FindChild) {
         std::string name = mrb_str_to_cstr(mrb, MRB_ARG1);
         Entity child = Application::GetScene()->EntityFindFirstChild(name);
 
@@ -37,7 +37,7 @@ void Scene::Init(RubyEngine& engine)
         Module& borek = engine.GetBorekModule();
 
         borek.define_class("Scene")
-                .define_class_method("get_child", GetChild,
+                .define_class_method("find_child", FindChild,
                                      FuncArgs().Required(1));
 }
 

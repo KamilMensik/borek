@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Components/TransformComponent.h"
+#include "Include/Engine/Utils/GeometryUtils.h"
 #ifndef BR_PLATFORM_WINDOWS
 
 #include <GLFW/glfw3.h>
@@ -58,6 +60,16 @@ glm::vec2 Input::GetMousePosRelative()
         res = glm::vec2(2) * (res / offset.second) - glm::vec2(1);
 
         return res;
+}
+
+glm::vec2 Input::GetMouseWorldPos()
+{
+        const TransformComponent& ctran = *Application::GetCamera().second;
+
+        return ctran.position + Utils::Geometry::rotate_point(
+                glm::vec2(0), Input::GetMousePosRelative() * glm::vec2(1280 / 4, 720 / 4),
+                ctran.rotation
+        );
 }
 
 }  // namespace Borek

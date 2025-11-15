@@ -2,8 +2,6 @@
 
 
 #include "ECS/Component.h"
-#include "Include/Base/Application.h"
-#include "Include/Base/Components.h"
 
 #include <mruby.h>
 #include <mruby/value.h>
@@ -14,9 +12,14 @@
 
 #include <mrbcpp.h>
 
+#include "Include/Core.h"
+#include "Include/Components/Text2DComponent.h"
+#include "Include/Components/TransformComponent.h"
+#include "Include/Base/Entity.h"
 #include "Include/Scripting/Ruby/RubyEngine.h"
 #include "Include/Scripting/Ruby/Modules/RBComponent.h"
-#include "Include/Core.h"
+#include "Include/Scripting/Ruby/Modules/Components/RBSpriteComponent.h"
+#include "Include/Scripting/Ruby/Modules/Components/RBSoundPlayerComponent.h"
 
 namespace Borek {
 namespace RBModules {
@@ -35,7 +38,7 @@ static Class transform_position;
 static Class transform_scale;
 
 
-MRB_FUNC(ComponentInitialize)
+static MRB_FUNC(ComponentInitialize)
 {
         mrb_int entity_id;
         mrb_get_args(mrb, "i", &entity_id);
@@ -221,6 +224,9 @@ void Component::Init(RubyEngine& engine)
                 .define_method("text", TextGetText)
                 .define_method("text=", TextSetText, FuncArgs().Required(1))
                 .define_const("COMPONENT_ID", MRB_NUM(ECS::GetId<Text2DComponent>()));
+
+        RBSpriteComponent::Init(engine);
+        RBSoundPlayerComponent::Init(engine);
 }
 
 }  // namespace RBModules

@@ -2,10 +2,12 @@
 
 #pragma once
 
+#include <filesystem>
+#include <string>
+#include <glm/ext/vector_float4.hpp>
+
 #include "Include/Core.h"
 #include "Include/Graphics/Texture.h"
-#include "glm/ext/vector_float4.hpp"
-#include <string>
 
 namespace Borek {
 
@@ -19,6 +21,16 @@ public:
         inline void Bind(uint32_t slot = 0) const { m_Texture->Bind(slot); }
         inline uint32_t GetWidth() const { return m_Texture->GetWidth(); }
         inline uint32_t GetHeight() const { return m_Texture->GetHeight(); }
+        uint32_t GetCols() const
+        {
+                uint32_t cols_pre = m_Texture->GetWidth() / m_StepX;
+                return (m_Texture->GetWidth() - (cols_pre - 1) * m_Gap) / m_StepX;
+        }
+        uint32_t GetRows() const
+        {
+                uint32_t rows_pre = m_Texture->GetHeight() / m_StepY;
+                return (m_Texture->GetHeight() - (rows_pre - 1) * m_Gap) / m_StepY;
+        }
         inline uint32_t GetId() const { return m_Texture->GetId(); }
         inline glm::vec4 SubTextureCords(uint32_t row, uint32_t col)
         {

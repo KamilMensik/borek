@@ -6,8 +6,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <magic_enum/magic_enum.hpp>
 
-#include <Borek/Include/Base/Components.h>
 #include <Borek/Include/Base/Application.h>
+#include <Borek/Include/Components/TransformComponent.h>
+#include <Borek/Include/Components/CameraComponent.h>
 
 #include "./GizmoPanel.h"
 

@@ -32,8 +32,10 @@ AddEntityPopup::Tick()
         ImGui::InputText("##node_filter", &m_Search);
 
         for (int i = 0; auto item : node_type_strings) {
-                if (!strcasestr(item.c_str(), m_Search.c_str()))
+                if (!strcasestr(item.c_str(), m_Search.c_str())) {
+                        i++;
                         continue;
+                }
 
                 bool is_selected = m_SelectedItem == i;
                 ImGui::Image(get_node_type_icon(SCAST<NodeType>(i))->GetId(),

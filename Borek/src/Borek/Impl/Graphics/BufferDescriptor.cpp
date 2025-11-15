@@ -19,6 +19,7 @@ uint32_t BufferDescriptor::Element::Count() const
                 return 1;
         case Datatype::Float2:
         case Datatype::Int2:
+        case Datatype::Sampler2D:
                 return 2;
         case Datatype::Float3:
         case Datatype::Int3:

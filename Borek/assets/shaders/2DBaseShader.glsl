@@ -33,7 +33,6 @@ layout(location = 0) in vec4 e_Color;
 layout(location = 1) in vec2 e_TexCord;
 layout(location = 2) in float e_TextureId;
 
-
 void main()
 {
         vec4 res_color = e_Color;

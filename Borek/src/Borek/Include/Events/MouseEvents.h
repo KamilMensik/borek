@@ -77,8 +77,8 @@ public:
         MouseScrolledEvent(float amount_x, float amount_y)
                 : m_AmountX(amount_x), m_AmountY(amount_y) {}
 
-        inline char GetAmountX() const { return m_AmountX; }
-        inline char GetAmountY() const { return m_AmountY; }
+        inline float GetAmountX() const { return m_AmountX; }
+        inline float GetAmountY() const { return m_AmountY; }
         operator std::string() const override
         {
                 return std::format("Event {}: (DX: {} DY: {})",

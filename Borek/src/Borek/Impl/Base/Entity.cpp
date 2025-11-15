@@ -4,10 +4,16 @@
 #include "Include/Base/Entity.h"
 #include "Include/Base/Scene.h"
 #include "Include/Base/Application.h"
+#include "Include/Components/SoundplayerComponent.h"
+#include "Include/Components/TilemapComponent.h"
 #include "Include/Events/ApplicationEvents.h"
-#include "Include/Base/Components.h"
 #include "Include/Debug/Log.h"
 #include "Include/Debug/Assert.h"
+
+#include "Include/Components/Text2DComponent.h"
+#include "Include/Components/SpriteComponent.h"
+#include "Include/Components/TagComponent.h"
+#include "Include/Components/IDComponent.h"
 
 #include "Include/Engine/FZX/Body.h"
 
@@ -96,9 +102,47 @@ Entity::GetParent()
 }
 
 bool
+Entity::IsParentOf(Entity e)
+{
+        Entity parent = e.GetParent();
+        while (!parent.IsNil()) {
+                if (parent == *this)
+                        return true;
+
+                parent = parent.GetParent();
+        }
+
+        return false;
+}
+
+bool
 Entity::HasChildren()
 {
         return Application::GetScene()->HasEntityChildren(*this);
+}
+
+std::vector<uint32_t>*
+Entity::GetChildren()
+{
+        return Application::GetScene()->GetEntityChildren(*this);
+}
+
+void
+Entity::DeleteChildren()
+{
+        auto children = Application::GetScene()->GetEntityChildren(*this);
+        if (!children)
+                return;
+
+        for (int i = children->size() - 1; i >= 0; i--) {
+                Entity((*children)[i]).Delete();
+        }
+}
+
+Entity
+Entity::FindChild(const std::string& name)
+{
+        return Application::GetScene()->EntityFindFirstChild(name, *this);
 }
 
 NodeType
@@ -150,6 +194,12 @@ Entity::InitializeNode(NodeType type)
         case NodeType::Text:
                 AddComponent<Text2DComponent>();
                 break;
+        case NodeType::Tilemap:
+                AddComponent<TilemapComponent>();
+                break;
+        case NodeType::SoundPlayer:
+                AddComponent<SoundPlayerComponent>();
+                break;
         }
 
         Application::GetScene()->m_EntityNodeTypes[m_Id] = type;
@@ -178,6 +228,12 @@ Entity::DeinitializeNode()
                 break;
         case NodeType::Text:
                 RemoveComponent<Text2DComponent>();
+                break;
+        case NodeType::Tilemap:
+                RemoveComponent<TilemapComponent>();
+                break;
+        case NodeType::SoundPlayer:
+                RemoveComponent<SoundPlayerComponent>();
                 break;
         }
 }

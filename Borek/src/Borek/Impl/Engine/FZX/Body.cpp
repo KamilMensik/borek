@@ -16,11 +16,10 @@ Body::CollidesWith(const Body& other) const
 void
 Body::Update(const glm::vec2& pos, const glm::vec2& size)
 {
-        const SimdVec4f half_v(0.5f, 0.5f, 0.5f, 0.5f);
         const SimdVec4f pos_v(pos.x, pos.y, pos.x, pos.y);
-        const SimdVec4f size_v(-size.x, -size.y, size.x, size.y);
+        const SimdVec4f size_v(0, 0, size.x, size.y);
 
-        collider.box = simd_add4f(pos_v, simd_mul4f(size_v, half_v));
+        collider.box = simd_add4f(pos_v, size_v);
 }
 
 } // namespace FZX

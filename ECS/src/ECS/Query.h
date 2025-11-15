@@ -8,7 +8,6 @@
 #include <tuple>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 #include "ECS/World.h"
 #include "ECS/Component.h"

@@ -16,6 +16,7 @@ public:
         virtual void Bind(uint32_t slot = 0) const = 0;
         virtual uint32_t GetWidth() const = 0;
         virtual uint32_t GetHeight() const = 0;
+        virtual uint32_t GetChannels() const = 0;
         virtual uint32_t GetId() const = 0;
 };
 
@@ -24,8 +25,10 @@ public:
         virtual ~Texture2D() {};
         uint32_t GetWidth() const override { return m_Width; }
         uint32_t GetHeight() const override { return m_Height; }
+        uint32_t GetChannels() const override { return m_Channels; }
         static Ref<Texture2D> Create(uint32_t width, uint32_t height,
-                                     const uint8_t* data, int channels = 4);
+                                     const uint8_t* data, int channels = 4,
+                                     uint32_t flags = 0);
         static Ref<Texture2D> Create(const std::string& path);
 
 protected:

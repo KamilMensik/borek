@@ -69,15 +69,13 @@ private:
         GetEdge(ComponentId c, bool is_adding);
 
         uint32_t
-        AddEntity(EntityId e, class World& world, bool init_values = true);
+        AddEntity(EntityId e, bool init_values = true);
 
         uint32_t
-        MoveEntity(EntityId e, class ArchetypeInternal& dest,
-                   class World& world);
+        MoveEntity(EntityId e, class ArchetypeInternal& dest);
 
         void
-        RemoveEntity(EntityId e, uint32_t row, class World& world,
-                     bool destruct_values = true);
+        RemoveEntity(uint32_t row, bool destruct_values = true);
 
         void
         ChangeSize(uint32_t new_size);
@@ -143,13 +141,13 @@ private:
         Id m_Id;
 
         uint32_t
-        AddEntity(EntityId e, class World& world);
+        AddEntity(EntityId e);
 
         uint32_t
-        MoveEntity(EntityId e, class Archetype dest, class World& world);
+        MoveEntity(EntityId e, class Archetype dest);
 
         void
-        RemoveEntity(EntityId e, uint32_t row, class World& world);
+        RemoveEntity(uint32_t row);
 
         ArchetypeInternal&
         GetInternal();

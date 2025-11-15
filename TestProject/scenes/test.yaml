@@ -1,0 +1,42 @@
+Scene: Player
+Root:
+  Name: Player
+  Type: DynamicBody
+  Components:
+    ID:
+      Value: 2323693407914064728
+    Transform:
+      Position: [0, 0]
+      Scale: [64, 64]
+      Rotation: 0
+    Script:
+      ScriptPath: scripts/test.scr
+    RigidBody2D:
+      BodyType: Dynamic
+      ColliderType: Rectangle
+      CollisionMask: 65535
+  Children:
+    - Name: Sprite
+      Type: Sprite
+      Components:
+        ID:
+          Value: 4709252621638138318
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+        Sprite:
+          Color: [1, 1, 1, 1]
+          AssetPath: retro-mario.tex
+    - Name: JumpSound
+      Type: SoundPlayer
+      Components:
+        ID:
+          Value: 6861984636122766943
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+        SoundPlayer:
+          Flags: 0
+          SoundPath: jump.snd

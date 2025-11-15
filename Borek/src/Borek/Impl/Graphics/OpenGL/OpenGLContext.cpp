@@ -1,3 +1,4 @@
+#include "Include/Debug/Log.h"
 #include <magic_enum/magic_enum.hpp>
 #include <glad/glad.h>
 
@@ -16,9 +17,13 @@ void MessageCallback(GLenum source,
                      const GLchar* message,
                      const void* userParam)
 {
-        BOREK_ENGINE_ERROR("GL CALLBACK: {} type = 0x{:x}, severity = 0x{:x}, message = {}\n",
-        (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-        type, severity, message);
+        if (type == GL_DEBUG_TYPE_ERROR) {
+                BOREK_ENGINE_ERROR("GL ERROR: type = 0x{:x}, severity = 0x{:x}, message = {}\n",
+                type, severity, message);
+        } else {
+                BOREK_ENGINE_WARN("OpenGL: type = 0x{:x}, severity = 0x{:x}, message = {}\n",
+                type, severity, message);
+        }
 }
 
 
@@ -40,12 +45,14 @@ void OpenGLContext::Init()
         bool result = gladLoadGLLoader((GLADloadproc)(glfwGetProcAddress));
         BOREK_ENGINE_ASSERT(result, "Could not initialize glad.");
 
-        BOREK_ENGINE_INFO("OpenGL renderer: {}",
-                          (char*)glGetString(GL_RENDERER));
+        BOREK_ENGINE_INFO("OpenGL renderer: {}, OpenGL version: {}",
+                          (char*)glGetString(GL_RENDERER),
+                          (char*)glGetString(GL_VERSION));
 
         glEnable(GL_BLEND);
-        //glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_ALPHA_TEST);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GREATER, 0.199999f);
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

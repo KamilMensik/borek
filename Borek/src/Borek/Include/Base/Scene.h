@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Base/Node.h"
+#include "Include/Core.h"
 #include "Include/Engine/FZX/FACD.h"
 #include "Include/Engine/Utils/PairHasher.h"
 #include <unordered_map>
@@ -40,6 +41,9 @@ public:
         Entity&
         RootEntity();
 
+        uint32_t
+        GetEntityCount();
+
         // Scene graph API
         void
         TraverseScene(iteration_func iter_func);
@@ -74,7 +78,7 @@ public:
         bool
         HasEntityChildren(Entity entity);
 
-        const std::vector<uint32_t>*
+        std::vector<uint32_t>*
         GetEntityChildren(Entity entity);
 
         NodeType

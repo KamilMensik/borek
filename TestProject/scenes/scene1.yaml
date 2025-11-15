@@ -4,81 +4,687 @@ Root:
   Type: Node
   Components:
     ID:
-      Value: 814878820306461256
+      Value: 10850393703886731691
     Transform:
       Position: [0, 0]
       Scale: [1, 1]
-      Rotation: [0, 0, 0]
+      Rotation: 0
   Children:
-    - Name: Background
-      Type: Node
+    - Name: BGM
+      Type: SoundPlayer
       Components:
         ID:
-          Value: 16127170144483546128
-        Transform:
-          Position: [0, 0]
-          Scale: [3.2, 2]
-          Rotation: [0, 0, 0]
-        Sprite:
-          Color: [0.31227452, 0.6676923, 0, 1]
-    - Name: Ball
-      Type: Node
-      Components:
-        ID:
-          Value: 12047493541401519864
-        Transform:
-          Position: [0, 0]
-          Scale: [0.075, 0.075]
-          Rotation: [0, 0, 0]
-        Sprite:
-          Color: [1, 1, 1, 1]
-        Script:
-          ClassName: Ball
-    - Name: Player 2
-      Type: Node
-      Components:
-        ID:
-          Value: 2724182340398874220
-        Transform:
-          Position: [0.75, 0]
-          Scale: [0.125, 0.75]
-          Rotation: [0, 0, 0]
-        Sprite:
-          Color: [0.83692306, 0.09270531, 0.09270531, 1]
-        Script:
-          ClassName: PaddleR
-    - Name: Player 1
-      Type: Node
-      Components:
-        ID:
-          Value: 2540527617633143354
-        Transform:
-          Position: [-0.75, 0]
-          Scale: [0.125, 0.75]
-          Rotation: [0, 0, 0]
-        Sprite:
-          Color: [0.06288282, 0.12267717, 0.7569231, 1]
-        Script:
-          ClassName: PaddleL
-    - Name: Camera
-      Type: Node
-      Components:
-        ID:
-          Value: 18296403526784021102
+          Value: 10270022614560830372
         Transform:
           Position: [0, 0]
           Scale: [1, 1]
-          Rotation: [0, 0, 0]
+          Rotation: 0
+        SoundPlayer:
+          Flags: 2
+          SoundPath: Super Mario Bros NES Music - Overworld Theme.snd
+    - Name: Camera
+      Type: Camera
+      Components:
+        ID:
+          Value: 11833596981229140700
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
         Camera:
           IsActive: true
-Assets:
-  - Type: Texture2D
-    Path: retro-mario.png
-  - Type: Texture2D
-    Path: tilemap.png
-  - Type: Script
-    Path: /home/kamil/bakalarka/borek/TestProject/scripts/paddle_r.rb
-  - Type: Script
-    Path: /home/kamil/bakalarka/borek/TestProject/scripts/paddle_l.rb
-  - Type: Script
-    Path: /home/kamil/bakalarka/borek/TestProject/scripts/ball.rb
+      Children:
+        - Name: Background
+          Type: Sprite
+          Components:
+            ID:
+              Value: 13991633515350132040
+            Transform:
+              Position: [-640, -360]
+              Scale: [1280, 720]
+              Rotation: 0
+            Sprite:
+              Color: [0.31069106, 0.42266008, 0.83573484, 1]
+    - Name: Map
+      Type: Tilemap
+      Components:
+        ID:
+          Value: 16750630614985167007
+        Transform:
+          Position: [0, 0]
+          Scale: [4, 4]
+          Rotation: 0
+        Tilemap:
+          StepX: 16
+          StepY: 16
+          TilemapPath: overworld.tmap
+          Tiles:
+            - Row: -6
+              Col: -10
+              Index: 56
+            - Row: -6
+              Col: -9
+              Index: 56
+            - Row: -6
+              Col: -8
+              Index: 56
+            - Row: -6
+              Col: -7
+              Index: 56
+            - Row: -6
+              Col: -6
+              Index: 56
+            - Row: -6
+              Col: -5
+              Index: 56
+            - Row: -6
+              Col: -4
+              Index: 56
+            - Row: -6
+              Col: -3
+              Index: 56
+            - Row: -6
+              Col: -2
+              Index: 56
+            - Row: -6
+              Col: -1
+              Index: 56
+            - Row: -6
+              Col: 0
+              Index: 56
+            - Row: -6
+              Col: 1
+              Index: 56
+            - Row: -6
+              Col: 2
+              Index: 56
+            - Row: -6
+              Col: 3
+              Index: 56
+            - Row: -6
+              Col: 4
+              Index: 56
+            - Row: -6
+              Col: 5
+              Index: 56
+            - Row: -6
+              Col: 6
+              Index: 56
+            - Row: -6
+              Col: 7
+              Index: 56
+            - Row: -6
+              Col: 8
+              Index: 56
+            - Row: -6
+              Col: 9
+              Index: 56
+            - Row: -6
+              Col: 10
+              Index: 56
+            - Row: -6
+              Col: 11
+              Index: 56
+            - Row: -6
+              Col: 12
+              Index: 56
+            - Row: -6
+              Col: 13
+              Index: 56
+            - Row: -6
+              Col: 14
+              Index: 56
+            - Row: -6
+              Col: 15
+              Index: 56
+            - Row: -6
+              Col: 16
+              Index: 56
+            - Row: -6
+              Col: 17
+              Index: 56
+            - Row: -6
+              Col: 18
+              Index: 56
+            - Row: -6
+              Col: 19
+              Index: 56
+            - Row: -6
+              Col: 20
+              Index: 56
+            - Row: -6
+              Col: 21
+              Index: 56
+            - Row: -6
+              Col: 22
+              Index: 56
+            - Row: -6
+              Col: 23
+              Index: 56
+            - Row: -6
+              Col: 24
+              Index: 56
+            - Row: -6
+              Col: 25
+              Index: 56
+            - Row: -6
+              Col: 26
+              Index: 56
+            - Row: -6
+              Col: 27
+              Index: 56
+            - Row: -6
+              Col: 28
+              Index: 56
+            - Row: -6
+              Col: 29
+              Index: 56
+            - Row: -6
+              Col: 30
+              Index: 56
+            - Row: -6
+              Col: 31
+              Index: 56
+            - Row: -6
+              Col: 32
+              Index: 56
+            - Row: -6
+              Col: 33
+              Index: 56
+            - Row: -6
+              Col: 34
+              Index: 56
+            - Row: -6
+              Col: 35
+              Index: 56
+            - Row: -6
+              Col: 36
+              Index: 56
+            - Row: -6
+              Col: 37
+              Index: 56
+            - Row: -6
+              Col: 38
+              Index: 56
+            - Row: -6
+              Col: 39
+              Index: 56
+            - Row: -6
+              Col: 40
+              Index: 56
+            - Row: -6
+              Col: 41
+              Index: 56
+            - Row: -6
+              Col: 42
+              Index: 56
+            - Row: -6
+              Col: 43
+              Index: 56
+            - Row: -6
+              Col: 44
+              Index: 56
+            - Row: -6
+              Col: 45
+              Index: 56
+            - Row: -6
+              Col: 46
+              Index: 56
+            - Row: -6
+              Col: 47
+              Index: 56
+            - Row: -6
+              Col: 48
+              Index: 56
+            - Row: -6
+              Col: 49
+              Index: 56
+            - Row: -6
+              Col: 50
+              Index: 56
+            - Row: -6
+              Col: 51
+              Index: 56
+            - Row: -6
+              Col: 52
+              Index: 56
+            - Row: -6
+              Col: 53
+              Index: 56
+            - Row: -6
+              Col: 54
+              Index: 56
+            - Row: -6
+              Col: 55
+              Index: 56
+            - Row: -6
+              Col: 56
+              Index: 56
+            - Row: -6
+              Col: 62
+              Index: 56
+            - Row: -6
+              Col: 63
+              Index: 56
+            - Row: -6
+              Col: 64
+              Index: 56
+            - Row: -6
+              Col: 65
+              Index: 56
+            - Row: -6
+              Col: 66
+              Index: 56
+            - Row: -6
+              Col: 67
+              Index: 56
+            - Row: -6
+              Col: 68
+              Index: 56
+            - Row: -6
+              Col: 69
+              Index: 56
+            - Row: -6
+              Col: 70
+              Index: 56
+            - Row: -6
+              Col: 71
+              Index: 56
+            - Row: -6
+              Col: 72
+              Index: 56
+            - Row: -6
+              Col: 73
+              Index: 56
+            - Row: -6
+              Col: 74
+              Index: 56
+            - Row: -6
+              Col: 75
+              Index: 56
+            - Row: -5
+              Col: -10
+              Index: 56
+            - Row: -5
+              Col: -9
+              Index: 56
+            - Row: -5
+              Col: -8
+              Index: 56
+            - Row: -5
+              Col: -7
+              Index: 56
+            - Row: -5
+              Col: -6
+              Index: 56
+            - Row: -5
+              Col: -5
+              Index: 56
+            - Row: -5
+              Col: -4
+              Index: 56
+            - Row: -5
+              Col: -3
+              Index: 56
+            - Row: -5
+              Col: -2
+              Index: 56
+            - Row: -5
+              Col: -1
+              Index: 56
+            - Row: -5
+              Col: 0
+              Index: 56
+            - Row: -5
+              Col: 1
+              Index: 56
+            - Row: -5
+              Col: 2
+              Index: 56
+            - Row: -5
+              Col: 3
+              Index: 56
+            - Row: -5
+              Col: 4
+              Index: 56
+            - Row: -5
+              Col: 5
+              Index: 56
+            - Row: -5
+              Col: 6
+              Index: 56
+            - Row: -5
+              Col: 7
+              Index: 56
+            - Row: -5
+              Col: 8
+              Index: 56
+            - Row: -5
+              Col: 9
+              Index: 56
+            - Row: -5
+              Col: 10
+              Index: 56
+            - Row: -5
+              Col: 11
+              Index: 56
+            - Row: -5
+              Col: 12
+              Index: 56
+            - Row: -5
+              Col: 13
+              Index: 56
+            - Row: -5
+              Col: 14
+              Index: 56
+            - Row: -5
+              Col: 15
+              Index: 56
+            - Row: -5
+              Col: 16
+              Index: 56
+            - Row: -5
+              Col: 17
+              Index: 56
+            - Row: -5
+              Col: 18
+              Index: 56
+            - Row: -5
+              Col: 19
+              Index: 56
+            - Row: -5
+              Col: 20
+              Index: 56
+            - Row: -5
+              Col: 21
+              Index: 56
+            - Row: -5
+              Col: 22
+              Index: 56
+            - Row: -5
+              Col: 23
+              Index: 56
+            - Row: -5
+              Col: 24
+              Index: 56
+            - Row: -5
+              Col: 25
+              Index: 56
+            - Row: -5
+              Col: 26
+              Index: 56
+            - Row: -5
+              Col: 27
+              Index: 56
+            - Row: -5
+              Col: 28
+              Index: 56
+            - Row: -5
+              Col: 29
+              Index: 56
+            - Row: -5
+              Col: 30
+              Index: 56
+            - Row: -5
+              Col: 31
+              Index: 56
+            - Row: -5
+              Col: 32
+              Index: 56
+            - Row: -5
+              Col: 33
+              Index: 56
+            - Row: -5
+              Col: 34
+              Index: 56
+            - Row: -5
+              Col: 35
+              Index: 56
+            - Row: -5
+              Col: 36
+              Index: 56
+            - Row: -5
+              Col: 37
+              Index: 56
+            - Row: -5
+              Col: 38
+              Index: 56
+            - Row: -5
+              Col: 39
+              Index: 56
+            - Row: -5
+              Col: 40
+              Index: 56
+            - Row: -5
+              Col: 41
+              Index: 56
+            - Row: -5
+              Col: 42
+              Index: 56
+            - Row: -5
+              Col: 43
+              Index: 56
+            - Row: -5
+              Col: 44
+              Index: 56
+            - Row: -5
+              Col: 45
+              Index: 56
+            - Row: -5
+              Col: 46
+              Index: 56
+            - Row: -5
+              Col: 47
+              Index: 56
+            - Row: -5
+              Col: 48
+              Index: 56
+            - Row: -5
+              Col: 49
+              Index: 56
+            - Row: -5
+              Col: 50
+              Index: 56
+            - Row: -5
+              Col: 51
+              Index: 56
+            - Row: -5
+              Col: 52
+              Index: 56
+            - Row: -5
+              Col: 53
+              Index: 56
+            - Row: -5
+              Col: 54
+              Index: 56
+            - Row: -5
+              Col: 55
+              Index: 56
+            - Row: -5
+              Col: 56
+              Index: 56
+            - Row: -5
+              Col: 62
+              Index: 56
+            - Row: -5
+              Col: 63
+              Index: 56
+            - Row: -5
+              Col: 64
+              Index: 56
+            - Row: -5
+              Col: 65
+              Index: 56
+            - Row: -5
+              Col: 66
+              Index: 56
+            - Row: -5
+              Col: 67
+              Index: 56
+            - Row: -5
+              Col: 68
+              Index: 56
+            - Row: -5
+              Col: 69
+              Index: 56
+            - Row: -5
+              Col: 70
+              Index: 56
+            - Row: -5
+              Col: 71
+              Index: 56
+            - Row: -5
+              Col: 72
+              Index: 56
+            - Row: -5
+              Col: 73
+              Index: 56
+            - Row: -5
+              Col: 74
+              Index: 56
+            - Row: -5
+              Col: 75
+              Index: 56
+            - Row: -4
+              Col: 30
+              Index: 54
+            - Row: -4
+              Col: 31
+              Index: 55
+            - Row: -4
+              Col: 36
+              Index: 54
+            - Row: -4
+              Col: 37
+              Index: 55
+            - Row: -4
+              Col: 42
+              Index: 54
+            - Row: -4
+              Col: 43
+              Index: 55
+            - Row: -3
+              Col: 30
+              Index: 62
+            - Row: -3
+              Col: 31
+              Index: 63
+            - Row: -3
+              Col: 36
+              Index: 54
+            - Row: -3
+              Col: 37
+              Index: 55
+            - Row: -3
+              Col: 42
+              Index: 54
+            - Row: -3
+              Col: 43
+              Index: 55
+            - Row: -2
+              Col: 36
+              Index: 62
+            - Row: -2
+              Col: 37
+              Index: 63
+            - Row: -2
+              Col: 42
+              Index: 54
+            - Row: -2
+              Col: 43
+              Index: 55
+            - Row: -2
+              Col: 48
+              Index: 59
+            - Row: -2
+              Col: 49
+              Index: 59
+            - Row: -2
+              Col: 50
+              Index: 59
+            - Row: -2
+              Col: 67
+              Index: 59
+            - Row: -1
+              Col: 11
+              Index: 60
+            - Row: -1
+              Col: 14
+              Index: 59
+            - Row: -1
+              Col: 15
+              Index: 60
+            - Row: -1
+              Col: 16
+              Index: 59
+            - Row: -1
+              Col: 17
+              Index: 60
+            - Row: -1
+              Col: 18
+              Index: 59
+            - Row: -1
+              Col: 42
+              Index: 62
+            - Row: -1
+              Col: 43
+              Index: 63
+            - Row: 1
+              Col: 51
+              Index: 59
+            - Row: 1
+              Col: 52
+              Index: 59
+            - Row: 1
+              Col: 53
+              Index: 59
+            - Row: 1
+              Col: 54
+              Index: 59
+            - Row: 1
+              Col: 55
+              Index: 59
+            - Row: 1
+              Col: 56
+              Index: 59
+            - Row: 1
+              Col: 57
+              Index: 59
+            - Row: 1
+              Col: 58
+              Index: 59
+            - Row: 1
+              Col: 59
+              Index: 59
+            - Row: 1
+              Col: 64
+              Index: 59
+            - Row: 1
+              Col: 65
+              Index: 59
+            - Row: 1
+              Col: 66
+              Index: 59
+            - Row: 1
+              Col: 67
+              Index: 60
+            - Row: 2
+              Col: 16
+              Index: 60
+    - Name: TEST
+      Type: DynamicBody
+      Components:
+        ID:
+          Value: 16821685966284028132
+        Transform:
+          Position: [-283, 0]
+          Scale: [64, 64]
+          Rotation: 0
+        Script:
+          ScriptPath: scripts/test.scr
+        RigidBody2D:
+          BodyType: Dynamic
+          ColliderType: Rectangle
+          CollisionMask: 65535
+        Prefab:
+          ScenePath: scenes/test.scn

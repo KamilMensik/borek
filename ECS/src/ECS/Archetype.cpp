@@ -2,7 +2,9 @@
 
 #include "ECS/Query.h"
 #include "ECS/World.h"
+#include <algorithm>
 #include <cstring>
+#include <iostream>
 
 #include "Archetype.h"
 #include "Component.h"
@@ -38,7 +40,8 @@ ArchetypeInternal::Init(uint32_t id)
                 ComponentData& cdata = s_ComponentData[c];
 
                 m_Components.emplace_back(cdata.size, cdata.alignment,
-                                          cdata.constructor, cdata.destructor);
+                                          cdata.constructor, cdata.destructor,
+                                          cdata.moveop);
                 s_ComponentColumn[GetCAId(c, id)] = i;
                 i++;
         }
@@ -53,7 +56,7 @@ ArchetypeInternal::GetEdge(ComponentId c, bool is_adding)
                 return edge->second;
         }
 
-        ArchetypeType test = m_Type;
+        ArchetypeType test(m_Type);
         if (is_adding)
                 test.emplace(c);
         else
@@ -64,14 +67,14 @@ ArchetypeInternal::GetEdge(ComponentId c, bool is_adding)
         // ArchetypeInternal::Get may invalidate this object
         Id find = ArchetypeInternal::Get(test);
 
-        s_CreatedArchetypes[find].m_Edges[c] = m_Id;
+        s_CreatedArchetypes[find].m_Edges[c] = keep_id;
         s_CreatedArchetypes[keep_id].m_Edges[c] = find;
 
         return find;
 }
 
 uint32_t
-ArchetypeInternal::AddEntity(EntityId e, World& world, bool init_values)
+ArchetypeInternal::AddEntity(EntityId e, bool init_values)
 {
         if (m_Entities.size() >= m_MaxSize)
                 ChangeSize((m_MaxSize << 2) + 5);
@@ -79,8 +82,8 @@ ArchetypeInternal::AddEntity(EntityId e, World& world, bool init_values)
         uint32_t row = m_Entities.size();
         m_Entities.emplace_back(e);
 
-        world.m_WorldData[e].archetype_row = row;
-        world.m_WorldData[e].archetype_id = m_Id;
+        World::s_WorldData[e].archetype_row = row;
+        World::s_WorldData[e].archetype_id = m_Id;
 
         if (!init_values)
                 return row;
@@ -93,11 +96,10 @@ ArchetypeInternal::AddEntity(EntityId e, World& world, bool init_values)
 }
 
 uint32_t
-ArchetypeInternal::MoveEntity(EntityId e, ArchetypeInternal& dest,
-                              World& world)
+ArchetypeInternal::MoveEntity(EntityId e, ArchetypeInternal& dest)
 {
-        uint32_t from_row = world.m_WorldData[e].archetype_row;
-        uint32_t dest_row = dest.AddEntity(e, world, false);
+        uint32_t from_row = World::s_WorldData[e].archetype_row;
+        uint32_t dest_row = dest.AddEntity(e, false);
 
         for (ComponentId c : dest.m_Type) {
                 auto& to = dest.m_Components[s_ComponentColumn[GetCAId(c, dest.m_Id)]];
@@ -105,18 +107,15 @@ ArchetypeInternal::MoveEntity(EntityId e, ArchetypeInternal& dest,
                 if (from_col == s_ComponentColumn.end()) {
                         to.constructor(to[dest_row]);
                 } else {
-                        std::memcpy(to[dest_row],
-                                    m_Components[from_col->second][from_row],
-                                    to.element_size);
+                        to.moveop(to[dest_row], m_Components[from_col->second][from_row]);
                 }
         }
 
-        RemoveEntity(e, from_row, world, false);
+        RemoveEntity(from_row, false);
         return dest_row;
 }
 
-void ArchetypeInternal::RemoveEntity(EntityId e, uint32_t row, World& world,
-                                     bool destruct_values)
+void ArchetypeInternal::RemoveEntity(uint32_t row, bool destruct_values)
 {
         if (m_Entities.size() == 0)
                 return;
@@ -134,14 +133,12 @@ void ArchetypeInternal::RemoveEntity(EntityId e, uint32_t row, World& world,
         if (row != (m_Entities.size() - 1)) {
                 uint32_t replaceworldith = m_Entities.size() - 1;
                 for (auto& column : m_Components) {
-                        std::memcpy(column[row], column[replaceworldith],
-                                    column.element_size);
+                        column.moveop(column[row], column[replaceworldith]);
                 }
 
                 m_Entities[row] = m_Entities.back();
-                world.m_WorldData[m_Entities.back()].archetype_row = row;
+                World::s_WorldData[m_Entities.back()].archetype_row = row;
         }
-
         m_Entities.pop_back();
 
         if (m_MaxSize / m_Entities.size() >= 8)
@@ -159,10 +156,14 @@ void ArchetypeInternal::ChangeSize(uint32_t new_size)
                 component_sizes += component.element_size;
         uint8_t* data = new uint8_t[component_sizes * new_size];
 
+        const uint32_t copy_size = std::min(m_MaxSize, new_size);
         for (uint32_t offset = 0; auto& component : m_Components) {
-                uint8_t *new_cdata = &data[offset];
-                std::memcpy(new_cdata, component.data,
-                            component.element_size * m_MaxSize);
+                uint8_t* new_cdata = &data[offset];
+
+                for (int i = 0; i < copy_size; i++) {
+                        component.moveop(&new_cdata[i * component.element_size],
+                                         component[i]);
+                }
                 component.data = new_cdata;
 
                 offset += component.element_size * new_size;
@@ -217,22 +218,22 @@ Archetype::GetComponentColumn(ComponentId component)
 }
 
 uint32_t
-Archetype::AddEntity(EntityId e, World& world)
+Archetype::AddEntity(EntityId e)
 {
-        return GetInternal().AddEntity(e, world, true);
+        return GetInternal().AddEntity(e, true);
 }
 
 uint32_t
-Archetype::MoveEntity(EntityId e, Archetype dest, World& world)
+Archetype::MoveEntity(EntityId e, Archetype dest)
 {
         ArchetypeInternal& dest_int = dest.GetInternal();
-        return GetInternal().MoveEntity(e, dest_int, world);
+        return GetInternal().MoveEntity(e, dest_int);
 }
 
 void
-Archetype::RemoveEntity(EntityId e, uint32_t row, World& world)
+Archetype::RemoveEntity(uint32_t row)
 {
-        return GetInternal().RemoveEntity(e, row, world, true);
+        return GetInternal().RemoveEntity(row, true);
 }
 
 ArchetypeInternal&

@@ -19,6 +19,12 @@ private:
 
         static void
         InitializeFZXBody(Entity e);
+
+        static void
+        InitializeTilemap(Entity e);
+
+        static void
+        InitializeSoundPlayer(Entity e);
 };
 
 }  // namespace Borek

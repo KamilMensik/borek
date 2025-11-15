@@ -25,6 +25,9 @@ target_link_libraries(BOREK msdf-atlas-gen)
 add_subdirectory(freetype)
 target_link_libraries(BOREK freetype)
 
+add_subdirectory(miniaudio)
+target_link_libraries(BOREK miniaudio)
+
 # Add ImSearch - Cant bother to fork it.
 add_library(imsearch STATIC "./imsearch/imsearch.cpp")
 target_include_directories(imsearch PRIVATE "./imsearch"
@@ -44,4 +47,5 @@ target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./yaml-cpp/include"
                                         "./mruby/include"
                                         "./msdf-atlas-gen"
-                                        "./freetype/include")
+                                        "./freetype/include",
+                                        "./miniaudio")

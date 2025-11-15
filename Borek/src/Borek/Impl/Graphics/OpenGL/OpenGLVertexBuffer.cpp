@@ -5,7 +5,6 @@
 
 #include "Include/Graphics/OpenGL/OpenGLVertexBuffer.h"
 #include "Include/Debug/Assert.h"
-#include <iostream>
 
 namespace Borek {
 namespace Graphics {
@@ -16,6 +15,7 @@ uint32_t GetOpenGLType(Datatype d) {
         case Datatype::Float2:
         case Datatype::Float3:
         case Datatype::Float4:
+        case Datatype::Sampler2D:
                 return GL_FLOAT;
         case Datatype::Int:
         case Datatype::Int2:

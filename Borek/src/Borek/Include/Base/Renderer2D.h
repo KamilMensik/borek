@@ -2,16 +2,28 @@
 
 #pragma once
 
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/SpriteSheetAsset.h"
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float4.hpp>
 
-#include "Include/Objects/Font.h"
-#include "Include/Objects/Sprite.h"
-#include "Include/Base/Components.h"
-#include "Include/Objects/SubSprite.h"
+#include "Include/Base/Entity.h"
 #include "Include/Base/Scene.h"
 
 namespace Borek {
+
+namespace Graphics {
+
+class Texture2D;
+
+}  // namespace Graphics
+
+struct CameraComponent;
+struct TransformComponent;
+struct SpriteComponent;
+class SubSprite;
+class Sprite;
+class Font;
 
 class Renderer2D {
 public:
@@ -30,6 +42,9 @@ public:
                              unsigned zindex = 0);
         static void DrawQuad(const glm::vec2& position, const glm::vec2& size,
                              Ref<SubSprite> subsprite, unsigned zindex = 0);
+        static void DrawQuad(const glm::vec2& position, const glm::vec2& size,
+                             const Asset<SpriteSheetAsset> spritesheet,
+                             uint16_t row, uint16_t col, unsigned zindex = 0);
         static void DrawQuad(const TransformComponent& transform,
                              const SpriteComponent& sprite);
         static void DrawLine(const glm::vec2& start, const glm::vec2& end,

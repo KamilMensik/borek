@@ -12,6 +12,7 @@ struct ComponentData {
         uint32_t alignment;
         void (*constructor)(void*);
         void (*destructor)(void*);
+        void (*moveop)(void*, void*);
 };
 
 extern std::vector<ComponentData> s_ComponentData;
@@ -25,8 +26,11 @@ constexpr void RegisterComponent()
         void (*destructor)(void*) = [](void* address){
                 reinterpret_cast<T*>(address)->~T();
         };
+        void (*moveop)(void*, void*) = [](void* dest, void* src) {
+                new(dest) T(std::move(*reinterpret_cast<T*>(src)));
+        };
         s_ComponentData.emplace_back(sizeof(T), alignof(T), constructor,
-                                     destructor);
+                                     destructor, moveop);
 }
 
 

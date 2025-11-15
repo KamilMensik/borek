@@ -11,6 +11,7 @@
 #include <Include/Base/Node.h>
 #include <Include/Debug/Log.h>
 #include <Include/Base/Application.h>
+#include <Include/Components/RubyScriptComponent.h>
 
 #include "AddScriptPopup.h"
 
@@ -44,12 +45,12 @@ AddScriptPopup::Tick()
 
         ImGui::Separator();
 
-        if (ImGui::Button("Add Script")) {
-                Entity(m_EntityId).AddComponent<RubyScriptComponent>()
-                                  .GetComponent<RubyScriptComponent>()
-                                  .ruby_class = m_SelectedClass;
-                is_open = false;
-        }
+        //if (ImGui::Button("Add Script")) {
+        //        Entity(m_EntityId).AddComponent<RubyScriptComponent>()
+        //                          .GetComponent<RubyScriptComponent>()
+        //                          .ruby_class = m_SelectedClass;
+        //        is_open = false;
+        //}
 
         ImGui::End();
 

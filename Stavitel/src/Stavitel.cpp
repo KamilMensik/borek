@@ -1,9 +1,14 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Query.h"
-#include "Include/Base/Renderer2D.h"
+#include "Include/Base/Entity.h"
+#include "Include/Base/Sound.h"
+#include "Include/Components/PrefabComponent.h"
+#include "Include/Components/TilemapComponent.h"
 #include "Include/Debug/Log.h"
-#include "Include/Engine/FZX/Body.h"
+#include "Include/Engine/Assets/ResourceAssetifier.h"
+#include "Include/Engine/EntityUninitializer.h"
+#include "Include/Engine/Utils/PathHelpers.h"
+#include "Include/Engine/ZIndexAssigner.h"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -11,10 +16,8 @@
 #include <Borek.h>
 #include "EditorState.h"
 #include "Include/Base/Colors.h"
-#include "Include/Base/Components.h"
 #include "Include/Base/Input.h"
 #include "Include/Core.h"
-#include "Include/Engine/Assets/AssetManager.h"
 #include "Include/Engine/EntityInitializer.h"
 #include "Include/Events/ApplicationEvents.h"
 #include "Include/Events/EventCaller.h"
@@ -23,6 +26,11 @@
 #include "Borek/Include/Engine/SceneSerializer.h"
 #include "Borek/Include/Engine/Utils/Settings.h"
 #include "Borek/Include/Engine/Utils/GeometryUtils.h"
+#include "Borek/Include/Drawing/Quad.h"
+#include "Include/Base/Query.h"
+#include "Include/Base/Renderer2D.h"
+#include "Include/Engine/FZX/Body.h"
+#include "Include/Components/IDComponent.h"
 
 #include "Layers/EditorLayer.h"
 #include "EditorSettings.h"
@@ -65,11 +73,11 @@ public:
                 };
 
                 Graphics::FrameBufferSettings fb_settings;
-                fb_settings.width = 1280;
-                fb_settings.height = 720;
+                fb_settings.width = 320;
+                fb_settings.height = 180;
                 fb = Graphics::FrameBuffer::Create(fb_settings);
 
-                AssetManager::AssetifyWorkspace(Utils::Settings::Instance().current_project_path, true);
+                ResourceAssetifier::AssetifyFolder(Utils::Settings::Instance().current_project_path);
         }
 
         ~Stavitel()
@@ -82,6 +90,7 @@ public:
 
                 EventCaller ec(e);
                 ec.TryCall<MouseMovedEvent>(EVENT_FN(Stavitel::OnMouseMovedEvent));
+                ec.TryCall<MouseScrolledEvent>(EVENT_FN(Stavitel::OnMouseScrolled));
                 ec.TryCall<MouseButtonPressedEvent>(EVENT_FN(Stavitel::OnMouseButtonPressed));
                 ec.TryCall<MouseButtonReleasedEvent>(EVENT_FN(Stavitel::OnMouseButtonReleased));
                 ec.TryCall<AddComponentEvent>(EVENT_FN(Stavitel::OnAddComponentEvent));
@@ -102,24 +111,24 @@ public:
                 } else if (!IsPlaying() && m_Started) {
                         m_EditorLayer->OnGameEnded();
                         auto path = Utils::Settings::Instance().last_scene_opened_path;
+                        Ref<Scene> old_scene = m_CurrentScene;
+                        old_scene->TraverseScene(EntityUninitializer::UninitializeBegin,
+                                                 EntityUninitializer::UninitializeEnd);
                         SetScene(NewRef<Scene>());
                         SceneSerializer(m_CurrentScene).Deserialize(path);
                         m_Started = false;
                 }
 
                 if (--tick_counter <= 0) {
-                        AssetManager::AssetifyWorkspace(Utils::Settings::Instance().current_project_path);
+                        ResourceAssetifier::AssetifyFolder(Utils::Settings::Instance().current_project_path);
+                        for (auto& [id, prefab] : Query<IDComponent, PrefabComponent>()) {
+                                prefab->Update(id->ecs_id);
+                        }
                         tick_counter = 30;
                 }
 
                 Application::OnUpdate(delta);
 
-                if (EditorSettings::show_collision_shapes) {
-                        for (auto [id, body] : Query<IDComponent, FZX::BodyComponent>()) {
-                                Entity e(id->ecs_id);
-                                Renderer2D::DrawQuadOutline(e.GlobalTransform(), Colors::BLUE);
-                        }
-                }
         }
 
         virtual void OnImGuiRenderBegin() override
@@ -141,6 +150,46 @@ public:
                          m_EditorLayer->GetViewportSize() };
         }
 
+        virtual void
+        BeforeRenderEnd() override
+        {
+                if (!EditorSettings::show_collision_shapes) {
+                        return;
+                }
+
+                for (auto [id, body] : Query<IDComponent, FZX::BodyComponent>()) {
+                        Entity e(id->ecs_id);
+                        const TransformComponent tran = e.GlobalTransform();
+                        Drawing::Quad::Draw(tran.position, tran.scale, Color(0, 1, 1, 0.2), ZIndexAssigner::GetTop());
+                }
+
+                for (auto [id, tc] : Query<IDComponent, TilemapComponent>()) {
+                        Entity e(id->ecs_id);
+                        auto global_transform = e.GlobalTransform();
+                        const glm::vec2& scale = global_transform.scale;
+                        const SpriteSheetAsset& spritesheet = tc->tilemap->sprite_sheet.Convert();
+                        const glm::vec2 tile_size(spritesheet.step_x * scale.x,
+                                                  spritesheet.step_y * scale.y);
+
+                        for (auto it : tc->items) {
+                                const auto& pos = it.first;
+                                const uint16_t index = it.second;
+
+                                if (!tc->tilemap->tile_coliders[index].Exists())
+                                        continue;
+
+                                const glm::vec2 real_pos(pos.second * tc->step_x * scale.x, pos.first * tc->step_y * scale.y);
+                                Drawing::Quad::Draw(real_pos, tile_size, Color(0, 1, 1, 0.2), ZIndexAssigner::GetTop());
+                        }
+                }
+        }
+
+        bool OnMouseScrolled(MouseScrolledEvent& ev)
+        {
+                //m_EditorCamera.zoom += ev.GetAmountY() / 10;
+                return false;
+        }
+
         bool OnMouseButtonPressed(MouseButtonPressedEvent& ev)
         {
                 glm::vec2 mouse_pos_r = Input::GetMousePosRelative();
@@ -156,12 +205,7 @@ public:
                 if (ev.GetButton() == MouseButton::BUTTON_LEFT) {
 
                         FZX::SmallList<uint32_t> res;
-                        glm::vec2 pos = Utils::Geometry::rotate_point(
-                                glm::vec2(0), mouse_pos_r * glm::vec2(1280 / 4, 720 / 4),
-                                m_CameraTransform.rotation
-                        );
-
-                        pos += m_CameraTransform.position;
+                        glm::vec2 pos = Input::GetMouseWorldPos();
                         m_SpriteGrid.GetCollisions(pos, UINT32_MAX, &res);
 
                         uint32_t last_id = UINT32_MAX;

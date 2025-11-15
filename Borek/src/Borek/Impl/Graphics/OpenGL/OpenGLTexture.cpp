@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Engine/Assets/AssetFlags.h"
+#include <cstdint>
 #include <fstream>
 
 #include <stb/image.h>
@@ -48,7 +50,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 }
 
 OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,
-                                 const uint8_t* data, int channels)
+                                 const uint8_t* data, int channels,
+                                 uint32_t flags)
 {
         m_Height = height;
         m_Width = width;
@@ -69,17 +72,29 @@ OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,
         glCreateTextures(GL_TEXTURE_2D, 1, &m_Id);
         glTextureStorage2D(m_Id, 1, internal_format, width, height);
 
+        switch (flags & TexFlags_Filtering) {
+        case TexFlags_Nearest:
+                glTextureParameteri(m_Id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                break;
+        case TexFlags_Linear:
+                glTextureParameteri(m_Id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                break;
+        }
+
         glTextureParameteri(m_Id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(m_Id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         glTextureSubImage2D(m_Id, 0, 0, 0, width, height, format,
                             GL_UNSIGNED_BYTE, data);
+
+        //m_BindlessTexHandle = glGetTextureHandleARB(m_Id);
+        //glMakeTextureHandleResidentARB(m_BindlessTexHandle);
 }
 
 OpenGLTexture2D::~OpenGLTexture2D()
 {
+        //glMakeTextureHandleNonResidentARB(m_BindlessTexHandle);
         glDeleteTextures(1, &m_Id);
 }
 

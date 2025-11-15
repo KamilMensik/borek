@@ -6,9 +6,10 @@
 
 #include <glm/ext/matrix_float4x4.hpp>
 
-#include "Include/Base/Components.h"
 #include "Include/Graphics/Shader.h"
 #include "Include/Graphics/VertexArray.h"
+#include "Include/Components/CameraComponent.h"
+#include "Include/Components/TransformComponent.h"
 
 namespace Borek {
 namespace Graphics {

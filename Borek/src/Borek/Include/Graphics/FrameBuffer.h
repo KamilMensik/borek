@@ -41,7 +41,7 @@ public:
 
 protected:
         FrameBufferSettings m_Settings;
-        uint32_t m_Id;
+        uint32_t m_Id = 0;
 };
 
 }  // namespace Graphics

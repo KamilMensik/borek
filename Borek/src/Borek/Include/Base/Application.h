@@ -4,7 +4,6 @@
 
 #include <utility>
 
-#include "Include/Base/Components.h"
 #include "Include/Base/Scene.h"
 #include "Include/Graphics/FrameBuffer.h"
 #include "Include/ImGui/ImGuiLayer.h"
@@ -17,6 +16,8 @@
 #include "Include/Events/ApplicationEvents.h"
 #include "Include/Events/MouseEvents.h"
 #include "Include/Scripting/Ruby/RubyEngine.h"
+#include "Include/Components/CameraComponent.h"
+#include "Include/Components/TransformComponent.h"
 
 namespace Borek {
 
@@ -47,8 +48,8 @@ protected:
         static Application* s_Instance;
         static std::function<void(const std::string&)> s_LogFunc;
 
-        LayerStack m_Layers;
         Uniq<AbstractWindow> m_Window;
+        LayerStack m_Layers;
 
         CameraComponent* m_Camera;
         TransformComponent m_CameraTransform;
@@ -79,6 +80,7 @@ protected:
         virtual void OnEvent(Event& e);
         virtual void OnUpdate(float delta) {}
         virtual void OnRenderBegin();
+        virtual void BeforeRenderEnd() {};
         virtual void OnRenderEnd();
         virtual void OnImGuiRenderBegin() {}
         virtual void OnImguiRenderEnd() {}
