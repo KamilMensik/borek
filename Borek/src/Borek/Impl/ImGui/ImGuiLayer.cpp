@@ -1,5 +1,3 @@
-#include "Include/Base/Colors.h"
-#include "Include/Debug/Log.h"
 #include "Include/Events/Event.h"
 #include "imsearch/imsearch.h"
 #include <GLFW/glfw3.h>
@@ -10,7 +8,6 @@
 #include <backends/imgui_impl_opengl3.h>
 
 #include "Include/ImGui/ImGuiLayer.h"
-#include "Include/ImGui/ImGuiImpl.h"
 #include "Include/Base/Application.h"
 #include "Include/Base/Input.h"
 #include "imguismo/ImGuizmo.h"
@@ -227,17 +224,6 @@ void ImGuiLayer::RenderFinish()
 
 void ImGuiLayer::OnImGuiRender()
 {
-}
-
-void ImGuiLayer::OnEvent(Event& e)
-{
-        if (!m_BlockEvents)
-                return;
-
-        ImGuiIO& io = ImGui::GetIO();
-        if ((e.IncludesCategory(EventCategory::kKeyboard) && io.WantCaptureKeyboard) ||
-            (e.IncludesCategory(EventCategory::kMouse) && io.WantCaptureMouse))
-                e.Handle();
 }
 
 constexpr ImVec4 ToImVec4(const glm::vec4& v)

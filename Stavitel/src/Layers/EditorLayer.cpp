@@ -1,13 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Events/Events.h"
 #include "Include/Base/Application.h"
 #include "Include/Core.h"
 #include "Include/Debug/Log.h"
 #include "Include/Engine/SceneSerializer.h"
 #include "Include/Engine/Utils/Settings.h"
-#include "Include/Events/EventCaller.h"
-#include "Include/Events/MouseEvents.h"
 #include "Include/Graphics/Renderer.h"
 #include "Panels/ToolbarPanel.h"
 #include <imgui.h>
@@ -25,7 +22,7 @@
 namespace Borek {
 
 EditorLayer::EditorLayer()
-        : Borek::Layer("TestLayer")
+        : Borek::Layer("TestLayer"), m_OldTime(Application::GetWindow().GetTime())
 {
         ImGuiIO& io = ImGui::GetIO();
         io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Bold.ttf"), 24.0f);
@@ -46,17 +43,6 @@ EditorLayer::~EditorLayer() {}
 void EditorLayer::OnUpdate(float delta)
 {
         m_TilesetPanel.OnUpdate();
-}
-
-void EditorLayer::OnEvent(Event& ev)
-{
-        EventCaller ec(ev);
-        ec.TryCall<ScenePanelSelectedEvent>(EVENT_FN(EditorLayer::OnScenePanelSelectedEvent));
-        ec.TryCall<SceneChangedEvent>(EVENT_FN(EditorLayer::OnSceneChangedEvent));
-        ec.TryCall<RemoveEntityEvent>(EVENT_FN(EditorLayer::OnRemoveEntity));
-        ec.TryCall<AssetPanelSelectedEvent>(EVENT_FN(EditorLayer::OnAssetPanelSelected));
-        ec.TryCall<MouseButtonPressedEvent>(EVENT_FN(EditorLayer::OnMouseButtonPressed));
-        ec.TryCall<MouseButtonReleasedEvent>(EVENT_FN(EditorLayer::OnMouseButtonReleased));
 }
 
 void EditorLayer::BeginDockspace()
@@ -109,7 +95,7 @@ void EditorLayer::OnImGuiRender()
                         if (ImGui::MenuItem("Exit", NULL, false, true))
                                 Application::Shutdown();
                         if (ImGui::MenuItem("Open")) {
-                                auto path = Utils::OpenFileDialog("", ASSET_PATH());
+                                auto path = Utils::OpenFileDialog(nullptr, ASSET_PATH());
                                 Application::SetScene(NewRef<Scene>());
                                 SceneSerializer(Application::GetScene()).Deserialize(path);
                                 WITH_CHANGE(Utils::Settings::InstanceM(), {
@@ -151,16 +137,24 @@ void EditorLayer::OnImGuiRender()
                 ImVec2 cpos = ImGui::GetCursorScreenPos();
                 m_ViewportPosition = { cpos.x, cpos.y };
 
+                ImVec2 old_pos = ImGui::GetCursorPos();
                 uint32_t texture_id = Application::GetFramebuffer()->GetColorAttachmentId();
                 ImGui::Image(texture_id, ImVec2(m_ViewportSize.x, m_ViewportSize.y),
                              ImVec2(0, 1), ImVec2(1, 0));
                 if (ImGui::BeginDragDropTarget()) {
-                        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_ITEM");
+                        const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM");
                         if (payload) {
                                 BOREK_ENGINE_INFO("Dragged {} into viewport", std::string(SCAST<char*>(payload->Data)));
                         }
                         ImGui::EndDragDropTarget();
                 }
+                ImVec2 cached_cursor_pos = ImGui::GetCursorPos();
+                ImGui::SetCursorPos(old_pos);
+                Time new_time = Application::GetWindow().GetTime();
+                double res = 1 / (new_time.Seconds() - m_OldTime.Seconds());
+                m_OldTime = new_time;
+                ImGui::Text("FPS: %f", res);
+                ImGui::SetCursorPos(cached_cursor_pos);
 
                 m_GizmoPanel.DrawGizmo();
 
@@ -194,71 +188,36 @@ void EditorLayer::OnImGuiRender()
         m_TilesetPanel.OnImGuiRender();
 }
 
-bool EditorLayer::OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev)
-{
-        m_PropertiesPanel.ChangeEntity(ev.GetEntity());
-        m_GizmoPanel.ChangeEntity(ev.GetEntity());
-        m_TilesetPanel.SetEntity(ev.GetEntity());
+//bool
+//EditorLayer::OnRemoveEntity(RemoveEntityEvent& ev)
+//{
+//        m_GizmoPanel.ChangeEntity(Entity());
+//        return true;
+//}
 
-        return false;
-}
-
-bool
-EditorLayer::OnRemoveEntity(RemoveEntityEvent& ev)
-{
-        m_ScenePanel.SetSelectedEntity(Entity());
-        m_PropertiesPanel.ChangeEntity(Entity());
-        m_GizmoPanel.ChangeEntity(Entity());
-        Entity(ev.GetEntityId()).Delete();
-        return true;
-}
-
-bool EditorLayer::OnSceneChangedEvent(SceneChangedEvent& ev)
-{
-        m_ScenePanel.SetSelectedEntity(Entity());
-        m_PropertiesPanel.ChangeEntity(Entity());
-        m_GizmoPanel.ChangeEntity(Entity());
-        return false;
-}
-
-bool
-EditorLayer::OnAssetPanelSelected(AssetPanelSelectedEvent& ev)
-{
-        m_ImportPanel.SetSelectedAsset(ev.GetAssetPath());
-        return true;
-}
-
-bool
-EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& ev)
-{
-        return m_TilesetPanel.OnMouseButtonPressed(ev);
-}
-
-bool
-EditorLayer::OnMouseButtonReleased(MouseButtonReleasedEvent& ev)
-{
-        return m_TilesetPanel.OnMouseButtonReleased(ev);
-}
-
+//bool EditorLayer::OnSceneChanged(SceneChangedEvent& ev)
+//{
+//        m_GizmoPanel.ChangeEntity(Entity());
+//        return false;
+//}
 
 void EditorLayer::OnGameStarted()
 {
-        m_GizmoPanel.ChangeEntity(Entity());
-        m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
+        //m_GizmoPanel.ChangeEntity(Entity());
+        //m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
 }
 
 void EditorLayer::OnGameEnded()
 {
-        m_GizmoPanel.ChangeEntity(Entity());
-        m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
-        m_PropertiesPanel.ChangeEntity(Entity());
-        m_GizmoPanel.ChangeEntity(Entity());
+        //m_GizmoPanel.ChangeEntity(Entity());
+        //m_GizmoPanel.SetMode(Panels::GizmoPanel::Mode::kNothing);
+        //m_GizmoPanel.ChangeEntity(Entity());
 }
 
-void EditorLayer::SetSelectedEntity(Entity e)
-{
-        m_ScenePanel.SetSelectedEntity(e);
-}
+//void EditorLayer::SetSelectedEntity(Entity e)
+//{
+//        m_ScenePanel.SetSelectedEntity(e);
+//}
 
 Panels::ConsolePanel&
 EditorLayer::GetConsole()

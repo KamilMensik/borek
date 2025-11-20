@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Components/PrefabComponent.h"
+#include "Panels/PanelEvents.h"
 #include "Popups/AddScriptPopup.h"
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -105,6 +106,12 @@ add_invisible_separator()
 
 Scene::Scene()
 {
+        m_EventHandles[0] = ChangeEntityEvent::AddListener(EVENT_FN(OnChangeEntity));
+}
+
+Scene::~Scene()
+{
+        ChangeEntityEvent::RemoveListener(m_EventHandles[0]);
 }
 
 void Scene::OnImguiRender()
@@ -259,7 +266,7 @@ Scene::DrawTree()
 
                 if (ImGui::BeginPopupContextItem(0)) {
                         if (e.HasParent() && ImGui::MenuItem("Delete Entity")) 
-                                Application::SendEvent(new RemoveEntityEvent(e));
+                                Application::SendEvent<RemoveEntityEvent>(e);
                         if (ImGui::MenuItem("Add Entity")) {
                                 Application::OpenPopup(new Popups::AddEntityPopup(e));
                         }
@@ -308,14 +315,13 @@ Scene::DrawTree()
 
 void Scene::SendOnSelectionChangeEvent()
 {
-        Application::SendEvent(new ScenePanelSelectedEvent(m_SelectedEntity));
+        Application::SendEvent<ScenePanelSelectedEvent>(m_SelectedEntity);
 }
 
 void
-Scene::SetSelectedEntity(Entity e)
+Scene::OnChangeEntity(ChangeEntityEvent& e)
 {
-        m_SelectedEntity = e;
-        SendOnSelectionChangeEvent();
+        m_SelectedEntity = e.GetEntity();
 }
 
 

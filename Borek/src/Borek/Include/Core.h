@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <memory>
 
-#define EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define EVENT_FN(_fn) [this](auto& e) { return this->_fn(e); }
 
 #define SCAST static_cast
 #define DCAST dynamic_cast

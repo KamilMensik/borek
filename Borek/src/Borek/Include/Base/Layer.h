@@ -16,7 +16,6 @@ public:
         virtual void OnAttach() {}
         virtual void OnDetach() {}
         virtual void OnUpdate(float delta) {}
-        virtual void OnEvent(Event& e) {}
         virtual void OnImGuiRender() {}
 
         inline const std::string& GetName()

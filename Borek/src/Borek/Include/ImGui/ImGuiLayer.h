@@ -12,7 +12,6 @@ public:
         void OnAttach() override;
         void OnDetach() override;
         void OnImGuiRender() override;
-        void OnEvent(Event &e) override;
         void RenderPrepare();
         void RenderFinish();
         void SetEventBlocking(bool val) { m_BlockEvents = val; }

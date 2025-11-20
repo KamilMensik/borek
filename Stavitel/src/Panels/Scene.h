@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Include/Events/Event.h"
+#include "Panels/PanelEvents.h"
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -16,10 +18,11 @@ namespace Panels {
 class Scene {
 public:
         Scene();
+        ~Scene();
         void OnImguiRender();
         void SendOnSelectionChangeEvent();
         inline Entity GetSelectedEntity() { return m_SelectedEntity; }
-        void SetSelectedEntity(Entity e);
+        void OnChangeEntity(ChangeEntityEvent& e);
 
 private:
         Entity m_SelectedEntity;
@@ -31,6 +34,7 @@ private:
         };
         std::vector<std::pair<Operation, Entity>> m_FlatGraph;
         std::unordered_set<uint32_t> m_VisibleTreeNodes;
+        std::array<EVHandle, 1> m_EventHandles;
 
         void
         Phase1IterFuncBegin(Entity e);

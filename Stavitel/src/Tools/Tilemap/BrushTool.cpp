@@ -14,33 +14,32 @@
 
 namespace Borek {
 
-bool
+void
 BrushTool::OnMousePressed(MouseButton button)
 {
         if (!(m_Active && !m_CurrentEntity.IsNil() && m_SelectedCell != UINT32_MAX))
-                return false;
+                return;
 
         switch (button) {
         case MouseButton::BUTTON_LEFT:
         case MouseButton::BUTTON_RIGHT:
                 break;
         default:
-                return false;
+                return;
         }
 
         const glm::vec2 rel_pos = glm::abs(Input::GetMousePosRelative());
         if (rel_pos.x > 1 || rel_pos.y > 1)
-                return false;
+                return;
 
         m_State = button == MouseButton::BUTTON_LEFT ? State::kDrawing : State::kErasing;
-        return true;
 }
 
-bool
+void
 BrushTool::OnMouseReleased(MouseButton button)
 {
         if (!(m_Active && !m_CurrentEntity.IsNil() && m_SelectedCell != UINT32_MAX))
-                return false;
+                return;
 
         switch (button) {
         case MouseButton::BUTTON_LEFT:
@@ -52,21 +51,19 @@ BrushTool::OnMouseReleased(MouseButton button)
                         m_State = State::kNothing;
                 break;
         default:
-                return false;
+                break;
         }
-
-        return false;
 }
 
-void
+bool
 BrushTool::Tick()
 {
-        if (!(m_Active && !m_CurrentEntity.IsNil() && m_SelectedCell != UINT32_MAX))
-                return;
-
         const glm::vec2 rel_pos = glm::abs(Input::GetMousePosRelative());
-        if (rel_pos.x > 1 || rel_pos.y > 1)
-                return;
+        if (!(m_Active && !m_CurrentEntity.IsNil() &&
+                m_SelectedCell != UINT32_MAX) ||
+                (rel_pos.x > 1 || rel_pos.y > 1)) {
+                return false;
+        }
 
         auto& tc = m_CurrentEntity.GetComponent<TilemapComponent>();
         Asset<TilemapAsset> tmap = tc.tilemap;
@@ -90,6 +87,8 @@ BrushTool::Tick()
                 tc.Delete(pos.x, pos.y);
                 break;
         }
+
+        return true;
 }
 
 void

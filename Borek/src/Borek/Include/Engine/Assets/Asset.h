@@ -59,6 +59,9 @@ public:
         static void
         Refresh(const std::string& path, Uniq<IAsset> asset);
 
+        static void
+        RefreshPath(const std::string& from, const std::string& to);
+
         template <class T> requires std::derived_from<T, IAsset>
         static T&
         GetData(uint32_t id);
@@ -70,7 +73,7 @@ public:
         GetPath(uint32_t id);
 
         static void
-        Clean();
+        Clean(bool force = false);
 
         static void
         Increment(uint32_t asset_id);

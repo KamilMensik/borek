@@ -47,10 +47,6 @@ public:
                 //}
         }
 
-        void OnEvent(Borek::Event& e) override
-        {
-                //BOREK_LOG_INFO(std::string(e));
-        }
 private:
         Ref<Borek::Graphics::Texture> m_UnknownPlumberTexture;
         Ref<Borek::SpriteSheet> m_SpriteSheet;

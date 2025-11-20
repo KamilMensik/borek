@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Include/Base/Entity.h"
+#include "Include/Events/Event.h"
+#include "Panels/PanelEvents.h"
 #include <Include/Core.h>
 
 namespace Borek {
@@ -11,11 +13,13 @@ namespace Panels {
 class Properties {
 public:
         Properties();
+        ~Properties();
         void OnImguiRender();
-        void ChangeEntity(Entity e);
+        void OnChangeEntity(ChangeEntityEvent& e);
 
 private:
         Borek::Entity m_Entity;
+        std::array<EVHandle, 2> m_EventHandles;
 };
 
 }  // namespace Panels

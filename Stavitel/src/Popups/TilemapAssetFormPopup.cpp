@@ -16,6 +16,7 @@
 #include <Borek/Include/Engine/Utils/PathHelpers.h>
 
 #include "Popups/TilemapAssetFormPopup.h"
+#include "Misc/FileExplorer/FileExplorer.h"
 
 namespace Borek {
 namespace Popups {
@@ -57,7 +58,13 @@ bool TilemapAssetFormPopup::Tick()
 
         ImGui::SameLine();
         if (ImGui::Button("Open")) {
-                const std::string res = Borek::Utils::OpenFileDialog(nullptr, Utils::Settings::Instance().current_project_path.c_str());
+                FileExplorer::Open("Open Spritesheet", FileExplorerType_OpenFile,
+                                   Utils::Settings::Instance().current_project_path,
+                                   { ".sst" });
+        }
+
+        if (FileExplorer::Begin("Open Spritesheet")) {
+                const std::string& res = FileExplorer::GetSelected();
                 if (!res.empty()) {
                         m_SpriteSheetPath = Utils::Path::ToRelative(res);
                 }
@@ -69,6 +76,7 @@ bool TilemapAssetFormPopup::Tick()
                         m_SpriteSheet = Asset<SpriteSheetAsset>();
                 }
         }
+        FileExplorer::End();
 
         if (m_SpriteSheet.IsValid()) {
                 const uint32_t rows = m_SpriteSheet->GetRows();

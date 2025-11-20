@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Include/Objects/Font.h"
-
 namespace Borek {
 namespace Panels {
 
@@ -13,7 +11,6 @@ public:
         void OnImguiRender();
 
 private:
-        Font m_Font;
 };
 
 }  // namespace Panels

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Include/Events/EventQueue.h"
+#include <concepts>
 #include <utility>
 
 #include "Include/Base/Scene.h"
@@ -13,7 +15,6 @@
 #include "Include/Base/LayerStack.h"
 #include "Include/Engine/FZX/CGrid.h"
 #include "Include/Base/Popup.h"
-#include "Include/Events/ApplicationEvents.h"
 #include "Include/Events/MouseEvents.h"
 #include "Include/Scripting/Ruby/RubyEngine.h"
 #include "Include/Components/CameraComponent.h"
@@ -35,12 +36,17 @@ public:
         static void SetScene(Ref<Scene> scene);
         static Ref<Scene> GetScene();
         static Ref<Graphics::FrameBuffer> GetFramebuffer();
-        static void SendEvent(Event* e);
+        template <class T, typename ... Args> requires std::derived_from<T, Event>
+        static void SendEvent(Args...args)
+        {
+                s_Instance->m_EventQueue.Add<T>(std::forward<Args>(args)...);
+        }
         static void OpenPopup(Popup* popup);
         static RubyEngine& GetRubyEngine();
         static std::pair<glm::vec2, glm::vec2> GetMouseOffset();
         static void Log(const std::string& str);
         static FZX::CGrid& GetSpriteGrid();
+        static bool IsPlaying();
 
         void Run();
 
@@ -59,7 +65,7 @@ protected:
         Ref<Scene> m_CurrentScene;
         Ref<Graphics::FrameBuffer> m_FrameBuffer;
 
-        std::vector<Event*> m_Events = {};
+        EventQueue m_EventQueue;
         std::vector<Popup*> m_ActivePopups = {};
 
         RubyEngine m_RubyEngine;
@@ -71,20 +77,19 @@ protected:
 
         bool OnWindowClose(WindowCloseEvent& e);
         bool OnWindowResize(WindowResizeEvent& e);
-        bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+        bool OnMouseButton(MouseButtonEvent& e);
 
         void RunEntityScripts(double delta);
         void DrawEntities();
         void SendEventToEntities(Event& e);
 
-        virtual void OnEvent(Event& e);
         virtual void OnUpdate(float delta) {}
         virtual void OnRenderBegin();
         virtual void BeforeRenderEnd() {};
         virtual void OnRenderEnd();
         virtual void OnImGuiRenderBegin() {}
         virtual void OnImguiRenderEnd() {}
-        virtual bool IsPlaying() { return true; }
+        virtual bool Playing() { return true; }
         virtual void SetCamera();
         virtual void HandleEvents();
         virtual std::pair<glm::vec2, glm::vec2> GetMouseOffsetInternal();

@@ -2,6 +2,7 @@
 
 #include "Include/Engine/Assets/AssetFlags.h"
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 
 #include <stb/image.h>
@@ -15,13 +16,24 @@ namespace Graphics {
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 {
-        std::ifstream asset(path, std::ios::binary);
-        asset.read(RCAST<char*>(&m_Width), sizeof(uint32_t))
-             .read(RCAST<char*>(&m_Height), sizeof(uint32_t))
-             .read(RCAST<char*>(&m_Channels), sizeof(uint32_t));
+        const std::filesystem::path p = path;
 
-        char* img = new char[m_Width * m_Height * m_Channels];
-        asset.read(img, m_Width * m_Height * m_Channels);
+        stbi_uc* stbi_img = nullptr;
+        char* img = nullptr;
+        if (p.extension() != ".tex") {
+                stbi_set_flip_vertically_on_load(1);
+                stbi_img = stbi_load(path.c_str(), RCAST<int*>(&m_Width),
+                                     RCAST<int*>(&m_Height),
+                                     RCAST<int*>(&m_Channels), STBI_default);
+        } else {
+                std::ifstream asset(path, std::ios::binary);
+                asset.read(RCAST<char*>(&m_Width), sizeof(uint32_t))
+                     .read(RCAST<char*>(&m_Height), sizeof(uint32_t))
+                     .read(RCAST<char*>(&m_Channels), sizeof(uint32_t));
+
+                img = new char[m_Width * m_Height * m_Channels];
+                asset.read(img, m_Width * m_Height * m_Channels);
+        }
 
         GLenum internal_format, format;
         switch (m_Channels) {
@@ -44,9 +56,12 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
         glTextureParameteri(m_Id, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         glTextureSubImage2D(m_Id, 0, 0, 0, m_Width, m_Height, format,
-                            GL_UNSIGNED_BYTE, img);
+                            GL_UNSIGNED_BYTE, stbi_img ? RCAST<char*>(stbi_img) : img);
 
-        delete[] img;
+        if (stbi_img)
+                stbi_image_free(stbi_img);
+        else
+                delete[] img;
 }
 
 OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,

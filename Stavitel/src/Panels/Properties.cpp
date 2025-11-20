@@ -10,6 +10,7 @@
 #include "Include/Engine/Assets/SoundAsset.h"
 #include "Include/Engine/Assets/TexAsset.h"
 #include "Include/Engine/Assets/TilemapAsset.h"
+#include "Panels/PanelEvents.h"
 #include <cstdint>
 #include <string>
 
@@ -40,7 +41,15 @@ enum ComponentFlags {
         kDelete = 1,
 };
 
-Properties::Properties() : m_Entity() {}
+Properties::Properties() : m_Entity()
+{
+        m_EventHandles[0] = ChangeEntityEvent::AddListener(EVENT_FN(OnChangeEntity));
+}
+
+Properties::~Properties()
+{
+        ChangeEntityEvent::RemoveListener(m_EventHandles[0]);
+}
 
 static inline const Ref<Graphics::Texture2D>&
 get_tex_safe(const SpriteComponent& sprite)
@@ -284,8 +293,9 @@ void Properties::OnImguiRender()
                         auto sprite_texture = get_tex_safe(sprite);
                         ImGui::ImageButton("SpriteImage", sprite_texture->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
                         if (ImGui::BeginDragDropTarget()) {
-                                if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
-                                        sprite.texture = AssetManager::Get<TexAsset>(SCAST<char*>(payload->Data));
+                                if (auto payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM")) {
+                                        BOREK_ENGINE_INFO("path: {}", SCAST<char*>(payload->Data));
+                                        sprite.texture = AssetManager::Get<TexAsset>(Utils::Path::ToRelative(SCAST<char*>(payload->Data)));
                                 }
                                 ImGui::EndDragDropTarget();
                         }
@@ -321,8 +331,8 @@ void Properties::OnImguiRender()
                                 ImGui::OpenPopup("Select Ruby Class");
                         }
                         if (ImGui::BeginDragDropTarget()) {
-                                if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
-                                        rbscript.script = AssetManager::Get<ScriptAsset>(SCAST<char*>(payload->Data));
+                                if (auto payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM")) {
+                                        rbscript.script = AssetManager::Get<ScriptAsset>(Utils::Path::ToRelative(SCAST<char*>(payload->Data)));
                                 }
                                 ImGui::EndDragDropTarget();
                         }
@@ -353,9 +363,8 @@ void Properties::OnImguiRender()
                                 auto tilemap_texture = get_tex_safe(tc);
                                 ImGui::ImageButton("SpriteImage", tilemap_texture->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
                                 if (ImGui::BeginDragDropTarget()) {
-                                        if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
-                                                BOREK_ENGINE_INFO("Passed path: {}", SCAST<char*>(payload->Data));
-                                                tc.tilemap = AssetManager::Get<TilemapAsset>(SCAST<char*>(payload->Data));
+                                        if (auto payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM")) {
+                                                tc.tilemap = AssetManager::Get<TilemapAsset>(Utils::Path::ToRelative(SCAST<char*>(payload->Data)));
                                         }
                                         ImGui::EndDragDropTarget();
                                 }
@@ -375,8 +384,8 @@ void Properties::OnImguiRender()
 
                         ImGui::ImageButton("Audio", Drawing::Globals::GetData().white_tex->GetId(), ImVec2{120, 120}, ImVec2(0, 1), ImVec2(1, 0));
                         if (ImGui::BeginDragDropTarget()) {
-                                if (auto payload = ImGui::AcceptDragDropPayload("ASSET_ITEM")) {
-                                        snd.sound = AssetManager::Get<SoundAsset>(SCAST<char*>(payload->Data));
+                                if (auto payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM")) {
+                                        snd.sound = AssetManager::Get<SoundAsset>(Utils::Path::ToRelative(SCAST<char*>(payload->Data)));
                                 }
                                 ImGui::EndDragDropTarget();
                         }
@@ -387,9 +396,9 @@ void Properties::OnImguiRender()
         ImGui::End();
 }
 
-void Properties::ChangeEntity(Entity e)
+void Properties::OnChangeEntity(ChangeEntityEvent& e)
 {
-        m_Entity = e;
+        m_Entity = e.GetEntity();
 }
 
 }  // namespace Panels

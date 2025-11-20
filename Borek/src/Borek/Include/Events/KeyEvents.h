@@ -2,65 +2,36 @@
 
 #pragma once
 
-#include <format>
-#include <magic_enum/magic_enum.hpp>
-
 #include "Include/Events/Event.h"
 #include "Include/Base/Input.h"
 
 namespace Borek {
 
 class KeyEvent : public Event {
+_BASE_EVENT_HEADER(KeyEvent)
 public:
-        _EVENT_CLASS_CATEGORY(EventCategory::kInput | EventCategory::kKeyboard);
+        KeyEvent(KeyCode keycode, bool pressed, bool repeated = false) :
+                m_KeyCode(keycode), m_Pressed(pressed), m_Repeated(repeated) {}
 
-        inline KeyCode GetKeyCode() const { return m_KeyCode; }
+        inline KeyCode GetKeycode() const { return m_KeyCode; }
+        inline bool IsRepeated() const { return m_Repeated; }
+        inline bool IsPressed() const { return m_Pressed; }
 
 protected:
-        KeyEvent(KeyCode keycode) : m_KeyCode(keycode) {}
         KeyCode m_KeyCode;
-};
-
-class KeyPressedEvent : public KeyEvent {
-public:
-        _EVENT_CLASS_TYPE(KeyPressed);
-
-        KeyPressedEvent(KeyCode keycode, bool repeated = false) :
-                KeyEvent(keycode), m_Repeated(repeated) {}
-        inline bool GetRepeated() const { return m_Repeated; }
-        operator std::string() const override {
-                return std::format("Event {}: (KeyCode: {} Repeated: {})",
-                                   GetName(),
-                                   magic_enum::enum_name(m_KeyCode),
-                                   m_Repeated);
-        }
-
-protected:
+        bool m_Pressed;
         bool m_Repeated;
 };
 
-class KeyReleasedEvent : public KeyEvent {
+class KeyTypedEvent : public Event {
+_BASE_EVENT_HEADER(KeyTypedEvent)
 public:
-        _EVENT_CLASS_TYPE(KeyReleased);
+        KeyTypedEvent(KeyCode keycode) : m_KeyCode(keycode) {}
 
-        KeyReleasedEvent(KeyCode keycode) : KeyEvent(keycode) {}
-        operator std::string() const override {
-                return std::format("Event {}: (KeyCode: {})",
-                                   GetName(),
-                                   magic_enum::enum_name(m_KeyCode));
-        }
-};
+        inline KeyCode GetKeycode() const { return m_KeyCode; }
 
-class KeyTypedEvent : public KeyEvent {
-public:
-        _EVENT_CLASS_TYPE(KeyTyped);
-
-        KeyTypedEvent(KeyCode keycode) : KeyEvent(keycode) {}
-        operator std::string() const override {
-                return std::format("Event {}: (KeyCode: {})",
-                                   GetName(),
-                                   magic_enum::enum_name(m_KeyCode));
-        }
+protected:
+        KeyCode m_KeyCode;
 };
 
 }  // namespace borek

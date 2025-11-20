@@ -1,7 +1,9 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Input.h"
 #include "Include/Components/TilemapComponent.h"
+#include "Include/Events/KeyEvents.h"
+#include "Include/Events/MouseEvents.h"
+#include "Panels/PanelEvents.h"
 #include "Tools/Tilemap/BrushTool.h"
 #include <cstdint>
 #include <imgui.h>
@@ -17,13 +19,30 @@ namespace Panels {
 Tileset::Tileset()
 {
         m_Tools.emplace_back(new BrushTool());
+        m_EventHandles[0] = ChangeEntityEvent::AddListener(EVENT_FN(OnChangeEntity));
+        m_EventHandles[1] = MouseButtonEvent::AddListener(EVENT_FN(OnMouseButton));
+        m_EventHandles[2] = KeyEvent::AddListener(EVENT_FN(OnKey));
+}
+
+Tileset::~Tileset()
+{
+        ChangeEntityEvent::RemoveListener(m_EventHandles[0]);
+        MouseButtonEvent::RemoveListener(m_EventHandles[1]);
+        KeyEvent::RemoveListener(m_EventHandles[2]);
 }
 
 void
 Tileset::OnUpdate()
 {
+        bool block_events = false;
         for (ITilemapTool* tool : m_Tools) {
-                tool->Tick();
+                block_events |= tool->Tick();
+        }
+
+        if (block_events) {
+                MouseButtonEvent::Grab(m_EventHandles[1]);
+        } else {
+                MouseButtonEvent::Release(m_EventHandles[1]);
         }
 }
 
@@ -105,12 +124,12 @@ Tileset::OnImGuiRender()
 }
 
 void
-Tileset::SetEntity(Entity e)
+Tileset::OnChangeEntity(ChangeEntityEvent& e)
 {
-        if (e.GetNodeType() != NodeType::Tilemap)
+        if (e.GetEntity().GetNodeType() != NodeType::Tilemap)
                 e = Entity();
 
-        m_SelectedEntity = e;
+        m_SelectedEntity = e.GetEntity();
         ITilemapTool::DataPayload payload(Asset<TilemapAsset>(),
                                           m_SelectedEntity, UINT32_MAX);
         for (auto tool : m_Tools) {
@@ -118,42 +137,48 @@ Tileset::SetEntity(Entity e)
         }
 }
 
-bool
-Tileset::OnMouseButtonPressed(MouseButtonPressedEvent& ev)
+void
+Tileset::OnMouseButton(MouseButtonEvent& ev)
 {
         if (m_SelectedEntity.IsNil())
-                return false;
+                return;
 
         auto& tc = m_SelectedEntity.GetComponent<TilemapComponent>();
         if (!tc.tilemap.IsValid())
-                return false;
+                return;
 
-        bool handled = false;
-        for (ITilemapTool* tool : m_Tools) {
-                handled |= tool->OnMousePressed(ev.GetButton());
+        if (ev.IsPressed()) {
+                for (ITilemapTool* tool : m_Tools) {
+                        tool->OnMousePressed(ev.GetButton());
+                }
+        } else {
+                for (ITilemapTool* tool : m_Tools) {
+                        tool->OnMouseReleased(ev.GetButton());
+                }
         }
-
-        return handled;
 }
 
-bool
-Tileset::OnMouseButtonReleased(MouseButtonReleasedEvent& ev)
+void
+Tileset::OnKey(KeyEvent& e)
 {
-        if (m_SelectedEntity.IsNil())
-                return false;
 
-        auto& tc = m_SelectedEntity.GetComponent<TilemapComponent>();
-        if (!tc.tilemap.IsValid())
-                return false;
+        if (e.IsRepeated() || !e.IsPressed())
+                return;
 
-        bool handled = false;
-        for (ITilemapTool* tool : m_Tools) {
-                handled |= tool->OnMouseReleased(ev.GetButton());
+        switch(e.GetKeycode()) {
+        case KeyCode::B:
+                m_Tools[0]->Activate();
+                m_SelectedToolIndex = 0;
+                break;
+        case KeyCode::N:
+                for (ITilemapTool* tool : m_Tools)
+                        tool->Deactivate();
+
+                m_SelectedToolIndex = UINT32_MAX;
+        default:
+                break;
         }
-
-        return handled;
 }
-
 
 }  // namespace Panels
 }  // namespace Borek

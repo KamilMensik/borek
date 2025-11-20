@@ -20,7 +20,7 @@ namespace Borek {
 TexAsset::~TexAsset()
 {
         if (data)
-                delete data;
+                delete[] data;
 }
 
 void

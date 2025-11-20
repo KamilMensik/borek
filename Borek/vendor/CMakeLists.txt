@@ -28,6 +28,9 @@ target_link_libraries(BOREK freetype)
 add_subdirectory(miniaudio)
 target_link_libraries(BOREK miniaudio)
 
+add_subdirectory(hat-trie-master)
+target_link_libraries(BOREK tsl_hat_trie)
+
 # Add ImSearch - Cant bother to fork it.
 add_library(imsearch STATIC "./imsearch/imsearch.cpp")
 target_include_directories(imsearch PRIVATE "./imsearch"
@@ -48,4 +51,6 @@ target_include_directories(BOREK PUBLIC "./spdlog/include"
                                         "./mruby/include"
                                         "./msdf-atlas-gen"
                                         "./freetype/include",
-                                        "./miniaudio")
+                                        "./miniaudio",
+                                        "./bfe/src",
+                                        "./hat-trie-master/include")

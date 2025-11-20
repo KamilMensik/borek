@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "Include/Events/Event.h"
+#include "Include/Events/KeyEvents.h"
+#include "Panels/PanelEvents.h"
 #include <cstdint>
 #include <vector>
 
@@ -15,6 +18,7 @@ namespace Panels {
 class Tileset {
 public:
         Tileset();
+        ~Tileset();
 
         void
         OnUpdate();
@@ -23,19 +27,20 @@ public:
         OnImGuiRender();
 
         void
-        SetEntity(Entity e);
+        OnChangeEntity(ChangeEntityEvent& e);
 
-        bool
-        OnMouseButtonPressed(MouseButtonPressedEvent& ev);
+        void
+        OnMouseButton(MouseButtonEvent& ev);
 
-        bool
-        OnMouseButtonReleased(MouseButtonReleasedEvent& ev);
+        void
+        OnKey(KeyEvent& e);
 
 private:
         Entity m_SelectedEntity;
         uint32_t m_SelectedIndex = 0;
         uint32_t m_SelectedToolIndex = UINT32_MAX;
         std::vector<ITilemapTool*> m_Tools;
+        std::array<EVHandle, 3> m_EventHandles;
 };
 
 }  // namespace Panels

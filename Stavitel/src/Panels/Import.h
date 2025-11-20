@@ -2,10 +2,13 @@
 
 #pragma once
 
-#include "Include/Core.h"
-#include "Include/Engine/Assets/IAsset.h"
+#include <array>
 #include <filesystem>
 #include <string>
+
+#include "Events/Events.h"
+#include "Include/Core.h"
+#include "Include/Engine/Assets/IAsset.h"
 
 namespace Borek {
 namespace Panels {
@@ -13,13 +16,18 @@ namespace Panels {
 class Import {
 public:
         Import();
+        ~Import();
         void OnImguiRender();
         void SetSelectedAsset(const std::string& asset_path);
 
 private:
         std::filesystem::path m_SelectedAssetPath;
         Uniq<IAsset> m_SelectedAsset;
+        std::array<EVHandle, 1> m_EvHandles;
         
+        bool
+        OnAssetPanelSelected(AssetPanelSelectedEvent& e);
+
         void
         TextureImport();
 

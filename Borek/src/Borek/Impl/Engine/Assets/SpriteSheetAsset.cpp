@@ -18,7 +18,7 @@ namespace Borek {
 SpriteSheetAsset::~SpriteSheetAsset()
 {
         if (data)
-                delete data;
+                delete[] data;
 }
 
 void

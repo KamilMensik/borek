@@ -2,19 +2,15 @@
 
 #pragma once
 
-#include <functional>
 #include <string>
 
 #include "Include/Core.h"
-#include "Include/Events/Event.h"
 
 namespace Borek
 {
 
 class AbstractWindow {
     public:
-        using CallbackFn = std::function<void(Event*)>;
-
         AbstractWindow(unsigned width, unsigned height,
                        const std::string &name)
                 : m_Width(width)
@@ -41,7 +37,6 @@ class AbstractWindow {
 
         virtual Time GetTime() = 0;
 
-        virtual void SetCallback(const CallbackFn &callback) = 0;
         virtual void* WindowImpl() = 0;
 
         virtual void SetVsync(bool value) = 0;

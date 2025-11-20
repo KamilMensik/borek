@@ -1,31 +1,23 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Base/Entity.h"
-#include "Include/Base/Sound.h"
-#include "Include/Components/PrefabComponent.h"
 #include "Include/Components/TilemapComponent.h"
-#include "Include/Debug/Log.h"
-#include "Include/Engine/Assets/ResourceAssetifier.h"
 #include "Include/Engine/EntityUninitializer.h"
-#include "Include/Engine/Utils/PathHelpers.h"
 #include "Include/Engine/ZIndexAssigner.h"
-#include <cstdlib>
+#include "Layers/EditorEventHandlerLayer.h"
+#include "Layers/EditorInputLayer.h"
+#include "Layers/ResourceLayer.h"
 #include <iostream>
 #include <sstream>
 
 #include <Borek.h>
 #include "EditorState.h"
 #include "Include/Base/Colors.h"
-#include "Include/Base/Input.h"
 #include "Include/Core.h"
 #include "Include/Engine/EntityInitializer.h"
-#include "Include/Events/ApplicationEvents.h"
-#include "Include/Events/EventCaller.h"
-#include "Include/Events/MouseEvents.h"
 #include "glm/ext/vector_float2.hpp"
 #include "Borek/Include/Engine/SceneSerializer.h"
 #include "Borek/Include/Engine/Utils/Settings.h"
-#include "Borek/Include/Engine/Utils/GeometryUtils.h"
 #include "Borek/Include/Drawing/Quad.h"
 #include "Include/Base/Query.h"
 #include "Include/Base/Renderer2D.h"
@@ -46,6 +38,12 @@ public:
         {
                 m_EditorLayer = new EditorLayer();
                 PushLayer(m_EditorLayer);
+                m_ResourceLayer = new ResourceLayer();
+                PushLayer(m_ResourceLayer);
+                m_EditorEventHandlerLayer = new EditorEventHandlerLayer();
+                PushLayer(m_EditorEventHandlerLayer);
+                m_EditorInputLayer = new EditorInputLayer();
+                PushLayer(m_EditorInputLayer);
                 s_LogFunc = [this](const std::string& str) {
                         std::stringstream ss;
                         ss << str << "\033[39m\033[49m";
@@ -76,31 +74,20 @@ public:
                 fb_settings.width = 320;
                 fb_settings.height = 180;
                 fb = Graphics::FrameBuffer::Create(fb_settings);
-
-                ResourceAssetifier::AssetifyFolder(Utils::Settings::Instance().current_project_path);
         }
 
         ~Stavitel()
         {
-        }
-
-        void OnEvent(Event& e) override
-        {
-                Application::OnEvent(e);
-
-                EventCaller ec(e);
-                ec.TryCall<MouseMovedEvent>(EVENT_FN(Stavitel::OnMouseMovedEvent));
-                ec.TryCall<MouseScrolledEvent>(EVENT_FN(Stavitel::OnMouseScrolled));
-                ec.TryCall<MouseButtonPressedEvent>(EVENT_FN(Stavitel::OnMouseButtonPressed));
-                ec.TryCall<MouseButtonReleasedEvent>(EVENT_FN(Stavitel::OnMouseButtonReleased));
-                ec.TryCall<AddComponentEvent>(EVENT_FN(Stavitel::OnAddComponentEvent));
-                ec.TryCall<RemoveComponentEvent>(EVENT_FN(Stavitel::OnRemoveComponentEvent));
+                s_LogFunc = [](const std::string& str) {
+                        std::stringstream ss;
+                        ss << str << "\033[39m\033[49m";
+                        std::string res = ss.str();
+                        std::cout << res << "\n";
+                };
         }
 
         void OnUpdate(float delta) override
         {
-                static unsigned tick_counter = 30;
-
                 if (IsPlaying() && !m_Started) {
                         auto path = Utils::Settings::Instance().last_scene_opened_path;
                         m_EditorLayer->OnGameStarted();
@@ -119,16 +106,7 @@ public:
                         m_Started = false;
                 }
 
-                if (--tick_counter <= 0) {
-                        ResourceAssetifier::AssetifyFolder(Utils::Settings::Instance().current_project_path);
-                        for (auto& [id, prefab] : Query<IDComponent, PrefabComponent>()) {
-                                prefab->Update(id->ecs_id);
-                        }
-                        tick_counter = 30;
-                }
-
                 Application::OnUpdate(delta);
-
         }
 
         virtual void OnImGuiRenderBegin() override
@@ -184,74 +162,7 @@ public:
                 }
         }
 
-        bool OnMouseScrolled(MouseScrolledEvent& ev)
-        {
-                //m_EditorCamera.zoom += ev.GetAmountY() / 10;
-                return false;
-        }
 
-        bool OnMouseButtonPressed(MouseButtonPressedEvent& ev)
-        {
-                glm::vec2 mouse_pos_r = Input::GetMousePosRelative();
-                if (std::abs(mouse_pos_r.x) > 1.0f ||
-                        std::abs(mouse_pos_r.y) > 1.0f)
-                        return false;
-
-                if (ev.GetButton() == MouseButton::BUTTON_RIGHT) {
-                        m_IsDragging = true;
-                        m_MouseOffset = m_EditorCameraTransform.position;
-                }
-
-                if (ev.GetButton() == MouseButton::BUTTON_LEFT) {
-
-                        FZX::SmallList<uint32_t> res;
-                        glm::vec2 pos = Input::GetMouseWorldPos();
-                        m_SpriteGrid.GetCollisions(pos, UINT32_MAX, &res);
-
-                        uint32_t last_id = UINT32_MAX;
-                        for (uint32_t val : res) {
-                                last_id = val;
-                        }
-
-                        m_EditorLayer->SetSelectedEntity(Entity(last_id));
-                }
-
-                return false;
-        }
-
-        bool OnMouseButtonReleased(MouseButtonReleasedEvent& ev)
-        {
-                if (ev.GetButton() == MouseButton::BUTTON_RIGHT) {
-                        m_IsDragging = false;
-                }
-
-                return false;
-        }
-
-        bool OnMouseMovedEvent(MouseMovedEvent& ev)
-        {
-                if (!IsPlaying() && m_IsDragging) {
-                        glm::vec2 new_pos = ev.GetPos() - m_MouseS;
-                        new_pos.x *= -1;
-                        m_EditorCameraTransform.position = new_pos + m_MouseOffset;
-                } else {
-                        m_MouseS = ev.GetPos();
-                }
-
-                return false;
-        }
-
-        bool OnAddComponentEvent(AddComponentEvent& ev)
-        {
-                Entity(ev.GetEntityId()).AddComponent(ev.GetId());
-                return true;
-        }
-
-        bool OnRemoveComponentEvent(RemoveComponentEvent& ev)
-        {
-                Entity(ev.GetEntityId()).RemoveComponent(ev.GetId());
-                return true;
-        }
 
         void SetCamera() override
         {
@@ -259,23 +170,23 @@ public:
                         Application::SetCamera();
                 } else {
                         m_Camera = &m_EditorCamera;
-                        m_CameraTransform = m_EditorCameraTransform;
+                        m_CameraTransform = m_EditorInputLayer->GetCameraTransform();
                 }
         }
 
-        virtual bool IsPlaying() override
+        virtual bool Playing() override
         {
                 return EditorState::game_state == GameState::kPlaying;
         }
 
         EditorLayer* m_EditorLayer;
+        ResourceLayer* m_ResourceLayer;
+        EditorInputLayer* m_EditorInputLayer;
+        EditorEventHandlerLayer* m_EditorEventHandlerLayer;
         CameraComponent m_EditorCamera;
-        TransformComponent m_EditorCameraTransform;
         bool m_Started = false;
 
-        bool m_IsDragging;
-        glm::vec2 m_MouseOffset;
-        glm::vec2 m_MouseS;
+        bool m_IsDragging = false;
 };
 
 }  // namespace Borek

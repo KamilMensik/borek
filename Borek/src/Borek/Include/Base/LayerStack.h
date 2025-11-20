@@ -4,7 +4,6 @@
 
 #include <vector>
 
-#include "Include/Core.h"
 #include "Include/Base/Layer.h"
 
 namespace Borek {

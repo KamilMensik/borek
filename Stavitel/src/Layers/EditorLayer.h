@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Include/Events/ApplicationEvents.h"
+#include "Include/Core.h"
 #include "Panels/ConsolePanel.h"
 #include "Panels/Import.h"
 #include "Panels/Test.h"
@@ -10,11 +10,8 @@
 #include "Panels/ToolbarPanel.h"
 #include <glm/ext/vector_float2.hpp>
 
-#include <Borek/Include/Events/KeyEvents.h>
-#include <Borek/Include/Events/MouseEvents.h>
 #include <Borek/Include/Base/Layer.h>
 
-#include "Events/Events.h"
 #include "Panels/GizmoPanel.h"
 #include "Panels/Properties.h"
 #include "Panels/Scene.h"
@@ -33,7 +30,6 @@ public:
         void EndDockspace();
 
         void OnUpdate(float delta) override;
-        void OnEvent(Event &e) override;
         void OnGameStarted();
         void OnGameEnded();
         void SetSelectedEntity(Entity e);
@@ -56,15 +52,8 @@ private:
 
         glm::vec2 m_ViewportSize = glm::vec2(1280, 720);
         glm::vec2 m_ViewportPosition;
+        Time m_OldTime;
         bool m_IsFocused;
-
-private:
-        bool OnScenePanelSelectedEvent(ScenePanelSelectedEvent& ev);
-        bool OnSceneChangedEvent(SceneChangedEvent& ev);
-        bool OnRemoveEntity(RemoveEntityEvent& ev);
-        bool OnAssetPanelSelected(AssetPanelSelectedEvent& ev);
-        bool OnMouseButtonPressed(MouseButtonPressedEvent& ev);
-        bool OnMouseButtonReleased(MouseButtonReleasedEvent& ev);
 };
 
 }  // namespace Borek

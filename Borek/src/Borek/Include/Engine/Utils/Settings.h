@@ -32,6 +32,9 @@ struct Settings {
                 return s_Instance;
         }
 
+        static inline const std::string&
+        ProjectPath() { return Instance().current_project_path; }
+
 private:
         void OnChange();
         void Serialize();

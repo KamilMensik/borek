@@ -17,10 +17,6 @@ public:
         void SetVsync(bool value) override;
         bool GetVsync() override;
 
-        void SetCallback(const CallbackFn& callback) override
-        {
-                Callback = callback;
-        }
         void* WindowImpl() override
         {
                 return m_Window;
@@ -29,7 +25,6 @@ public:
 
 private:
         GLFWwindow* m_Window;
-        CallbackFn Callback;
         bool m_Vsync;
 
         void Init();

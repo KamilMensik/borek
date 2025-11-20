@@ -4,10 +4,11 @@
 #include "Include/Base/Sound.h"
 #include "Include/Debug/Log.h"
 #include "Include/Drawing/Scene.h"
+#include "Include/Engine/Assets/Asset.h"
 #include "Include/Engine/ZIndexAssigner.h"
+#include "Include/Events/SceneEvents.h"
 #include "Include/Events/MouseEvents.h"
 #include <iostream>
-#include <ranges>
 
 #include <ECS/World.h>
 #include <glm/trigonometric.hpp>
@@ -15,8 +16,6 @@
 #include "Include/Core.h"
 #include "Include/Graphics/Renderer.h"
 #include "Include/Base/Application.h"
-#include "Include/Events/EventCaller.h"
-#include "Include/Events/ApplicationEvents.h"
 #include "Include/Graphics/Camera.h"
 #include "Include/ImGui/ImGuiLayer.h"
 #include "Include/Base/Query.h"
@@ -52,8 +51,6 @@ Application::Application(const std::string& name)
 
         m_Window.reset(new Window(1920, 1080, name));
         Drawing::BatchRenderer::Init();
-        m_Window->SetCallback(std::bind(&Application::SendEvent,
-                                        std::placeholders::_1));
         m_ImGuiLayer = new ImGuiLayer();
         PushOverlay(m_ImGuiLayer);
 
@@ -66,11 +63,17 @@ Application::Application(const std::string& name)
         m_FrameBuffer = Graphics::FrameBuffer::Create(fb_settings);
 
         SoundEngine::Init();
+
+        WindowCloseEvent::AddListener(EVENT_FN(OnWindowClose));
+        WindowResizeEvent::AddListener(EVENT_FN(OnWindowResize));
+        MouseButtonEvent::AddListener(EVENT_FN(OnMouseButton));
 }
 
 Application::~Application()
 {
         Drawing::BatchRenderer::Deinitialize();
+        m_CurrentScene = nullptr;
+        AssetManager::Clean(true);
         SoundEngine::Deinitialize();
 }
 
@@ -157,6 +160,7 @@ Application::Run()
                         }
                 }
 
+                SetCamera();
 
                 HandleEvents();
 
@@ -250,25 +254,6 @@ Application::SendEventToEntities(Event& e)
         }
 }
 
-void
-Application::OnEvent(Event& e)
-{
-        using std::ranges::views::reverse;
-
-        EventCaller ec(e);
-        ec.TryCall<WindowCloseEvent>(EVENT_FN(Application::OnWindowClose));
-        ec.TryCall<WindowResizeEvent>(EVENT_FN(Application::OnWindowResize));
-        ec.TryCall<MouseButtonPressedEvent>(EVENT_FN(Application::OnMouseButtonPressed));
-
-        for (auto layer : reverse(m_Layers)) {
-                layer->OnEvent(e);
-                if (e.GetHandled())
-                        break;
-        }
-
-        SendEventToEntities(e);
-}
-
 bool
 Application::OnWindowClose(WindowCloseEvent& e)
 {
@@ -280,14 +265,15 @@ bool
 Application::OnWindowResize(WindowResizeEvent& e)
 {
         Graphics::Renderer::ResizeWindow(e.GetWidth(), e.GetHeight());
+        m_Camera->OnWindowResized(e);
         m_AspectRatio = SCAST<float>(e.GetWidth()) / e.GetHeight();
         return false;
 }
 
 bool
-Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+Application::OnMouseButton(MouseButtonEvent& e)
 {
-        if (!IsPlaying())
+        if (! e.IsPressed() && !IsPlaying())
                 return false;
 
         glm::vec2 pos = Input::GetMouseWorldPos();
@@ -349,7 +335,7 @@ Application::SetScene(Ref<Scene> scene)
 {
         s_Instance->m_CurrentScene = scene;
         scene->Init();
-        SendEvent(new SceneChangedEvent);
+        SendEvent<SceneChangedEvent>();
 }
 
 Ref<Scene>
@@ -362,12 +348,6 @@ Ref<Graphics::FrameBuffer>
 Application::GetFramebuffer()
 {
         return s_Instance->m_FrameBuffer;
-}
-
-void
-Application::SendEvent(Event* e)
-{
-        s_Instance->m_Events.emplace_back(e);
 }
 
 void
@@ -400,15 +380,16 @@ Application::GetSpriteGrid()
         return s_Instance->m_SpriteGrid;
 }
 
+bool
+Application::IsPlaying()
+{
+        return s_Instance->Playing();
+}
+
 void
 Application::HandleEvents()
 {
-        for (size_t i = 0; i < m_Events.size(); i++) {
-                OnEvent(*m_Events[i]);
-                delete m_Events[i];
-        }
-
-        m_Events.clear();
+        m_EventQueue.Handle();
 }
 
 std::pair<glm::vec2, glm::vec2>

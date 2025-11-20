@@ -368,3 +368,4 @@ FodyWeavers.xsd
 # Binary shader files
 *.shdr
 compile_commands.json
+valgrind_sup.sup

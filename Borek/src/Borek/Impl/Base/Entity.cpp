@@ -6,7 +6,6 @@
 #include "Include/Base/Application.h"
 #include "Include/Components/SoundplayerComponent.h"
 #include "Include/Components/TilemapComponent.h"
-#include "Include/Events/ApplicationEvents.h"
 #include "Include/Debug/Log.h"
 #include "Include/Debug/Assert.h"
 
@@ -16,6 +15,7 @@
 #include "Include/Components/IDComponent.h"
 
 #include "Include/Engine/FZX/Body.h"
+#include "Include/Events/ComponentEvents.h"
 
 namespace Borek {
 
@@ -32,8 +32,7 @@ Entity&
 Entity::AddComponent(ECS::ComponentId cid)
 {
         Application::GetScene()->m_World->add_component(m_Id, cid);
-        Event* ev = new ComponentAddedEvent(cid, m_Id);
-        Application::SendEvent(ev);
+        Application::SendEvent<ComponentAddedEvent>(cid, m_Id);
         return *this;
 }
 
@@ -41,7 +40,7 @@ Entity&
 Entity::RemoveComponent(ECS::ComponentId cid)
 {
         Application::GetScene()->m_World->remove_component(m_Id, cid);
-        Application::SendEvent(new ComponentRemovedEvent(cid, m_Id));
+        Application::SendEvent<ComponentRemovedEvent>(cid, m_Id);
         return *this;
 }
 

@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Engine/Utils/PathHelpers.h"
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -19,11 +20,24 @@ AssetManager::Refresh(const std::string& path, Uniq<IAsset> asset)
                 return;
         }
 
-        if (s_AssetReferences[it->second] > 0)
-                asset->Load();
-
         s_AssetTypes[it->second] = asset->GetType();
         s_Assets[it->second] = std::move(asset);
+        if (s_AssetReferences[it->second] > 0)
+                s_Assets[it->second]->Load();
+}
+
+void
+AssetManager::RefreshPath(const std::string& from, const std::string& to)
+{
+        auto it = s_AssetByPath.find(from);
+        if (it == s_AssetByPath.end()) {
+                return;
+        }
+
+        uint32_t asset_index = it->second;
+        s_AssetByPath.erase(it);
+        s_AssetByPath[to] = asset_index;
+        s_AssetPaths[asset_index] = to;
 }
 
 uint32_t
@@ -39,10 +53,11 @@ AssetManager::GetPath(uint32_t id)
 }
 
 void
-AssetManager::Clean()
+AssetManager::Clean(bool force)
 {
         for (int i = 0; int refcount : s_AssetReferences) {
-                if (refcount <= 0) {
+                if (force || refcount <= 0) {
+                        s_Assets[i] = nullptr;
                         s_AssetTypes[i] = s_FirstFreeSlot;
                         s_FirstFreeSlot = i;
                         s_AssetByPath.erase(s_AssetPaths[i]);

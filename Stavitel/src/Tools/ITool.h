@@ -10,13 +10,13 @@ namespace Borek {
  */
 class ITool {
 public:
-        virtual bool
+        virtual void
         OnMousePressed(MouseButton button) = 0;
 
-        virtual bool
+        virtual void
         OnMouseReleased(MouseButton button) = 0;
 
-        virtual void
+        virtual bool
         Tick() = 0;
 
         virtual void

@@ -1,100 +1,114 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include <string>
-#include <ostream>
-
 #pragma once
 
-#define _EVENT_CLASS_TYPE(_event_type)                        \
-        static const EventType ClassEventType()               \
-        {                                                     \
-                return EventType::k##_event_type;             \
-        }                                                     \
-        virtual const EventType GetEventType() const override \
-        {                                                     \
-                return EventType::k##_event_type;             \
-        }                                                     \
-        virtual const char *GetName() const override          \
-        {                                                     \
-                return #_event_type;                          \
-        }
+#include <cstdint>
+#include <vector>
+#include <functional>
 
-#define _EVENT_CLASS_CATEGORY(categories)                     \
-        virtual const int GetEventCategories() const override \
-        {                                                     \
-                return categories;                            \
-        }
+#define _BASE_EVENT_HEADER(_cls)                                        \
+public:                                                                 \
+        virtual void                                                    \
+        Notify();                                                       \
+                                                                        \
+        static EVHandle                                                 \
+        AddListener(const std::function<void(_cls&)> callback);         \
+                                                                        \
+        static void                                                     \
+        RemoveListener(EVHandle handle);                                \
+                                                                        \
+        static void                                                     \
+        Grab(EVHandle handle);                                          \
+                                                                        \
+        static void                                                     \
+        Release(EVHandle handle);                                       \
+                                                                        \
+private:                                                                \
+        static std::vector<std::function<void(_cls&)>> s_Listeners;     \
+        static std::vector<std::pair<uint32_t, uint32_t>> s_StableHandles;\
+        static uint32_t s_FirstEmptySpace;                              \
+        static EVHandle s_BlockingListener;                             \
 
-namespace Borek
-{
+#define _BASE_EVENT_IMPL(_cls, _parent)                                 \
+        void _cls::Notify()                                             \
+        {                                                               \
+                if (s_BlockingListener != UINT32_MAX) {                 \
+                        auto& sh = s_StableHandles[s_BlockingListener]; \
+                        s_Listeners[sh.first](*this);                   \
+                        return;                                         \
+               }                                                        \
+                                                                        \
+                for (auto& listener : s_Listeners) {                    \
+                        listener(*this);                                \
+                }                                                       \
+                                                                        \
+                _parent::Notify();                                      \
+        }                                                               \
+                                                                        \
+                                                                        \
+        EVHandle _cls::AddListener(const std::function<void(_cls&)> cb) \
+        {                                                               \
+                EVHandle handle;                                        \
+                if (s_FirstEmptySpace != UINT32_MAX) {                  \
+                        handle = s_FirstEmptySpace;                     \
+                        s_FirstEmptySpace = s_StableHandles[s_FirstEmptySpace].first; \
+                } else {                                                \
+                        handle = s_StableHandles.size();                \
+                        s_StableHandles.emplace_back();                 \
+                }                                                       \
+                                                                        \
+                s_StableHandles[handle].first = s_Listeners.size();     \
+                s_StableHandles[s_Listeners.size()].second = handle;    \
+                s_Listeners.emplace_back(cb);                           \
+                return handle;                                          \
+        }                                                               \
+                                                                        \
+        void _cls::RemoveListener(EVHandle handle)                      \
+        {                                                               \
+                uint32_t listener_index = s_StableHandles[handle].first;\
+                s_Listeners[listener_index] = s_Listeners.back();       \
+                s_Listeners.pop_back();                                 \
+                                                                        \
+                uint32_t moved_index = s_StableHandles[s_Listeners.size()].second; \
+                s_StableHandles[moved_index].first = listener_index;    \
+                s_StableHandles[listener_index].second = moved_index;   \
+                                                                        \
+                s_StableHandles[handle].first = s_FirstEmptySpace;      \
+                s_FirstEmptySpace = handle;                             \
+        }                                                               \
+                                                                        \
+        void _cls::Grab(EVHandle handle)                                \
+        {                                                               \
+                if (s_BlockingListener != UINT32_MAX)                   \
+                        return;                                         \
+                                                                        \
+                s_BlockingListener = handle;                            \
+        }                                                               \
+                                                                        \
+        void _cls::Release(EVHandle handle)                             \
+        {                                                               \
+                if (s_BlockingListener != handle)                       \
+                        return;                                         \
+                                                                        \
+                s_BlockingListener = UINT32_MAX;                        \
+        }                                                               \
+                                                                        \
+        std::vector<std::function<void(_cls&)>> _cls::s_Listeners;      \
+        std::vector<std::pair<uint32_t, uint32_t>> _cls::s_StableHandles;\
+        uint32_t _cls::s_FirstEmptySpace = UINT32_MAX;                  \
+        uint32_t _cls::s_BlockingListener = UINT32_MAX;
 
-enum class EventType {
-        kNone = 0,
+namespace Borek {
 
-        // Window events
-        kWindowClose,
-        kWindowResize,
-        kWindowFocus,
-        kWindowLostFocus,
-        kWindowMoved,
+using EVHandle = uint32_t;
 
-        // Application events
-        kTick,
-        kUpdate,
-        kRender,
-
-        // KeyPress events
-        kKeyPressed,
-        kKeyReleased,
-        kKeyTyped,
-
-        // MouseEvents
-        kMouseButtonPressed,
-        kMouseButtonReleased,
-        kMouseMoved,
-        kMouseScrolled,
-
-        kCustomEvent,
-};
-
-enum EventCategory {
-        kNone = 0,
-        kWindow = 1,
-        kInput = 2,
-        kKeyboard = 4,
-        kMouse = 8,
-        kMouseButton = 16,
-        kApplication = 32,
-        kCustom = 64,
-};
-
-
-class Event {
-        friend class EventCaller;
-
+class IEvent {
 public:
-        virtual ~Event() = default;
-        inline bool GetHandled() { return m_Handled; }
-        inline void Handle() { m_Handled = true; }
-
-        virtual const EventType GetEventType() const = 0;
-        virtual const int GetEventCategories() const = 0;
-        virtual const char *GetName() const = 0;
-        virtual operator std::string() const
-        {
-                return GetName();
-        };
-        inline bool IncludesCategory(EventCategory category) const
-        {
-                return GetEventCategories() & category;
-        }
-        friend std::ostream& operator <<(std::ostream& os, const Borek::Event& ev)
-        {
-                return os << std::string(ev);
-        }
-
-protected:
-        bool m_Handled = false;
+        void Notify() {};
 };
 
-} // namespace Borek
+class Event : public IEvent {
+        _BASE_EVENT_HEADER(Event)
+};
+
+}  // namespace Borek

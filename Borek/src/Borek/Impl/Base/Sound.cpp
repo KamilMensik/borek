@@ -46,8 +46,8 @@ SoundEngine::IsSoundValid(const SoundAsset& sound)
 }
 
 ma_engine SoundEngine::s_Engine;
-bool SoundEngine::s_EngineInitialized;
-int SoundEngine::s_EngineGeneration;
+bool SoundEngine::s_EngineInitialized = false;
+int SoundEngine::s_EngineGeneration = 0;
 
 
 }  // namespace Borek

@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Core.h"
+#include "Panels/PanelEvents.h"
 #include <imgui.h>
 #include <imguismo/ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -14,6 +15,16 @@
 
 namespace Borek {
 namespace Panels {
+
+GizmoPanel::GizmoPanel()
+{
+        m_EventHandles[0] = ChangeEntityEvent::AddListener(EVENT_FN(OnChangeEntity));
+}
+
+GizmoPanel::~GizmoPanel()
+{
+        ChangeEntityEvent::RemoveListener(m_EventHandles[0]);
+}
 
 void GizmoPanel::DrawGizmo()
 {
@@ -54,9 +65,10 @@ void GizmoPanel::DrawGizmo()
         }
 }
 
-void GizmoPanel::ChangeEntity(Entity e)
+void
+GizmoPanel::OnChangeEntity(ChangeEntityEvent& e)
 {
-        m_Entity = e;
+        m_Entity = e.GetEntity();
 }
 
 void GizmoPanel::SetMode(Mode m)

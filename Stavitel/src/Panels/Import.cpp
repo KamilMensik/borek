@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Events/Events.h"
 #include "Include/Core.h"
 #include "Include/Debug/Log.h"
 #include "Include/Engine/Assets/Asset.h"
@@ -29,6 +30,19 @@ namespace Panels {
 
 Import::Import()
 {
+        m_EvHandles[0] = AssetPanelSelectedEvent::AddListener(EVENT_FN(OnAssetPanelSelected));
+}
+
+Import::~Import()
+{
+        AssetPanelSelectedEvent::RemoveListener(m_EvHandles[0]);
+}
+
+bool
+Import::OnAssetPanelSelected(AssetPanelSelectedEvent& e)
+{
+        SetSelectedAsset(e.GetAssetPath());
+        return false;
 }
 
 static bool
@@ -187,9 +201,8 @@ Import::SetSelectedAsset(const std::string& asset_path)
                 break;
         }
 
-        if (m_SelectedAsset) {
+        if (m_SelectedAsset)
                 m_SelectedAsset->LoadFrom(m_SelectedAssetPath);
-        }
 }
 
 void
@@ -282,7 +295,9 @@ Import::SpriteSheetImport()
                 ImGui::EndListBox();
         }
 }
+
 void
+
 Import::ScriptImport()
 {
         ImGui::Text("Script");
@@ -294,12 +309,12 @@ Import::SoundImport()
         SoundAsset& snd = RCAST<SoundAsset&>(*m_SelectedAsset);
         fs::path relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
 
-        ImGui::Text("Sprite");
+        ImGui::Text("Sound");
         if (SoundImportSettings(snd)) {
                 m_SelectedAsset->Serialize(m_SelectedAssetPath);
                 AssetManager::Refresh(relative_path, std::move(m_SelectedAsset));
                 m_SelectedAsset = NewUniq<SoundAsset>();
-                m_SelectedAsset->LoadFrom(m_SelectedAssetPath);
+                m_SelectedAsset->Deserialize(m_SelectedAssetPath);
         }
 }
 
