@@ -1,6 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Engine/Assets/AssetFlags.h"
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -10,6 +9,7 @@
 
 #include "Include/Graphics/OpenGL/OpenGLTexture.h"
 #include "Include/Debug/Assert.h"
+#include "Include/Engine/Assets/AssetFlags.h"
 
 namespace Borek {
 namespace Graphics {
@@ -52,8 +52,8 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 
         glTextureParameteri(m_Id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTextureParameteri(m_Id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_Id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         glTextureSubImage2D(m_Id, 0, 0, 0, m_Width, m_Height, format,
                             GL_UNSIGNED_BYTE, stbi_img ? RCAST<char*>(stbi_img) : img);
@@ -85,7 +85,7 @@ OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height,
         }
 
         glCreateTextures(GL_TEXTURE_2D, 1, &m_Id);
-        glTextureStorage2D(m_Id, 1, internal_format, width, height);
+        glTextureStorage2D(m_Id, 1, internal_format, m_Width, m_Height);
 
         switch (flags & TexFlags_Filtering) {
         case TexFlags_Nearest:

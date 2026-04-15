@@ -2,14 +2,11 @@
 
 #pragma once
 
-#include "glm/ext/vector_float2.hpp"
 #include <cstdint>
 
-#include "Include/Engine/FZX/Collider.h"
+#include <glm/ext/vector_float2.hpp>
 
-/*
-*       Collision boxes for Borek.
-*/
+#include "Include/Platform/SIMD.h"
 
 namespace Borek {
 namespace FZX {
@@ -17,11 +14,26 @@ namespace FZX {
 enum class BodyType : uint8_t {
         Static = 0,
         Dynamic = 1,
+        Area = 2,
 };
 
 enum class ColliderType : uint8_t {
         Rectangle = 0,
-        Circle = 1,
+        Tilemap = 1,
+        Circle = 2,
+};
+
+struct RectangleCollider {
+        uint16_t size_x, size_y;
+        float rotation;
+};
+
+struct TilemapCollider {
+        uint16_t row, col;
+};
+
+struct CircleCollider {
+        uint16_t radius;
 };
 
 enum PhysicsFlags {
@@ -32,20 +44,19 @@ enum PhysicsFlags {
 };
 
 struct Body {
-        Collider collider;
         uint32_t physics_flags;
         uint16_t collision_mask = UINT16_MAX;
-        BodyType body_type = BodyType::Static;
+        BodyType body_type;
         ColliderType collider_type = ColliderType::Rectangle;
+        union {
+                RectangleCollider rc;
+                TilemapCollider tc;
+                CircleCollider cc;
+        };
 
-        bool
-        CollidesWith(const Body& other) const;
-
-        void
-        Update(const glm::vec2& position, const glm::vec2& size);
+        M128
+        Update(const glm::vec2& pos, const glm::vec2& size, float rotation = 0);
 };
-
-using BodyComponent = Body;
 
 }  // namespace FZX
 }  // namespace Borek

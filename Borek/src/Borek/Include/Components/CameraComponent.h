@@ -10,12 +10,12 @@
 namespace Borek {
 
 struct CameraComponent {
-        float aspect_ratio;
-        float zoom;
         Graphics::Camera camera;
+        float zoom;
+        uint16_t width, height;
         bool is_active;
 
-        CameraComponent(float aspect_ratio = 1.6, float zoom = 1.0f);
+        CameraComponent();
 
         const glm::mat4&
         GetViewProjectionMatrix(const TransformComponent& transform);

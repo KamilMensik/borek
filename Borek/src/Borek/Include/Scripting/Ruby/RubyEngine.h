@@ -2,8 +2,12 @@
 
 #pragma once
 
-#include "Include/Scripting/Ruby/Compiler.h"
+#include <string>
+#include <vector>
+
 #include <mrbcpp.h>
+
+#include "Include/Scripting/Ruby/Compiler.h"
 
 struct mrb_state;
 struct RClass;

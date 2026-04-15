@@ -162,6 +162,7 @@
  *
  */
 
+#include "ECS/ArchetypeExport.h"
 #include <cstdint>
 #include <vector>
 
@@ -198,6 +199,7 @@ public:
         EntityId entity();
         EntityId entity(const ArchetypeType& components);
         EntityId entity(Archetype archetype);
+        EntityId entity(ArchetypeExport& data);
         void remove(EntityId);
 
         // Setting components
@@ -217,6 +219,11 @@ public:
         void remove_component(EntityId entity, ComponentId component);
 
         // Getting components
+        template <class T>
+        inline bool has_component(EntityId entity)
+        {
+                return has_component(entity, GetId<T>());
+        }
         bool has_component(EntityId, ComponentId);
         void* get_component(EntityId, ComponentId);
         template <class T>
@@ -228,6 +235,9 @@ public:
                 return *reinterpret_cast<T*>(get_component(e, GetId<T>()));
         }
 
+        ArchetypeExport
+        get_export(EntityId e);
+
 private:
         static std::vector<WData> s_WorldData;
         static std::vector<Id> s_Reusable;
@@ -235,7 +245,7 @@ private:
 
         std::unordered_set<Id> m_WorldEntities;
 
-        static Id GetId();
+        static Id GetEId();
 };
 
 }  // namespace ECS

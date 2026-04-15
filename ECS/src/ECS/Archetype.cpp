@@ -1,17 +1,29 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "ECS/Query.h"
-#include "ECS/World.h"
 #include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
-#include "Archetype.h"
-#include "Component.h"
+#include "ECS/Query.h"
+#include "ECS/World.h"
+#include "ECS/Archetype.h"
+#include "ECS/Component.h"
 
 namespace ECS {
 
 using ArchetypeType = std::unordered_set<ComponentId>;
+
+template <class T>
+static T
+align(T val, T alignment)
+{
+        T remainder = val % alignment;
+        if (remainder == 0)
+                return val;
+        
+        return val + (alignment - remainder);
+}
 
 Id
 ArchetypeInternal::Get(const ArchetypeType& type)
@@ -22,8 +34,8 @@ ArchetypeInternal::Get(const ArchetypeType& type)
         }
 
         uint32_t id = s_CreatedArchetypes.size();
-        s_CreatedArchetypes.emplace_back(type);
-        s_CreatedArchetypes[id].Init(id);
+        s_CreatedArchetypes.emplace_back(std::make_unique<ArchetypeInternal>(type));
+        s_CreatedArchetypes[id]->Init(id);
         return id;
 }
 
@@ -62,13 +74,10 @@ ArchetypeInternal::GetEdge(ComponentId c, bool is_adding)
         else
                 test.erase(c);
 
-        int keep_id = m_Id;
-
-        // ArchetypeInternal::Get may invalidate this object
         Id find = ArchetypeInternal::Get(test);
 
-        s_CreatedArchetypes[find].m_Edges[c] = keep_id;
-        s_CreatedArchetypes[keep_id].m_Edges[c] = find;
+        s_CreatedArchetypes[find]->m_Edges[c] = m_Id;
+        s_CreatedArchetypes[m_Id]->m_Edges[c] = find;
 
         return find;
 }
@@ -111,7 +120,8 @@ ArchetypeInternal::MoveEntity(EntityId e, ArchetypeInternal& dest)
                 }
         }
 
-        RemoveEntity(from_row, false);
+        RemoveEntity(from_row, true);
+
         return dest_row;
 }
 
@@ -151,22 +161,28 @@ void ArchetypeInternal::ChangeSize(uint32_t new_size)
         if (m_MaxSize != 0 && m_Components.size() > 0)
                 data_to_free = reinterpret_cast<uint8_t*>(m_Components.front().data);
 
+        std::vector<uint32_t> cdata_offsets;
+        cdata_offsets.reserve(m_Components.size());
+
         uint32_t component_sizes = 0;
-        for (auto& component : m_Components)
-                component_sizes += component.element_size;
-        uint8_t* data = new uint8_t[component_sizes * new_size];
+        for (auto& component : m_Components) {
+                component_sizes = align(component_sizes, component.alignment);
+                cdata_offsets.emplace_back(component_sizes);
+                component_sizes += component.element_size * new_size;
+        }
+        uint8_t* data = new uint8_t[component_sizes];
 
         const uint32_t copy_size = std::min(m_MaxSize, new_size);
-        for (uint32_t offset = 0; auto& component : m_Components) {
-                uint8_t* new_cdata = &data[offset];
+        for (uint32_t index = 0; auto& component : m_Components) {
+                uint8_t* new_cdata = &data[cdata_offsets[index]];
 
-                for (int i = 0; i < copy_size; i++) {
+                for (uint32_t i = 0; i < copy_size; i++) {
                         component.moveop(&new_cdata[i * component.element_size],
                                          component[i]);
                 }
                 component.data = new_cdata;
 
-                offset += component.element_size * new_size;
+                index++;
         }
 
         m_MaxSize = new_size;
@@ -192,19 +208,57 @@ ArchetypeInternal::Reset()
         size_t archetype_sizes = s_CreatedArchetypes.size();
         for (unsigned i = 0; i < archetype_sizes; i++) {
                 auto& atype = s_CreatedArchetypes[i];
-                for (unsigned row = 0; row < atype.m_Entities.size(); row++) {
-                        for (auto& c : atype.m_Components) {
+                for (unsigned row = 0; row < atype->m_Entities.size(); row++) {
+                        for (auto& c : atype->m_Components) {
                                 c.destructor(c[row]);
                         }
                 }
 
-                atype.m_Entities.clear();
-                s_CreatedArchetypes[i].ChangeSize(5);
+                atype->m_Entities.clear();
+                s_CreatedArchetypes[i]->ChangeSize(5);
         }
 }
 
-std::vector<ArchetypeInternal>
-ArchetypeInternal::s_CreatedArchetypes = { ArchetypeInternal() };
+void
+ArchetypeInternal::ImportEntity(EntityId e, void* values)
+{
+        const uint32_t atype_row = AddEntity(e);
+
+        uint32_t offset = 0;
+        for (auto c : m_Components) {
+                offset = align(offset, c.alignment);
+                void* src = &(reinterpret_cast<uint8_t*>(values)[offset]);
+                c.moveop(c[atype_row], src);
+                offset += c.element_size;
+        }
+}
+
+void*
+ArchetypeInternal::ExportEntity(EntityId e)
+{
+        const uint32_t atype_row = World::s_WorldData[e].archetype_row;
+
+        uint32_t size = 0;
+        std::vector<uint32_t> offsets;
+        offsets.reserve(m_Components.size());
+
+        for (auto c : m_Components) {
+                size = align(size, c.alignment);
+                offsets.emplace_back(size);
+                size += c.element_size;
+        }
+
+        uint8_t* data = new uint8_t[size];
+        for (int i = 0; auto c : m_Components) {
+                c.moveop(&data[offsets[i]], c[atype_row]);
+                i++;
+        }
+
+        return data;
+}
+
+std::vector<std::unique_ptr<ArchetypeInternal>>
+ArchetypeInternal::s_CreatedArchetypes;
 
 std::unordered_map<ArchetypeType, Id, __ArchetypeHash>
 ArchetypeInternal::s_ArchetypesByType = { { {}, 0 } };
@@ -239,7 +293,7 @@ Archetype::RemoveEntity(uint32_t row)
 ArchetypeInternal&
 Archetype::GetInternal()
 {
-        return ArchetypeInternal::s_CreatedArchetypes[m_Id];
+        return *ArchetypeInternal::s_CreatedArchetypes[m_Id];
 }
 
 EntityId
@@ -293,6 +347,18 @@ ComponentColumn&
 Archetype::operator [](unsigned component_index)
 {
         return GetComponents(component_index);
+}
+
+void
+Archetype::ImportEntity(EntityId e, void* values)
+{
+        GetInternal().ImportEntity(e, values);
+}
+
+void*
+Archetype::ExportEntity(EntityId e)
+{
+        return GetInternal().ExportEntity(e);
 }
 
 uint32_t

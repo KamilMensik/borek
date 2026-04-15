@@ -1,9 +1,11 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include "glm/ext/vector_float2.hpp"
 #include <cstdint>
 #include <fstream>
 
+#include <iostream>
 #include <stb/image.h>
 
 #include "Include/Engine/Assets/IAsset.h"

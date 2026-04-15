@@ -1,6 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include <cstring>
 #include <filesystem>
 
 #include <imgui.h>
@@ -16,8 +15,10 @@
 
 #include "Events/Events.h"
 #include "Popups/TilemapAssetFormPopup.h"
+#include "Misc/SceneTabBar.h"
 #include "Misc/FileExplorer/FileExplorer.h"
-#include "./AssetsPanel.h"
+#include "Popups/AssetPanelPopup.h"
+#include "Panels/AssetsPanel.h"
 
 namespace Borek {
 namespace Panels {
@@ -35,9 +36,12 @@ enum AssetType {
 static void
 on_asset_doubleclicked(const fs::path& path)
 {
-        switch (Hash(path.extension())) {
-        case Hash(".tmap"): {
+        switch (HashP(path.extension())) {
+        case Hash(".tmap"):
                 Application::OpenPopup(new Popups::TilemapAssetFormPopup(path, path));
+                break;
+        case Hash(".scn"): {
+                SceneTabBar::ChangeScene(path);
                 break;
         }
         default:
@@ -45,15 +49,24 @@ on_asset_doubleclicked(const fs::path& path)
         }
 }
 
+static void
+on_detail_right_clicked(const fs::path& context_path)
+{
+        constexpr auto s = Popups::AssetPanelPopup::State::kNormal;
+
+        Application::OpenPopup(new Popups::AssetPanelPopup(context_path, s));
+}
+
 
 Assets::Assets() {
-        m_CurrentPath = Utils::Settings::Instance().current_project_path;
+        m_CurrentPath = Application::ProjectPath();
 
         FileExplorerCallbacks fe_callbacks = FileExplorer::GetBaseCallbacks();
         fe_callbacks.file_selected = [](const fs::path& path) {
                 Application::SendEvent<AssetPanelSelectedEvent>(path);
         };
         fe_callbacks.file_double_clicked = on_asset_doubleclicked;
+        fe_callbacks.detail_right_clicked = on_detail_right_clicked;
 
         FileExplorer::OpenEX("Assets", FileExplorerType_Basic, m_CurrentPath,
                              FileExplorer::GetBaseAvailExtensions(),

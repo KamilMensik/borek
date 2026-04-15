@@ -1,7 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include <ostream>
-#include <print>
 #include <string>
 
 #include <mruby.h>
@@ -22,6 +20,17 @@ FuncArgs& FuncArgs::Required(unsigned n)
 FuncArgs& FuncArgs::Optional(unsigned n)
 {
         val |= MRB_ARGS_OPT(n);
+        return *this;
+}
+
+FuncArgs& FuncArgs::Rest()
+{
+        val |= MRB_ARGS_REST();
+        return  *this;
+}
+FuncArgs& FuncArgs::Block()
+{
+        val |= MRB_ARGS_BLOCK();
         return *this;
 }
 
@@ -47,6 +56,13 @@ Class& Class::define_class_method(const std::string& name, mrbcpp_func_t func, F
         return *this;
 }
 
+Class&
+Class::define_private_method(const std::string& name, mrbcpp_func_t func, FuncArgs args)
+{
+        mrb_define_private_method(m_VM, m_Self, name.c_str(), func, args);
+        return *this;
+}
+
 Class& Class::define_const(const std::string& name, mrb_value val)
 {
         mrb_define_const(m_VM, m_Self, name.c_str(), val);
@@ -59,6 +75,13 @@ Class& Class::define_class_iv(const std::string& name, mrb_value val)
         v.w = reinterpret_cast<uintptr_t>(m_Self);
 
         mrb_iv_set(m_VM, v, mrb_intern_cstr(m_VM, name.c_str()), val);
+        return *this;
+}
+
+Class&
+Class::include(Module& module)
+{
+        mrb_include_module(m_VM, *this, module);
         return *this;
 }
 
@@ -81,6 +104,22 @@ Class Module::define_class(const std::string& name, Class super)
         return Class(m_VM, c);
 }
 
+Module&
+Module::define_method(const std::string& name, mrbcpp_func_t func, FuncArgs args)
+{
+        mrb_define_method(m_VM, m_Self, name.c_str(), func, args);
+
+        return *this;
+}
+
+Module&
+Module::define_module_method(const std::string& name, mrbcpp_func_t func, FuncArgs args)
+{
+        mrb_define_module_function(m_VM, m_Self, name.c_str(), func, args);
+
+        return *this;
+}
+
 Module Module::define_module(const std::string& name)
 {
         return Module(m_VM,
@@ -90,6 +129,13 @@ Module Module::define_module(const std::string& name)
 Class Module::get_class(const std::string& name)
 {
         return Class(m_VM, mrb_class_get_under(m_VM, m_Self, name.c_str()));
+}
+
+Module&
+Module::include(Module& module)
+{
+        mrb_include_module(m_VM, *this, module);
+        return *this;
 }
 
 Module& Module::define_const(const std::string& name, mrb_value val)
@@ -109,18 +155,18 @@ VM::VM(mrb_state* state)
         m_Self = state;
 }
 
-Class VM::define_class(const std::string& name)
+Class VM::define_class(const std::string& name, mrb_vtype type)
 {
         auto c = mrb_define_class(m_Self, name.c_str(), m_Self->object_class);
-        MRB_SET_INSTANCE_TT(c, MRB_TT_DATA);
+        MRB_SET_INSTANCE_TT(c, type);
 
         return Class(m_Self, c);
 }
 
-Class VM::define_class(const std::string& name, Class super)
+Class VM::define_class(const std::string& name, Class super, mrb_vtype type)
 {
         auto c = mrb_define_class(m_Self, name.c_str(), super);
-        MRB_SET_INSTANCE_TT(c, MRB_TT_DATA);
+        MRB_SET_INSTANCE_TT(c, type);
 
         return Class(m_Self, c);
 }

@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Engine/Utils/PathHelpers.h"
 #include <cstdio>
 
 #include <mruby.h>
@@ -35,10 +36,12 @@ void Compiler::Compile(const fs::path& in, const fs::path& out)
         FILE* fin = fopen(in.c_str(), "r");
         FILE* fout = fopen(out.c_str(), "wb");
 
+        std::string rel_path = Utils::Path::ToRelative(in);
+        mrb_ccontext_filename(*m_VM, m_Context, rel_path.c_str());
         auto parser_state = mrb_parse_file(*m_VM, fin, m_Context);
         RProc* res = mrb_generate_code(*m_VM, parser_state);
 
-        mrb_dump_irep_binary(*m_VM, res->body.irep, 0, fout);
+        mrb_dump_irep_binary(*m_VM, res->body.irep, MRB_DUMP_DEBUG_INFO, fout);
 
         fclose(fin);
         fclose(fout);

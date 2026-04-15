@@ -209,8 +209,8 @@ bool OpenGLShader::Compile(const std::string& vertex_source,
                 return false;
         }
 
-        glDetachShader(m_Id, vertex_shader);
-        glDetachShader(m_Id, fragment_shader);
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
 
         return true;
 }

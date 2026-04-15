@@ -1,13 +1,17 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "ECS/ArchetypeExport.h"
 #include "Query.h"
-#include <iostream>
 #include "World.h"
 
 namespace ECS {
 
 World::World()
 {
+        auto& atypes = ArchetypeInternal::s_CreatedArchetypes;
+        if (atypes.empty()) {
+                atypes.emplace_back(std::make_unique<ArchetypeInternal>());
+        }
 }
 
 World::~World()
@@ -24,7 +28,7 @@ World::~World()
 
 Id World::entity()
 {
-        EntityId entity = GetId();
+        EntityId entity = GetEId();
         s_WorldData[entity].archetype_id = 0;
         s_WorldData[entity].archetype_row = 0;
         return entity;
@@ -32,11 +36,20 @@ Id World::entity()
 
 Id World::entity(Archetype archetype)
 {
-        EntityId e = GetId();
+        EntityId e = GetEId();
         archetype.AddEntity(e);
         m_WorldEntities.insert(e);
         return e;
 }
+
+EntityId
+World::entity(ArchetypeExport& data)
+{
+        EntityId e = GetEId();
+        data.archetype.ImportEntity(e, data.exported_data);
+        return e;
+}
+
 void World::remove(EntityId id)
 {
         s_Reusable.emplace_back(id);
@@ -89,7 +102,17 @@ void* World::get_component(EntityId entity, ComponentId component)
         return archetype[component][row_id];
 }
 
-Id World::GetId()
+ArchetypeExport
+World::get_export(EntityId e)
+{
+        Archetype archetype(s_WorldData[e].archetype_id);
+
+        ArchetypeExport res(archetype.ExportEntity(e), archetype);
+        remove(e);
+        return res;
+}
+
+Id World::GetEId()
 {
         if (s_Reusable.size() > 0) {
                 Id id = s_Reusable.back();

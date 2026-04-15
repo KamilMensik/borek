@@ -1,27 +1,35 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Node.h"
-#include "Include/Core.h"
-#include "Include/Engine/FZX/FACD.h"
-#include "Include/Engine/Utils/PairHasher.h"
-#include <unordered_map>
-#include <functional>
+#include <filesystem>
+#include <vector>
 
 #include <ECS/World.h>
 #include <ECS/Component.h>
+#include <ECS/ArchetypeExport.h>
 
 #include "Include/Base/Entity.h"
+#include "Include/Base/Node.h"
+#include "Include/Core.h"
+#include "Include/Engine/FZX/FACD.h"
+#include "Include/Engine/SceneTree.h"
 
 #pragma once
 
 namespace Borek {
 
+struct SceneExportItem : public ECS::ArchetypeExport {
+        Symbol entity_name;
+        NodeType entity_node_type;
+        int m;
+};
+
+using SceneExport = std::vector<SceneExportItem>;
+
 class Scene {
-friend Entity;
+friend class Entity;
 friend class SceneSerializer;
 friend class Application;
 friend class EntityInitializer;
-using iteration_func = std::function<void(Entity)>;
 public:
         Scene();
         ~Scene();
@@ -29,102 +37,56 @@ public:
         void
         Init();
 
-        Entity
-        NewEntity(const std::string& tag = "", NodeType type = NodeType::Node);
+        void
+        Initialize();
 
         void
-        ChangeEntityNodeType(Entity e, NodeType type);
+        Uninitialize();
+
+        Entity
+        NewEntity(Symbol tag = Symbol(), NodeType type = NodeType::Node,
+                  Entity parent = Entity());
+
+        Entity
+        CreateFromPrefab(std::string_view path, Entity parent = Entity());
 
         void
         DeleteEntity(Entity e);
 
-        Entity&
-        RootEntity();
-
         uint32_t
         GetEntityCount();
-
-        // Scene graph API
-        void
-        TraverseScene(iteration_func iter_func);
-
-        void
-        TraverseSceneReverse(iteration_func iter_func);
-
-        void
-        TraverseScene(iteration_func before, iteration_func after);
-
-        void
-        TraverseSceneReverse(iteration_func before, iteration_func after);
-
-        Entity
-        EntityFindFirstChild(const std::string& name, Entity parent = Entity());
-
-        void
-        EntityAppendChild(Entity entity, Entity dest);
-
-        void
-        EntityPrependChild(Entity entity, Entity dest);
-
-        void
-        EntityAppend(Entity entity, Entity dest);
-
-        void
-        EntityPrepend(Entity entity, Entity dest);
-
-        Entity
-        GetEntityParent(Entity entity);
-
-        bool
-        HasEntityChildren(Entity entity);
-
-        std::vector<uint32_t>*
-        GetEntityChildren(Entity entity);
-
-        NodeType
-        GetEntityNodeType(Entity e);
 
         FZX::FACD&
         GetPhysicsWorld();
 
+        SceneTree&
+        GetTree();
+
+        const std::filesystem::path&
+        GetPath() const;
+
+        void
+        SetPath(const std::filesystem::path& path, bool force_extension = true);
+
+        SceneExport
+        ExportEntity(Entity e);
+
+        Entity
+        ImportEntity(SceneExport& e);
+
+        Entity
+        GetLastCreatedEntity();
+
 public:
-        Uniq<ECS::World> m_World;
-        Entity m_RootEntity;
         FZX::FACD m_PhysicsWorld;
+        SceneTree m_SceneTree;
+        std::filesystem::path m_Path;
+        Uniq<ECS::World> m_World;
+        Entity m_LastCreatedEntity;
+        bool m_Initialized;
 
-        std::unordered_map<uint32_t, std::vector<uint32_t>>
-        m_SceneGraph;
-        std::unordered_map<uint32_t, uint32_t>
-        m_EntityParents;
-        std::unordered_map<std::pair<std::string, uint32_t>, uint32_t, PairHash>
-        m_SceneGraphByName;
-        std::unordered_map<uint32_t, NodeType>
-        m_EntityNodeTypes;
-
-        void
-        TraverseSceneHelper(Entity e, std::function<void(Entity e)> iter_func);
-
-        void
-        TraverseSceneReverseHelper(Entity e, std::function<void(Entity e)> iter_func);
-
-        void
-        TraverseSceneHelper(Entity e, iteration_func before,
-                            iteration_func after);
-
-        void
-        TraverseSceneReverseHelper(Entity e, iteration_func before,
-                                   iteration_func after);
-
-        void
-        RemoveEntityFromGraph(Entity e);
-
-        void
-        RemoveEntityFromSceneGraph(Entity e);
-
-        uint32_t
-        GetEntityParentId(Entity e);
-
-        template <class T> T&
+        template <class T>
+        inline T&
         GetComponent(Entity e)
         {
                 return *RCAST<T*>(m_World->get_component(e, ECS::GetId<T>()));

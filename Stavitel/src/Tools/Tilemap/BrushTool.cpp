@@ -28,8 +28,7 @@ BrushTool::OnMousePressed(MouseButton button)
                 return;
         }
 
-        const glm::vec2 rel_pos = glm::abs(Input::GetMousePosRelative());
-        if (rel_pos.x > 1 || rel_pos.y > 1)
+        if (!IsInsideViewport())
                 return;
 
         m_State = button == MouseButton::BUTTON_LEFT ? State::kDrawing : State::kErasing;
@@ -58,10 +57,8 @@ BrushTool::OnMouseReleased(MouseButton button)
 bool
 BrushTool::Tick()
 {
-        const glm::vec2 rel_pos = glm::abs(Input::GetMousePosRelative());
         if (!(m_Active && !m_CurrentEntity.IsNil() &&
-                m_SelectedCell != UINT32_MAX) ||
-                (rel_pos.x > 1 || rel_pos.y > 1)) {
+                m_SelectedCell != UINT32_MAX) || !IsInsideViewport()) {
                 return false;
         }
 
@@ -77,7 +74,7 @@ BrushTool::Tick()
         switch (m_State) {
         case State::kNothing:
                 Drawing::Quad::Draw(pos * tile_step, tile_size, spritesheet.texture,
-                                    Color(1, 1, 1, 0.65), ZIndexAssigner::GetTop(),
+                                    Color(255, 255, 255, 156), ZIndexAssigner::GetTop(),
                                     spritesheet.SubTextureCords(m_SelectedCell));
                 break;
         case State::kDrawing:

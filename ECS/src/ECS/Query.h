@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -59,7 +60,7 @@ public:
                         QueryInternal res;
                         res.m_Type = { GetId<components>()... };
                         for (auto& atype : ArchetypeInternal::s_CreatedArchetypes) {
-                                res.TryAdd(atype.m_Id);
+                                res.TryAdd(atype->m_Id);
                         }
                         s_DefinedQueries.emplace_back(res);
                 }
@@ -91,13 +92,15 @@ public:
                         cid_in_arch = { curr.GetComponentColumn(ECS::GetId<comps>())... };
                 }
 
-                if (m_CurrentIndexInArchetype >= curr.GetEntitySize()) {
-                        if (++m_CurrentArchetypeIndex >= m_ArchetypeIds.size()) {
+                while (m_CurrentIndexInArchetype >= curr.GetEntitySize()) {
+                        if (++m_CurrentArchetypeIndex >= m_ArchetypeIds.size())
                                 return nullptr;
-                        }
+
+                        curr = m_ArchetypeIds[m_CurrentArchetypeIndex];
+                        if (curr.GetEntitySize() == 0)
+                                continue;
 
                         m_CurrentIndexInArchetype = 0;
-                        curr = m_ArchetypeIds[m_CurrentArchetypeIndex];
                         cid_in_arch = { curr.GetComponentColumn(ECS::GetId<comps>())... };
                 }
                 

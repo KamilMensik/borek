@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "ECS/DisabledComponent.h"
 #include <cstdint>
 #include <vector>
 

@@ -42,6 +42,7 @@ float screenPxRange() {
     vec2 screenTexSize = vec2(1.0)/fwidth(e_TexCord);
     return max(0.5*dot(unitRange, screenTexSize), 1.0);
 }
+
 void main()
 {
         vec3 msd = texture(u_FontTexture, e_TexCord).rgb;

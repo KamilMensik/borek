@@ -14,8 +14,8 @@ struct IDComponent {
 
         IDComponent() : id() {}
         IDComponent(UUID id) : id(id) {}
-        operator uint64_t() { return id; }
-        operator UUID() { return id; }
+        operator uint64_t() const { return id; }
+        operator UUID() const { return id; }
 };
 
 }  // namespace Borek

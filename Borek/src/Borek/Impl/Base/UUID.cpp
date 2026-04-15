@@ -16,12 +16,12 @@ UUID::UUID()
 
 UUID::UUID(uint64_t value) : m_Value(value) {}
 
-UUID::operator uint64_t()
+UUID::operator uint64_t() const
 {
         return GetValue();
 }
 
-uint64_t UUID::GetValue()
+uint64_t UUID::GetValue() const
 {
         return m_Value;
 }

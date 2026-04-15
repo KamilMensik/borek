@@ -24,6 +24,7 @@ AddScriptPopup::AddScriptPopup(uint32_t parent_id)
 bool
 AddScriptPopup::Tick()
 {
+        Popup::Tick();
         bool is_open = true;
         ImGui::Begin("Add Node", &is_open);
 

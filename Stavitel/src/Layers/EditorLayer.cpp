@@ -1,12 +1,13 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Application.h"
-#include "Include/Core.h"
-#include "Include/Debug/Log.h"
-#include "Include/Engine/SceneSerializer.h"
-#include "Include/Engine/Utils/Settings.h"
-#include "Include/Graphics/Renderer.h"
-#include "Panels/ToolbarPanel.h"
+#include "Commands/EntityCommands.h"
+#include "EditorSettings.h"
+#include "EditorState.h"
+#include "Include/Base/Project.h"
+#include "Misc/Notifications/Notifications.h"
+#include "Misc/SceneTabBar.h"
+#include "Popups/ProjectSettingsPopup.h"
+#include <filesystem>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imguismo/ImGuizmo.h>
@@ -15,27 +16,52 @@
 #include <Borek.h>
 #include <Borek/Include/Engine/Utils/FileUtils.h>
 #include <Borek/Include/Base/Entity.h>
+#include <Include/Base/Application.h>
+#include <Include/Core.h>
+#include <Include/Debug/Log.h>
+#include <Include/Engine/SceneSerializer.h>
+#include <Include/Graphics/Renderer.h>
 
 #include "EditorLayer.h"
 #include "Popups/EditorSettingsPopup.h"
+#include "Events/ProjectEvents.h"
+#include "Misc/FileExplorer/FileExplorer.h"
+#include "Misc/FontAwesome.h"
 
 namespace Borek {
 
-EditorLayer::EditorLayer()
-        : Borek::Layer("TestLayer"), m_OldTime(Application::GetWindow().GetTime())
-{
-        ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Bold.ttf"), 24.0f);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 24.0f);
-        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 32.0f);
+static void
+menu_right_size() {
+        ImGuiStyle& style = ImGui::GetStyle();
+        bool is_playing = EditorState::game_state == GameState::kPlaying;
+        const char* pbutton_text = is_playing ? ICON_FA_ROTATE_RIGHT : ICON_FA_PLAY;
+        float playbutton_width = ImGui::CalcTextSize(pbutton_text).x + style.FramePadding.x * 2.f;
+        float stopbutton_width = ImGui::CalcTextSize(ICON_FA_STOP).x + style.FramePadding.x * 2.f;
+        float width_needed = playbutton_width + style.ItemSpacing.x + stopbutton_width;
 
-        if (Utils::Settings::Instance().last_scene_opened_path != "") {
-                Application::SetScene(NewRef<Scene>());
-                SceneSerializer(Application::GetScene())
-                        .Deserialize(Utils::Settings::Instance()
-                                                    .last_scene_opened_path);
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - width_needed);
+
+        if (ImGui::Button(pbutton_text)) {
+                if (is_playing) {
+                        EditorState::game_state = GameState::kRestarting;
+                } else {
+                        EditorState::game_state = GameState::kPlaying;
+                }
         }
 
+        ImGui::BeginDisabled(!is_playing);
+        if (ImGui::Button(ICON_FA_STOP))
+                EditorState::game_state = GameState::kStopped;
+        ImGui::EndDisabled();
+
+        ImGui::EndMenuBar();
+}
+
+EditorLayer::EditorLayer()
+        : Borek::Layer("TestLayer"), m_OldTime(Application::GetTime())
+{
+        auto& project = Project::Instance();
+        SceneTabBar::ChangeScene(project.last_scene_opened_path);
 }
 
 EditorLayer::~EditorLayer() {}
@@ -43,6 +69,7 @@ EditorLayer::~EditorLayer() {}
 void EditorLayer::OnUpdate(float delta)
 {
         m_TilesetPanel.OnUpdate();
+        m_ToolbarPanel.Tick();
 }
 
 void EditorLayer::BeginDockspace()
@@ -90,25 +117,28 @@ void EditorLayer::EndDockspace()
 
 void EditorLayer::OnImGuiRender()
 {
+        Scene& scene = *Application::GetScene();
+
         if (ImGui::BeginMenuBar()) {
                 if (ImGui::BeginMenu("File")) {
                         if (ImGui::MenuItem("Exit", NULL, false, true))
                                 Application::Shutdown();
                         if (ImGui::MenuItem("Open")) {
-                                auto path = Utils::OpenFileDialog(nullptr, ASSET_PATH());
-                                Application::SetScene(NewRef<Scene>());
-                                SceneSerializer(Application::GetScene()).Deserialize(path);
-                                WITH_CHANGE(Utils::Settings::InstanceM(), {
-                                        Utils::Settings::InstanceM().last_scene_opened_path = path;
-                                });
+                                //auto path = Utils::OpenFileDialog(nullptr, ASSET_PATH());
+                                //SceneTabBar::ChangeScene(path);
                         }
                         if (ImGui::MenuItem("Save")) {
-                                auto path = Utils::Settings::Instance().last_scene_opened_path;
-                                SceneSerializer(Application::GetScene()).Serialize(path);
+                                SceneTabBar::SaveScene();
                         }
                         if (ImGui::MenuItem("Save As")) {
-                                auto path = Utils::SaveFileDialog("", ASSET_PATH());
-                                SceneSerializer(Application::GetScene()).Serialize(path);
+                                //auto path = Utils::SaveFileDialog("", ASSET_PATH());
+                                //SceneSerializer(Application::GetScene()).Serialize(path);
+                        }
+                        if (ImGui::MenuItem("Open Project")) {
+                                FileExplorer::Open("Open Project",
+                                                   FileExplorerType_OpenFile,
+                                                   Utils::UserDataPath(),
+                                                   { ".bproj", });
                         }
                         ImGui::EndMenu();
                 }
@@ -120,17 +150,29 @@ void EditorLayer::OnImGuiRender()
                         ImGui::EndMenu();
                 }
 
-                ImGui::EndMenuBar();
+                if (ImGui::BeginMenu("Project")) {
+                        if (ImGui::MenuItem("Project Settings")) {
+                                Application::OpenPopup(new Popups::ProjectSettingsPopup());
+                        }
+                        ImGui::EndMenu();
+                }
+
+                menu_right_size();
         }
 
 
+        if (FileExplorer::Begin("Open Project")) {
+                Application::SendEvent<SwitchProjectEvent>(std::filesystem::path(FileExplorer::GetSelected()).parent_path());
+        }
+        FileExplorer::End();
+
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        if (ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_MenuBar)) {
+        if (ImGui::Begin("Viewport")) {
                 //m_IsFocused = ImGui::IsItemHovered();
                 //Application::GetImguiLayer().SetEventBlocking(!m_IsFocused);
 
-                // Toolbar
-                m_ToolbarPanel.OnImguiRender(m_GizmoPanel);
+                SceneTabBar::OnImguiRender();
+                m_ToolbarPanel.OnImguiRender();
 
                 ImVec2 viewport_size = ImGui::GetContentRegionAvail();
 
@@ -144,13 +186,25 @@ void EditorLayer::OnImGuiRender()
                 if (ImGui::BeginDragDropTarget()) {
                         const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM");
                         if (payload) {
-                                BOREK_ENGINE_INFO("Dragged {} into viewport", std::string(SCAST<char*>(payload->Data)));
+                                std::string_view path(SCAST<char*>(payload->Data));
+                                auto it = path.find_last_of('.');
+                                if (path.substr(it) == ".scn") {
+                                        glm::vec2 pos = Input::GetMouseWorldPos();
+                                        glm::vec2 snap(EditorSettings::grid_snap.first,
+                                                       EditorSettings::grid_snap.second);
+
+                                        pos = glm::round(pos / snap) * snap;
+                                        SceneTabBar::SendCommand<CreatePrefabCommand>(
+                                                path,
+                                                scene.GetTree().GetRootEntity(),
+                                                pos);
+                                }
                         }
                         ImGui::EndDragDropTarget();
                 }
                 ImVec2 cached_cursor_pos = ImGui::GetCursorPos();
                 ImGui::SetCursorPos(old_pos);
-                Time new_time = Application::GetWindow().GetTime();
+                Time new_time = Application::GetTime();
                 double res = 1 / (new_time.Seconds() - m_OldTime.Seconds());
                 m_OldTime = new_time;
                 ImGui::Text("FPS: %f", res);
@@ -182,10 +236,12 @@ void EditorLayer::OnImGuiRender()
         m_ScenePanel.OnImguiRender();
         m_PropertiesPanel.OnImguiRender();
         m_AssetsPanel.OnImguiRender();
-        m_TestPanel.OnImguiRender();
         m_Console.OnImguiRender();
         m_ImportPanel.OnImguiRender();
         m_TilesetPanel.OnImGuiRender();
+        m_KFAnimationPanel.OnImguiRender();
+
+        Notifications::Render(Application::GetDelta());
 }
 
 //bool

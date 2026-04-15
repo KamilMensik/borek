@@ -1,6 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Engine/Utils/PathHelpers.h"
+#include "Include/Core.h"
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -13,7 +13,7 @@
 namespace Borek {
 
 void
-AssetManager::Refresh(const std::string& path, Uniq<IAsset> asset)
+AssetManager::Refresh(std::string_view path, Uniq<IAsset> asset)
 {
         auto it = s_AssetByPath.find(path);
         if (it == s_AssetByPath.end()) {
@@ -27,7 +27,7 @@ AssetManager::Refresh(const std::string& path, Uniq<IAsset> asset)
 }
 
 void
-AssetManager::RefreshPath(const std::string& from, const std::string& to)
+AssetManager::RefreshPath(std::string_view from, std::string_view to)
 {
         auto it = s_AssetByPath.find(from);
         if (it == s_AssetByPath.end()) {
@@ -36,7 +36,7 @@ AssetManager::RefreshPath(const std::string& from, const std::string& to)
 
         uint32_t asset_index = it->second;
         s_AssetByPath.erase(it);
-        s_AssetByPath[to] = asset_index;
+        s_AssetByPath[std::string(to)] = asset_index;
         s_AssetPaths[asset_index] = to;
 }
 
@@ -71,9 +71,9 @@ void
 AssetManager::Increment(uint32_t asset_id)
 {
         if (s_AssetReferences[asset_id] == 0) {
+                s_Assets[asset_id]->Load();
                 BOREK_ENGINE_INFO("|AssetManager| - Loaded Asset {}",
                                    s_AssetPaths[asset_id]);
-                s_Assets[asset_id]->Load();
         }
 
         s_AssetReferences[asset_id]++;
@@ -83,9 +83,9 @@ void
 AssetManager::Decrement(uint32_t asset_id)
 {
         if (--s_AssetReferences[asset_id] <= 0) {
+                s_Assets[asset_id]->Unload();
                 BOREK_ENGINE_INFO("|AssetManager| - Unloaded Asset {}",
                                    s_AssetPaths[asset_id]);
-                s_Assets[asset_id]->Unload();
         }
 }
 
@@ -100,7 +100,7 @@ AssetManager::Remove(uint32_t id)
 }
 
 void
-AssetManager::Remove(const std::string& path)
+AssetManager::Remove(std::string_view path)
 {
         auto it = s_AssetByPath.find(path);
         if (it == s_AssetByPath.end())
@@ -109,14 +109,14 @@ AssetManager::Remove(const std::string& path)
         s_Assets[it->second].reset();
         s_AssetTypes[it->second] = s_FirstFreeSlot;
         s_FirstFreeSlot = it->second;
-        s_AssetByPath.erase(path);
+        s_AssetByPath.erase(std::string(path));
 }
 
 std::vector<Uniq<IAsset>> AssetManager::s_Assets;
 std::vector<int> AssetManager::s_AssetReferences;
 std::vector<uint32_t> AssetManager::s_AssetTypes;
 std::vector<std::string> AssetManager::s_AssetPaths;
-std::unordered_map<std::string, uint32_t> AssetManager::s_AssetByPath;
+StringMap<uint32_t> AssetManager::s_AssetByPath;
 uint32_t AssetManager::s_FirstFreeSlot = UINT32_MAX;
 
 }  // namespace Borek

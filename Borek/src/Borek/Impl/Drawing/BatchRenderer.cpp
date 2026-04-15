@@ -1,27 +1,34 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Components/CameraComponent.h"
-#include "Include/Components/TransformComponent.h"
-#include "Include/Drawing/DrawingGlobals.h"
-#include "Include/Graphics/Renderer.h"
+#include "Include/Base/Input.h"
+#include "Include/Debug/Log.h"
 #include <cstdint>
+#include <cstring>
+#include <utility>
 
 #include "Include/Core.h"
 #include "Include/Graphics/IndexBuffer.h"
 #include "Include/Graphics/VertexArray.h"
 #include "Include/Graphics/VertexBuffer.h"
 #include "Include/Drawing/BatchRenderer.h"
+#include "Include/Components/CameraComponent.h"
+#include "Include/Components/TransformComponent.h"
+#include "Include/Drawing/DrawingGlobals.h"
+#include "Include/Graphics/Renderer.h"
 
 namespace Borek {
 namespace Drawing {
 
+static uint32_t index = 0;
+
 BRendererData::BRendererData(size_t elem_size, uint32_t index_count,
                              uint32_t batch_size)
-        : batch_size(batch_size), elem_size(elem_size)
+        : batch_size(batch_size), elem_size(elem_size), index_count(index_count)
 {
         const uint32_t data_size = elem_size * batch_size;
         const uint32_t index_size = index_count * batch_size;
 
+        id = index++;
         data = new uint8_t[elem_size * batch_size];
         index_data = new uint32_t[index_size];
 
@@ -33,12 +40,54 @@ BRendererData::BRendererData(size_t elem_size, uint32_t index_count,
         vertex_arr->SetIndexBuffer(index_buf);
 }
 
+BRendererData::BRendererData(BRendererData&& other)
+{
+        batch_size = other.batch_size;
+        elem_size = other.elem_size;
+        index_count = other.index_count;
+        data_count = other.data_count;
+        index_data_count = other.index_data_count;
+        shader = std::exchange(other.shader, nullptr);
+        draw_callback = other.draw_callback;
+        data = std::exchange(other.data, nullptr);
+        index_data = std::exchange(other.index_data, nullptr);
+        vertex_buf = std::exchange(other.vertex_buf, nullptr);
+        index_buf = std::exchange(other.index_buf, nullptr);
+        vertex_arr = std::exchange(other.vertex_arr, nullptr);
+        id = other.id;
+}
+
 BRendererData::~BRendererData()
 {
         if (data)
                 delete[] data;
         if (index_data)
                 delete[] index_data;
+}
+
+struct BRendererData&
+BRendererData::operator =(BRendererData&& other)
+{
+        if (data)
+                delete[] data;
+        if (index_data)
+                delete[] index_data;
+
+        batch_size = other.batch_size;
+        elem_size = other.elem_size;
+        index_count = other.index_count;
+        data_count = other.data_count;
+        index_data_count = other.index_data_count;
+        shader = std::exchange(other.shader, nullptr);
+        draw_callback = other.draw_callback;
+        data = std::exchange(other.data, nullptr);
+        index_data = std::exchange(other.index_data, nullptr);
+        vertex_buf = std::exchange(other.vertex_buf, nullptr);
+        index_buf = std::exchange(other.index_buf, nullptr);
+        vertex_arr = std::exchange(other.vertex_arr, nullptr);
+        id = other.id;
+
+        return *this;
 }
 
 void

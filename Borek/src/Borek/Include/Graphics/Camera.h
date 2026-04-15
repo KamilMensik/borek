@@ -13,6 +13,7 @@ namespace Graphics {
 
 class Camera {
 public:
+        Camera() = default;
         Camera(float left, float right, float bottom, float top);
 
         inline void Invalidate() { m_Valid = false; }

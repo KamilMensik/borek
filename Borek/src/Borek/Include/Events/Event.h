@@ -109,6 +109,8 @@ public:
 
 class Event : public IEvent {
         _BASE_EVENT_HEADER(Event)
+public:
+        virtual ~Event() = default;
 };
 
 }  // namespace Borek

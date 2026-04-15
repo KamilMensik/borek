@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Popup.h"
 #include "Include/Debug/Log.h"
 #include <filesystem>
 
@@ -28,14 +29,8 @@ FileExplorerPopup::FileExplorerPopup(const fs::path& context_path, State s)
 bool
 FileExplorerPopup::Tick()
 {
+        Popup::Tick();
         bool is_open = true;
-
-        if (!m_Initialized) {
-                ImVec2 pos = ImGui::GetMousePos();
-                ImGui::SetNextWindowPos({pos.x - 20, pos.y - 20});
-                m_Initialized = true;
-        }
-
         if (!ImGui::Begin("##FileExplorerPopup", &is_open, base_flags)) {
                 ImGui::End();
                 return false;

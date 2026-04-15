@@ -2,6 +2,7 @@
 
 #include "Misc/EditorTextures.h"
 #include "Include/Engine/Assets/TexAsset.h"
+
 namespace Borek {
 
 void
@@ -13,6 +14,7 @@ EditorTextures::Init()
         node_icons.dynamic_body.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/CharacterBody.png"));
         node_icons.static_body.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/StaticBody.png"));
         node_icons.sprite.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Sprite.png"));
+        node_icons.animated_sprite.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/AnimatedSprite.png"));
         node_icons.text.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Text.png"));
         node_icons.tilemap.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Tilemap.png"));
         node_icons.sound.LoadFrom(ASSET_PATH("assets/EditorIcons/Node/Sound.png"));
@@ -27,6 +29,9 @@ EditorTextures::Init()
         file_icons.script_file_icon.LoadFrom(ASSET_PATH("assets/EditorIcons/FileScript.png"));
         file_icons.sound_file_icon.LoadFrom(ASSET_PATH("assets/EditorIcons/FileSound.png"));
         file_icons.text_file_icon.LoadFrom(ASSET_PATH("assets/EditorIcons/FileText.png"));
+
+        ui_icons.connect_icon.LoadFrom(ASSET_PATH("assets/EditorIcons/Connect.png"));
+        ui_icons.disconnect_icon.LoadFrom(ASSET_PATH("assets/EditorIcons/Disconnect.png"));
 }
 
 void
@@ -52,9 +57,13 @@ EditorTextures::Deinitialize()
         file_icons.script_file_icon = TexAsset();
         file_icons.sound_file_icon = TexAsset();
         file_icons.text_file_icon = TexAsset();
+
+        ui_icons.connect_icon = TexAsset();
+        ui_icons.disconnect_icon = TexAsset();
 }
 
 NodeIcons EditorTextures::node_icons;
 FileIcons EditorTextures::file_icons;
+UIIcons EditorTextures::ui_icons;
 
 }  // namespace Borek

@@ -1,17 +1,20 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Components/TilemapComponent.h"
-#include "Include/Events/KeyEvents.h"
-#include "Include/Events/MouseEvents.h"
-#include "Panels/PanelEvents.h"
-#include "Tools/Tilemap/BrushTool.h"
+#include <string>
 #include <cstdint>
+
 #include <imgui.h>
 
+#include <Borek/Include/Components/TilemapComponent.h>
+#include <Borek/Include/Events/KeyEvents.h>
+#include <Borek/Include/Events/MouseEvents.h>
+#include <Borek/Include/Base/Node.h>
+#include <Borek/Include/Engine/Assets/TilemapAsset.h>
+
+#include "Panels/PanelEvents.h"
+#include "Tools/Tilemap/BrushTool.h"
 #include "Panels/TilesetPanel.h"
-#include "Include/Base/Node.h"
-#include "Include/Engine/Assets/TilemapAsset.h"
-#include <string>
+#include "Misc/FontAwesome.h"
 
 namespace Borek {
 namespace Panels {
@@ -60,13 +63,13 @@ Tileset::OnImGuiRender()
         }
 
         if (ImGui::BeginMenuBar()) {
-                if (ImGui::MenuItem("Nothing", NULL, m_SelectedIndex == UINT32_MAX, true)) {
+                if (ImGui::MenuItem(ICON_FA_ARROW_POINTER, NULL, m_SelectedIndex == UINT32_MAX, true)) {
                         for (ITilemapTool* tool : m_Tools)
                                 tool->Deactivate();
 
                         m_SelectedToolIndex = UINT32_MAX;
                 }
-                if (ImGui::MenuItem("Brush", NULL, m_SelectedToolIndex == 0)) {
+                if (ImGui::MenuItem(ICON_FA_PENCIL, NULL, m_SelectedToolIndex == 0)) {
                         m_Tools[0]->Activate();
                         m_SelectedToolIndex = 0;
                 }
@@ -87,8 +90,7 @@ Tileset::OnImGuiRender()
 
         const uint32_t rows = tmap->sprite_sheet->GetRows();
         const uint32_t cols = tmap->sprite_sheet->GetCols();
-        if (ImGui::BeginListBox("##ssa", ImVec2(300, 300)))
-        {
+        if (ImGui::BeginChild("##ssa", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - 150), ImGuiChildFlags_AutoResizeX, ImGuiWindowFlags_HorizontalScrollbar)) {
                 std::vector<std::string> rc(rows * cols);
                 for (int row = rows - 1; row >= 0; row--) {
                         for (int col = 0; col < cols; col++) {
@@ -110,9 +112,8 @@ Tileset::OnImGuiRender()
                                         ImGui::SameLine();
                         }
                 }
-
-                ImGui::EndListBox();
         }
+        ImGui::EndChild();
 
         if (tmap.IsValid()) {
                 const glm::vec4 cords = tmap->sprite_sheet->SubTextureCords(m_SelectedIndex);

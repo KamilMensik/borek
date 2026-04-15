@@ -1,15 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Events/Events.h"
-#include "Include/Core.h"
-#include "Include/Debug/Log.h"
-#include "Include/Engine/Assets/Asset.h"
-#include "Include/Engine/Assets/AssetFlags.h"
-#include "Include/Engine/Assets/SoundAsset.h"
-#include "Include/Engine/Assets/SpriteSheetAsset.h"
-#include "Include/Engine/Assets/TexAsset.h"
-#include "Include/Engine/Utils/PathHelpers.h"
-#include "Misc/SearchBar.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -18,6 +8,15 @@
 
 #include "Import.h"
 #include "Include/Engine/Utils/StringHelpers.h"
+#include "Events/Events.h"
+#include "Include/Core.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/AssetFlags.h"
+#include "Include/Engine/Assets/SoundAsset.h"
+#include "Include/Engine/Assets/SpriteSheetAsset.h"
+#include "Include/Engine/Assets/TexAsset.h"
+#include "Include/Engine/Utils/PathHelpers.h"
+#include "Misc/SearchBar.h"
 
 namespace fs = std::filesystem;
 
@@ -163,7 +162,7 @@ Import::OnImguiRender()
 {
         ImGui::Begin("Import");
         if (!m_SelectedAssetPath.empty()) {
-                switch (Hash(m_SelectedAssetPath.extension())) {
+                switch (HashP(m_SelectedAssetPath.extension())) {
                 case Hash(".scr"):
                         ScriptImport();
                         break;
@@ -186,7 +185,7 @@ Import::SetSelectedAsset(const std::string& asset_path)
 {
         m_SelectedAssetPath = asset_path;
 
-        switch (Hash(m_SelectedAssetPath.extension())) {
+        switch (HashP(m_SelectedAssetPath.extension())) {
         case Hash(".tex"):
                 m_SelectedAsset = NewUniq<TexAsset>();
                 break;
@@ -209,7 +208,7 @@ void
 Import::TextureImport()
 {
         TexAsset& tex = RCAST<TexAsset&>(*m_SelectedAsset);
-        fs::path relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
+        std::string relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
 
         ImGui::Text("Sprite");
         ImGui::SameLine();
@@ -246,7 +245,7 @@ void
 Import::SpriteSheetImport()
 {
         SpriteSheetAsset& ssa = RCAST<SpriteSheetAsset&>(*m_SelectedAsset);
-        fs::path relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
+        std::string relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
 
         ImGui::Text("SpriteSheet");
         ImGui::SameLine();
@@ -307,7 +306,7 @@ void
 Import::SoundImport()
 {
         SoundAsset& snd = RCAST<SoundAsset&>(*m_SelectedAsset);
-        fs::path relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
+        std::string relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
 
         ImGui::Text("Sound");
         if (SoundImportSettings(snd)) {

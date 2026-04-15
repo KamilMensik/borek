@@ -1,6 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Application.h"
 #include "Include/Base/Entity.h"
 #include "Include/Debug/Log.h"
 #include <cstdint>

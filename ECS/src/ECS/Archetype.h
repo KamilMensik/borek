@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <memory>
 #include <unordered_set>
 #include <unordered_map>
 #include <cstdint>
@@ -58,7 +59,7 @@ private:
         std::vector<EntityId> m_Entities;
         std::unordered_map<ComponentId, uint32_t> m_Edges;
 
-        static std::vector<ArchetypeInternal> s_CreatedArchetypes;
+        static std::vector<std::unique_ptr<ArchetypeInternal>> s_CreatedArchetypes;
         static std::unordered_map<ArchetypeType, Id, __ArchetypeHash> s_ArchetypesByType;
         static std::unordered_map<uint64_t, uint32_t> s_ComponentColumn;
 
@@ -88,6 +89,12 @@ private:
 
         uint32_t
         GetComponentColumn(ComponentId component);
+
+        void
+        ImportEntity(EntityId e, void* values);
+
+        void*
+        ExportEntity(EntityId e);
 };
 
 class Archetype {
@@ -136,6 +143,12 @@ public:
         HasComponent(ComponentId component);
 
         ComponentColumn& operator [](unsigned component_index);
+
+        void
+        ImportEntity(EntityId e, void* values);
+
+        void*
+        ExportEntity(EntityId e);
 
 private:
         Id m_Id;

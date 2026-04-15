@@ -21,9 +21,6 @@ public:
         static ma_engine&
         Get() { return s_Engine; }
 
-        static bool
-        IsSoundValid(const struct SoundAsset& sound);
-
         static int
         GetGeneration() { return s_EngineGeneration; };
 

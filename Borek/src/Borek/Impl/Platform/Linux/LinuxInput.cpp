@@ -64,10 +64,14 @@ glm::vec2 Input::GetMousePosRelative()
 
 glm::vec2 Input::GetMouseWorldPos()
 {
+        const CameraComponent& cam = *Application::GetCamera().first;
         const TransformComponent& ctran = *Application::GetCamera().second;
 
+        glm::vec2 cam_dimensions((cam.width >> 1) * cam.zoom,
+                                 (cam.height >> 1) * cam.zoom);
+
         return ctran.position + Utils::Geometry::rotate_point(
-                glm::vec2(0), Input::GetMousePosRelative() * glm::vec2(1280 / 4, 720 / 4),
+                glm::vec2(0), Input::GetMousePosRelative() * cam_dimensions,
                 ctran.rotation
         );
 }

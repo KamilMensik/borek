@@ -38,6 +38,7 @@ public:
         virtual void Unbind() = 0;
         virtual void OnChange() {}
         virtual uint32_t GetColorAttachmentId() = 0;
+        virtual void Blit() = 0;
 
 protected:
         FrameBufferSettings m_Settings;

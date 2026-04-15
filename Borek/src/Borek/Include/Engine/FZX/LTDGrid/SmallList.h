@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <cassert>
+#include <string>
+#include <sstream>
 
 namespace Borek {
 namespace FZX {
@@ -59,6 +61,8 @@ public:
 
         // Returns a pointer to the underlying buffer.
         T* data();
+
+        operator std::string() const;
 
         // Returns a pointer to the underlying buffer.
         const T* data() const;
@@ -272,6 +276,20 @@ template <class T>
 const T* SmallList<T>::data() const
 {
     return ld.data;
+}
+
+template <class T>
+SmallList<T>::operator std::string() const
+{
+        std::stringstream ss;
+        ss << "[";
+        for (T& val: *this) {
+                ss << val << ", ";
+        }
+        std::string res = ss.str();
+        res.pop_back();
+        res.back() = ']';
+        return res;
 }
  
 // ---------------------------------------------------------------------------------

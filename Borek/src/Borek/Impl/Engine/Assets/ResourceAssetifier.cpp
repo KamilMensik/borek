@@ -1,7 +1,16 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Debug/Log.h"
+#include "Include/Engine/Assets/FontAsset.h"
 #include "Include/Engine/Assets/SoundAsset.h"
+#include "ext/import-font.h"
+#include "msdf-atlas-gen/BitmapAtlasStorage.h"
+#include "msdf-atlas-gen/FontGeometry.h"
+#include "msdf-atlas-gen/GlyphGeometry.h"
+#include "msdf-atlas-gen/ImmediateAtlasGenerator.h"
+#include "msdf-atlas-gen/TightAtlasPacker.h"
+#include "msdf-atlas-gen/glyph-generators.h"
+#include <cstdint>
 #include <string>
 #include <cstring>
 #include <filesystem>
@@ -34,7 +43,7 @@ is_younger(const fs::path& f1, const fs::path& f2)
 static std::string
 get_class_name(const fs::path& path)
 {
-        static const std::regex reg(R"((?:module ([\w:\d]+))|(?:class ([\w:\d]+)\s+<\s+Borek::Scriptable)|(end))");
+        static const std::regex reg(R"((?:module ([\w:\d]+))|(?:class ([\w:\d]+))|(end))");
         std::ifstream code(path);
         std::stringstream code_str;
         code_str << code.rdbuf();
@@ -65,9 +74,37 @@ get_class_name(const fs::path& path)
         return cname;
 }
 
+static FontGlyph
+create_glyph(const msdf_atlas::GlyphGeometry& glyph)
+{
+        FontGlyph result;
+
+        double glyph_advance = glyph.getAdvance();
+        char32_t glyph_char = glyph.getCodepoint();
+        int glyph_index = glyph.getIndex();
+        double ld, rd, td, bd;
+
+        result.character = glyph_char;
+        result.advance = glyph_advance;
+        result.index = glyph_index;
+
+
+        glyph.getIndex();
+        glyph.getQuadPlaneBounds(ld, bd, rd, td);
+        result.quad_plane_bounds = glm::vec4(ld, rd, td, bd);
+
+        glyph.getQuadAtlasBounds(ld, bd, rd, td);
+        result.quad_atlas_bounds = glm::vec4(ld, rd, td, bd);
+
+        return result;
+}
+
 void
 ResourceAssetifier::AssetifyFolder(const fs::path& path)
 {
+        if (path == "")
+                return;
+
         for (auto& file : fs::directory_iterator(path)) {
                 if (file.is_regular_file()) {
                         AssetifyFile(file.path());
@@ -80,7 +117,7 @@ ResourceAssetifier::AssetifyFolder(const fs::path& path)
 void
 ResourceAssetifier::AssetifyFile(const fs::path& path)
 {
-        switch (Hash(path.extension())) {
+        switch (HashP(path.extension())) {
         case Hash(".png"):
         case Hash(".jpg"):
         case Hash(".jpeg"):
@@ -90,7 +127,7 @@ ResourceAssetifier::AssetifyFile(const fs::path& path)
         case Hash(".mp3"):
         case Hash(".waw"):
         case Hash(".flac"):
-                AssetifySound(path);
+                return AssetifySound(path);
         case Hash(".ttf"):
                 return AssetifyFont(path);
         }
@@ -120,14 +157,13 @@ ResourceAssetifier::AssetifyImage(const fs::path& path)
         stbi_image_free(img);
 
         tex->Serialize(asset_path);
-
-        AssetManager::Refresh(Utils::Path::ToRelative(path), std::move(tex));
+        AssetManager::Refresh(Utils::Path::ToRelative(path).string(), std::move(tex));
 }
 
 void
 ResourceAssetifier::AssetifyScript(const fs::path& path)
 {
-        static const std::regex reg(R"((?:module [\w:\d]+)|(?:class [\w:\d]+\s+<\s+Borek::Scriptable)|end)");
+        static const std::regex reg(R"((?:module [\w:\d]+)|(?:class [\w:\d]+)|end)");
 
         auto& compiler = Application::GetRubyEngine().GetCompiler();
 
@@ -164,13 +200,84 @@ ResourceAssetifier::AssetifySound(const fs::path& path)
         snd->filepath = path;
         snd->Serialize(asset_path);
 
-        AssetManager::Refresh(Utils::Path::ToRelative(path), std::move(snd));
+        AssetManager::Refresh(Utils::Path::ToRelative(path).string(), std::move(snd));
 }
 
 void
 ResourceAssetifier::AssetifyFont(const std::filesystem::path& path)
 {
-        
+        const double max_corner_angle = 3.0;
+
+        fs::path asset_path = path;
+        asset_path.replace_extension("fnt");
+        if (is_younger(path, asset_path))
+                return;
+
+        Uniq<FontAsset> fnt = NewUniq<FontAsset>();
+
+        msdfgen::FreetypeHandle* ft = msdfgen::initializeFreetype();
+        BOREK_ENGINE_ASSERT(ft, "Could not initialize freetype");
+        msdfgen::FontHandle* font = msdfgen::loadFont(ft, path.c_str());
+        BOREK_ENGINE_ASSERT(font, "Could not load font");
+
+        std::vector<msdf_atlas::GlyphGeometry> glyphs;
+        msdf_atlas::FontGeometry font_geometry(&glyphs);
+        auto& metrics = font_geometry.getMetrics();
+        font_geometry.loadCharset(font, 1.0, msdf_atlas::Charset::ASCII);
+
+        for (auto& glyph : glyphs) {
+                glyph.edgeColoring(&msdfgen::edgeColoringInkTrap,
+                                   max_corner_angle, 0);
+        }
+
+        msdf_atlas::TightAtlasPacker packer;
+        packer.setDimensionsConstraint(msdf_atlas::DimensionsConstraint::SQUARE);
+        packer.setMinimumScale(24.0);
+        packer.setScale(40.0f);
+        packer.setPixelRange(2.0);
+        packer.setMiterLimit(1.0);
+        packer.pack(glyphs.data(), glyphs.size());
+        int width = 0, height = 0;
+        packer.getDimensions(width, height);
+        msdf_atlas::ImmediateAtlasGenerator<
+                float,
+                3,
+                msdf_atlas::msdfGenerator,
+                msdf_atlas::BitmapAtlasStorage<msdf_atlas::byte, 3>
+        > generator(width, height);
+
+        msdf_atlas::GeneratorAttributes attributes;
+        generator.setAttributes(attributes);
+        generator.setThreadCount(4);
+        generator.generate(glyphs.data(), glyphs.size());
+
+        msdfgen::BitmapConstRef<uint8_t, 3> bitmap = generator.atlasStorage();
+
+        for (auto& glyph : font_geometry.getGlyphs())
+                fnt->glyphs[glyph.getIndex()] = create_glyph(glyph);
+
+        for (auto kerring : font_geometry.getKerning())
+                fnt->kerring[kerring.first] = kerring.second;
+
+        fnt->ascender_y = metrics.ascenderY;
+        fnt->descender_y = metrics.descenderY;
+        fnt->em_size = metrics.emSize;
+        fnt->line_height = metrics.lineHeight;
+        fnt->underline_thickness = metrics.underlineThickness;
+        fnt->underline_y = metrics.underlineY;
+
+        fnt->width = bitmap.width;
+        fnt->height = bitmap.height;
+        const uint32_t bitmap_size = bitmap.width * bitmap.height * 3;
+        fnt->data = new uint8_t[bitmap_size];
+        memcpy(fnt->data, bitmap.pixels, bitmap_size);
+        fnt->font_texture = Graphics::Texture2D::Create(bitmap.width, bitmap.height, bitmap.pixels, 3);
+
+        msdfgen::destroyFont(font);
+        msdfgen::deinitializeFreetype(ft);
+
+        fnt->Serialize(asset_path);
+        AssetManager::Refresh(Utils::Path::ToRelative(path).string(), std::move(fnt));
 }
 
 }  // namespace Borek

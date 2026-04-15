@@ -7,8 +7,11 @@ namespace Borek {
 class Popup {
 public:
         // returns true if is handled
-        virtual bool Tick() = 0;
+        virtual bool Tick();
         virtual ~Popup() = default;
+
+protected:
+        bool m_Initialized = false;
 };
 
 }  // namespace Borek

@@ -19,6 +19,7 @@
 
 #include "./FileExplorer.h"
 #include "Misc/EditorTextures.h"
+#include <sstream>
 
 namespace Borek {
 
@@ -111,7 +112,7 @@ get_file_tex_id(const fs::path& path, texture_map* t_map = nullptr)
         if (fs::is_directory(path))
                 return ficons.folder_icon.texture->GetId();
 
-        switch (Hash(path.extension())) {
+        switch (HashP(path.extension())) {
         case Hash(".tex"):
                 if (!t_map)
                         return ficons.image_file_icon.texture->GetId();
@@ -132,6 +133,10 @@ get_file_tex_id(const fs::path& path, texture_map* t_map = nullptr)
                 return ficons.sound_file_icon.texture->GetId();
         case Hash(".scn"):
                 return ficons.object_file_icon.texture->GetId();
+        case Hash(".anim"):
+                return ficons.image_file_icon.texture->GetId();
+        case Hash(".fnt"):
+                return ficons.text_file_icon.texture->GetId();
         default:
                 return UINT32_MAX;
         }
@@ -195,7 +200,8 @@ const std::initializer_list<std::string>&
 FileExplorer::GetBaseAvailExtensions()
 {
         static const std::initializer_list<std::string> ext = {
-                ".tex", ".scr", ".sst", ".tmap", ".snd", ".scn",
+                ".tex", ".scr", ".sst", ".tmap", ".snd", ".scn", ".anim",
+                ".fnt",
         };
 
         return ext;
@@ -327,8 +333,11 @@ FileExplorer::Draw()
                 else
                         item_hovered = DrawSearchView();
 
-                if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !item_hovered) {
-                        m_Callbacks.detail_right_clicked(m_CurrentFolder);
+                if (ImGui::IsWindowHovered() && !item_hovered) {
+                        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                                m_Callbacks.detail_right_clicked(m_CurrentFolder);
+                        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+                                m_Selected = "";
                 }
                 ImGui::EndListBox();
         }
@@ -340,7 +349,7 @@ FileExplorer::Draw()
                 m_Callbacks.file_moved(renaming.first, renaming.second);
                 if (renaming.first == m_CurrentFolder) {
                         m_Textures.clear();
-                        m_CurrentFolder = renaming.second;
+                        ChangeCurrentFolder(renaming.second);
                 }
                 renaming.first = "";
         }
@@ -362,11 +371,21 @@ FileExplorer::Draw()
                 if (ImGui::Button("Open File")) {
                         m_Flags.SetFlags(FileExplorerFlags_Open, false);
                         m_Flags.SetFlags(FileExplorerFlags_Done, true);
+                        m_Selected = m_CurrentFolder / m_Selected;
                 }
                 ImGui::TableNextColumn();
                 ImGui::Text("Files of type: ");
                 ImGui::TableNextColumn();
-                ImGui::Text("[.tex, .sst]");
+                std::stringstream ss;
+                ss << "[";
+                for (auto& extension : m_SelectedExtensions) {
+                        ss << extension << ", ";
+                }
+                std::string extension_string = ss.str();
+                extension_string.pop_back();
+                extension_string.back() = ']';
+                
+                ImGui::Text("%s", extension_string.c_str());
                 ImGui::TableNextColumn();
                 if (ImGui::Button("Cancel")) {
                         m_Flags.SetFlags(FileExplorerFlags_Open, false);
@@ -400,7 +419,7 @@ FileExplorer::DrawFolderView(const fs::path& path, const fs::path& parent_path)
         const bool open = ImGui::TreeNodeEx(rel_path.c_str(), flags, "%s", "");
         drag_drop_source(path);
         if (is_item_clicked()) {
-                m_Selected = path;
+                SetSelected(path);
                 m_Callbacks.file_selected(path);
         }
         if (is_item_doubleclicked())
@@ -411,8 +430,8 @@ FileExplorer::DrawFolderView(const fs::path& path, const fs::path& parent_path)
         if (is_directory) {
                 if (is_item_doubleclicked()) {
                         m_Textures.clear();
-                        m_CurrentFolder = path;
                         m_Search = "";
+                        ChangeCurrentFolder(path);
                 }
                 directory_drag_drop_target(path);
         }
@@ -443,13 +462,13 @@ FileExplorer::DrawDetailView()
         if (columns == 0) columns = 1;
         ImGui::Columns(columns, nullptr, false);
 
-        if (m_CurrentFolder != Utils::Settings::Instance().current_project_path) {
+        if (m_CurrentFolder != m_Workspace) {
                 const FileIcons& ficons = EditorTextures::file_icons;
 
                 img_button("../", { size, size }, ficons.important_folder_icon.texture->GetId());
                 if (is_item_doubleclicked()) {
                         m_Textures.clear();
-                        m_CurrentFolder = m_CurrentFolder.parent_path();
+                        ChangeCurrentFolder(m_CurrentFolder.parent_path());
                         m_Search = "";
                 }
                 ImGui::TextWrapped("../");
@@ -516,23 +535,23 @@ FileExplorer::FileButton(const fs::directory_entry& file, float size) {
         if (file.is_regular_file() && !m_SelectedExtensions.contains(path.extension()))
                 return { false, false };
 
-        const bool is_selected = m_Selected == path;
+        const bool is_selected = (m_CurrentFolder / m_Selected) == path;
         const uint32_t tex_id = get_file_tex_id(path, &m_Textures);
 
         if (is_selected)
                 ImGui::PushStyleColor(ImGuiCol_Border, {0.3, 1, 0.4, 1});
 
         if (img_button(path.c_str(), { size, size }, tex_id)) {
-                m_Selected = path;
+                SetSelected(path);
                 m_Callbacks.file_selected(path);
         }
 
         drag_drop_source(path);
         if (is_item_doubleclicked()) {
                 if (file.is_directory()) {
-                        m_CurrentFolder = path;
                         m_Search = "";
                         m_Textures.clear();
+                        ChangeCurrentFolder(path);
                 }
 
                 m_Callbacks.file_double_clicked(path);
@@ -550,6 +569,20 @@ FileExplorer::FileButton(const fs::directory_entry& file, float size) {
         ImGui::TextWrapped("%s", path.filename().c_str());
 
         return { true, is_hovered };
+}
+
+void
+FileExplorer::ChangeCurrentFolder(const std::filesystem::path& new_dir)
+{
+        fs::path old_selected = m_CurrentFolder / m_Selected;
+        m_Selected = fs::proximate(old_selected, new_dir);
+        m_CurrentFolder = new_dir;
+}
+
+void
+FileExplorer::SetSelected(const fs::path& selected)
+{
+        m_Selected = fs::proximate(selected, m_CurrentFolder);
 }
 
 std::vector<std::string> FileExplorer::s_ExplorerStack;

@@ -63,7 +63,7 @@ void OpenGLVertexBuffer::Unbind()
 
 void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
 {
-        BOREK_ENGINE_ASSERT(size < m_Size, "Trying to write into vertex buffer data that is larger than its size");
+        BOREK_ENGINE_ASSERT(size <= m_Size, "Trying to write into vertex buffer data that is larger than its size");
 
         glBindBuffer(GL_ARRAY_BUFFER, m_Id);
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);

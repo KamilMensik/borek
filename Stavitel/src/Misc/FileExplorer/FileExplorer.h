@@ -105,6 +105,12 @@ private:
         std::pair<bool, bool>
         FileButton(const std::filesystem::directory_entry& file, float size);
 
+        void
+        ChangeCurrentFolder(const std::filesystem::path& new_dir);
+
+        void
+        SetSelected(const std::filesystem::path& selected);
+
         static std::vector<std::string> s_ExplorerStack;
         static std::unordered_map<std::string, FileExplorer> s_CurrentExplorers;
 };

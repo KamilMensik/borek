@@ -2,14 +2,12 @@
 
 #pragma once
 
-#include "Include/Core.h"
 #include <cstdint>
 #include <filesystem>
-
-#include <miniaudio.h>
+#include <string>
 
 #include "Include/Engine/Assets/IAsset.h"
-#include <string>
+#include "Include/Core.h"
 
 namespace Borek {
 
@@ -28,22 +26,12 @@ struct SoundAsset : public IAsset {
         void
         Unload() override;
 
-        void
-        Play();
-
-        void
-        Stop();
-
         uint32_t
         GetType() const override;
 
-        ma_sound sound;
         std::string filepath;
         BitFlags flags = 0;
-        uint32_t engine_generation = UINT32_MAX;
         float volume = 1.0f;
-        bool is_playing = false;
-        bool is_loaded = false;
 };
 
 

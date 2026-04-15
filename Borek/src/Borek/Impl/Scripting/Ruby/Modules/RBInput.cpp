@@ -1,7 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Debug/Log.h"
-#include <ostream>
 #define MAGIC_ENUM_RANGE_MIN 0
 #define MAGIC_ENUM_RANGE_MAX 400
 
@@ -20,6 +18,7 @@
 #include "Include/Scripting/Ruby/RubyEngine.h"
 #include "Include/Scripting/Ruby/Modules/RBInput.h"
 #include "Impl/Engine/Utils/StringHelpers.cpp"
+#include "Include/Scripting/Ruby/Modules/RBDatatypes.h"
 
 namespace Borek {
 namespace RBModules {
@@ -29,9 +28,6 @@ using namespace mrbcpp;
 static mrb_value keycodes;
 static mrb_value mouse_buttons;
 
-
-static Class vec2;
-
 MRB_FUNC(InputGetAxis) {
         glm::vec2 axis = Borek::Input::GetAxis();
         mrb_value vec_coords[2];
@@ -39,7 +35,7 @@ MRB_FUNC(InputGetAxis) {
         vec_coords[0] = MRB_FLOAT(axis.x);
         vec_coords[1] = MRB_FLOAT(axis.y);
 
-        return mrb_class_new_instance(mrb, 2, vec_coords, vec2);
+        return mrb_class_new_instance(mrb, 2, vec_coords, RBDatatypes::vec2_class);
 }
 
 MRB_FUNC(InputGetMousePos) {
@@ -49,7 +45,7 @@ MRB_FUNC(InputGetMousePos) {
         vec_coords[0] = MRB_FLOAT(axis.x);
         vec_coords[1] = MRB_FLOAT(axis.y);
 
-        return mrb_class_new_instance(mrb, 2, vec_coords, vec2);
+        return mrb_class_new_instance(mrb, 2, vec_coords, RBDatatypes::vec2_class);
 }
 
 MRB_FUNC(InputGetMouseX) {
@@ -66,6 +62,12 @@ MRB_FUNC(InputIsKeyPressed) {
         return MRB_BOOL(res);
 }
 
+MRB_FUNC(InputIsKeyJustPressed) {
+        int val = mrb_integer(mrb_hash_get(mrb, keycodes, MRB_ARG1));
+        bool res = Borek::Input::IsKeyJustPressed(SCAST<KeyCode>(val));
+        return MRB_BOOL(res);
+}
+
 MRB_FUNC(InputIsMouseButtonPressed) {
         int val = mrb_integer(mrb_hash_get(mrb, mouse_buttons, MRB_ARG1));
         bool res = Borek::Input::IsMouseButtonPressed(magic_enum::enum_value<MouseButton>(val));
@@ -76,8 +78,6 @@ void Input::Init(RubyEngine& engine)
 {
         VM& mrb = engine.GetRubyVM();
         Module& borek = engine.GetBorekModule();
-
-        vec2 = borek.get_class("Vec2");
 
         keycodes = mrb_hash_new(mrb);
         magic_enum::enum_for_each<KeyCode>([&mrb] (auto val) {
@@ -111,6 +111,8 @@ void Input::Init(RubyEngine& engine)
                 .define_class_method("mouse_x", InputGetMouseX)
                 .define_class_method("mouse_y", InputGetMouseY)
                 .define_class_method("key_pressed?", InputIsKeyPressed,
+                                     FuncArgs().Optional(1))
+                .define_class_method("key_just_pressed?", InputIsKeyJustPressed,
                                      FuncArgs().Optional(1))
                 .define_class_method("mouse_button_pressed?",
                                      InputIsMouseButtonPressed,

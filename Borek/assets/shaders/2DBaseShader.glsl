@@ -42,6 +42,7 @@ void main()
         case 1: res_color *= texture(u_Textures[1], e_TexCord); break;
         case 2: res_color *= texture(u_Textures[2], e_TexCord); break;
         case 3: res_color *= texture(u_Textures[3], e_TexCord); break;
+        case 4: res_color *= texture(u_Textures[4], e_TexCord); break;
         case 5: res_color *= texture(u_Textures[5], e_TexCord); break;
         case 6: res_color *= texture(u_Textures[6], e_TexCord); break;
         case 7: res_color *= texture(u_Textures[7], e_TexCord); break;

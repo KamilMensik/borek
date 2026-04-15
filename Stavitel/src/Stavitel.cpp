@@ -1,33 +1,62 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Entity.h"
-#include "Include/Components/TilemapComponent.h"
-#include "Include/Engine/EntityUninitializer.h"
-#include "Include/Engine/ZIndexAssigner.h"
+
+#include "Include/Components/FZXComponents.h"
+#include "Include/Components/PrefabComponent.h"
+#include "Include/Components/ZIndexComponent.h"
+#include "Include/Debug/Log.h"
+#include "Include/Events/MouseEvents.h"
+#include "Include/Events/WindowEvents.h"
+#include "Panels/PanelEvents.h"
+#include <mrbcpp.h>
+#include <glm/ext/vector_float2.hpp>
+
+#include <Borek.h>
+#include <Include/Core.h>
+#include <Include/Base/Colors.h>
+#include <Borek/Include/Engine/SceneSerializer.h>
+#include <Borek/Include/Engine/Utils/Settings.h>
+#include <Borek/Include/Drawing/Quad.h>
+#include <Borek/Include/Base/Application.h>
+#include <Borek/Include/Base/Project.h>
+#include <Borek/Include/Engine/Exceptions/RubyException.h>
+#include <Borek/Include/Engine/ZIndexAssigner.h>
+#include <Borek/Include/Scripting/Ruby/Misc.h>
+#include <Borek/Include/Scripting/Ruby/Modules/RBChangesExporter.h>
+#include <Borek/Include/Base/Query.h>
+#include <Borek/Include/Engine/EntityInitializer.h>
+#include <Borek/Include/Engine/FZX/Body.h>
+#include <Borek/Include/Components/IDComponent.h>
+
+#include "Layers/EditorLayer.h"
+#include "Layers/ProjectLayer.h"
+#include "EditorSettings.h"
+#include "Events/ProjectEvents.h"
 #include "Layers/EditorEventHandlerLayer.h"
 #include "Layers/EditorInputLayer.h"
 #include "Layers/ResourceLayer.h"
-#include <iostream>
-#include <sstream>
-
-#include <Borek.h>
+#include "Misc/FontAwesome.h"
+#include "Misc/Notifications/Notifications.h"
+#include "Misc/SceneTabBar.h"
 #include "EditorState.h"
-#include "Include/Base/Colors.h"
-#include "Include/Core.h"
-#include "Include/Engine/EntityInitializer.h"
-#include "glm/ext/vector_float2.hpp"
-#include "Borek/Include/Engine/SceneSerializer.h"
-#include "Borek/Include/Engine/Utils/Settings.h"
-#include "Borek/Include/Drawing/Quad.h"
-#include "Include/Base/Query.h"
-#include "Include/Base/Renderer2D.h"
-#include "Include/Engine/FZX/Body.h"
-#include "Include/Components/IDComponent.h"
-
-#include "Layers/EditorLayer.h"
-#include "EditorSettings.h"
 
 namespace Borek {
+
+ImFont* AddFont(std::string_view path, float size)
+{
+        ImGuiIO& io = ImGui::GetIO();
+
+        static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+        ImFontConfig icons_config;
+        icons_config.MergeMode = true;
+        icons_config.PixelSnapH = true;
+
+        ImFont* res = io.Fonts->AddFontFromFileTTF(path.data(), size);
+        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/Font Awesome1.otf"), size, &icons_config, icons_ranges);
+        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/Font Awesome2.otf"), size, &icons_config, icons_ranges);
+        io.Fonts->AddFontFromFileTTF(ASSET_PATH("assets/Fonts/Font Awesome3.otf"), size, &icons_config, icons_ranges);
+        return res;
+}
 
 static Ref<Graphics::FrameBuffer> fb;
 
@@ -36,14 +65,24 @@ class Stavitel : public Application
 public:
         Stavitel() : Borek::Application("Borek Stavitel!")
         {
-                m_EditorLayer = new EditorLayer();
-                PushLayer(m_EditorLayer);
-                m_ResourceLayer = new ResourceLayer();
-                PushLayer(m_ResourceLayer);
-                m_EditorEventHandlerLayer = new EditorEventHandlerLayer();
-                PushLayer(m_EditorEventHandlerLayer);
+                SwitchProjectEvent::AddListener(EVENT_FN(SwitchProject));
+                MouseButtonEvent::AddListener(EVENT_FN(OnMouseButton));
+                WindowResizeEvent::AddListener(EVENT_FN(OnWindowResize));
+                Graphics::FrameBufferSettings fb_settings;
+                fb_settings.width = 320;
+                fb_settings.height = 180;
+                fb = Graphics::FrameBuffer::Create(fb_settings);
                 m_EditorInputLayer = new EditorInputLayer();
                 PushLayer(m_EditorInputLayer);
+                m_ResourceLayer = new ResourceLayer();
+                PushLayer(m_ResourceLayer);
+                ImGuiIO& io = ImGui::GetIO();
+
+                AddFont(ASSET_PATH("assets/Fonts/JetBrainsMono-Bold.ttf"), 24.0f);
+                io.FontDefault = AddFont(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 24.0f);
+                AddFont(ASSET_PATH("assets/Fonts/JetBrainsMono-Medium.ttf"), 32.0f);
+                AddFont(ASSET_PATH("assets/Fonts/JetBrainsMono-Bold.ttf"), 128.0f);
+                
                 s_LogFunc = [this](const std::string& str) {
                         std::stringstream ss;
                         ss << str << "\033[39m\033[49m";
@@ -70,14 +109,6 @@ public:
                         std::cout << res << "\n";
                 };
 
-                Graphics::FrameBufferSettings fb_settings;
-                fb_settings.width = 320;
-                fb_settings.height = 180;
-                fb = Graphics::FrameBuffer::Create(fb_settings);
-        }
-
-        ~Stavitel()
-        {
                 s_LogFunc = [](const std::string& str) {
                         std::stringstream ss;
                         ss << str << "\033[39m\033[49m";
@@ -86,24 +117,34 @@ public:
                 };
         }
 
+        ~Stavitel()
+        {
+                SceneTabBar::Deinit();
+        }
+
         void OnUpdate(float delta) override
         {
-                if (IsPlaying() && !m_Started) {
-                        auto path = Utils::Settings::Instance().last_scene_opened_path;
+                if (EditorState::game_state == GameState::kRestarting) {
+                        m_EditorLayer->OnGameEnded();
+                        auto path = Project::Instance().last_scene_opened_path;
+                        SceneTabBar::ChangeScene(path, true);
                         m_EditorLayer->OnGameStarted();
-                        SceneSerializer(Application::GetScene()).Serialize(path);
                         m_Started = true;
-                        m_CurrentScene->TraverseScene(EntityInitializer::InitializeBegin,
-                                                      EntityInitializer::InitializeEnd);
+                        EditorState::game_state = GameState::kPlaying;
+                        m_CurrentScene->Initialize();
+
+                } else if (IsPlaying() && !m_Started) {
+                        m_EditorLayer->OnGameStarted();
+                        SceneTabBar::SaveScene();
+                        m_Started = true;
+                        m_CurrentScene->Initialize();
                 } else if (!IsPlaying() && m_Started) {
                         m_EditorLayer->OnGameEnded();
-                        auto path = Utils::Settings::Instance().last_scene_opened_path;
-                        Ref<Scene> old_scene = m_CurrentScene;
-                        old_scene->TraverseScene(EntityUninitializer::UninitializeBegin,
-                                                 EntityUninitializer::UninitializeEnd);
-                        SetScene(NewRef<Scene>());
-                        SceneSerializer(m_CurrentScene).Deserialize(path);
+                        auto path = Project::Instance().last_scene_opened_path;
+                        BOREK_ENGINE_INFO("Changing to scene: {}", path.string());
+                        SceneTabBar::ChangeScene(path, true);
                         m_Started = false;
+                        m_SpriteGrid.Clear();
                 }
 
                 Application::OnUpdate(delta);
@@ -112,18 +153,25 @@ public:
         virtual void OnImGuiRenderBegin() override
         {
                 Application::OnImGuiRenderBegin();
-                m_EditorLayer->BeginDockspace();
+
+                if (m_EditorLayer)
+                        m_EditorLayer->BeginDockspace();
         }
 
         virtual void OnImguiRenderEnd() override
         {
                 Application::OnImguiRenderEnd();
-                m_EditorLayer->EndDockspace();
+
+                if (m_EditorLayer)
+                        m_EditorLayer->EndDockspace();
         }
 
         virtual std::pair<glm::vec2, glm::vec2>
         GetMouseOffsetInternal() override
         {
+                if (!m_EditorLayer)
+                        return Application::GetMouseOffsetInternal();
+
                 return { m_EditorLayer->GetViewportPosition(),
                          m_EditorLayer->GetViewportSize() };
         }
@@ -135,30 +183,18 @@ public:
                         return;
                 }
 
-                for (auto [id, body] : Query<IDComponent, FZX::BodyComponent>()) {
-                        Entity e(id->ecs_id);
-                        const TransformComponent tran = e.GlobalTransform();
-                        Drawing::Quad::Draw(tran.position, tran.scale, Color(0, 1, 1, 0.2), ZIndexAssigner::GetTop());
+                for (auto& [id, area] : Query<IDComponent, AreaComponent>()) {
+                        auto tran = Entity(id->ecs_id).GlobalTransform();
+                        Drawing::Quad::Draw(tran.position, tran.scale * glm::vec2(area->rc.size_x, area->rc.size_y),
+                                            Color(0, 255, 212, 80),
+                                            ZIndexAssigner::GetTop());
                 }
 
-                for (auto [id, tc] : Query<IDComponent, TilemapComponent>()) {
-                        Entity e(id->ecs_id);
-                        auto global_transform = e.GlobalTransform();
-                        const glm::vec2& scale = global_transform.scale;
-                        const SpriteSheetAsset& spritesheet = tc->tilemap->sprite_sheet.Convert();
-                        const glm::vec2 tile_size(spritesheet.step_x * scale.x,
-                                                  spritesheet.step_y * scale.y);
-
-                        for (auto it : tc->items) {
-                                const auto& pos = it.first;
-                                const uint16_t index = it.second;
-
-                                if (!tc->tilemap->tile_coliders[index].Exists())
-                                        continue;
-
-                                const glm::vec2 real_pos(pos.second * tc->step_x * scale.x, pos.first * tc->step_y * scale.y);
-                                Drawing::Quad::Draw(real_pos, tile_size, Color(0, 1, 1, 0.2), ZIndexAssigner::GetTop());
-                        }
+                for (auto& [id, body] : Query<IDComponent, BodyComponent>()) {
+                        auto tran = Entity(id->ecs_id).GlobalTransform();
+                        Drawing::Quad::Draw(tran.position, tran.scale * glm::vec2(body->rc.size_x, body->rc.size_y),
+                                            Color(0, 255, 255, 80),
+                                            ZIndexAssigner::GetTop());
                 }
         }
 
@@ -169,7 +205,7 @@ public:
                 if (IsPlaying()) {
                         Application::SetCamera();
                 } else {
-                        m_Camera = &m_EditorCamera;
+                        m_Camera = &m_EditorInputLayer->GetCamera();
                         m_CameraTransform = m_EditorInputLayer->GetCameraTransform();
                 }
         }
@@ -179,11 +215,133 @@ public:
                 return EditorState::game_state == GameState::kPlaying;
         }
 
-        EditorLayer* m_EditorLayer;
-        ResourceLayer* m_ResourceLayer;
-        EditorInputLayer* m_EditorInputLayer;
-        EditorEventHandlerLayer* m_EditorEventHandlerLayer;
-        CameraComponent m_EditorCamera;
+        void
+        SwitchProject(SwitchProjectEvent& e)
+        {
+                m_ProjectPath = e.GetPath();
+                WITH_CHANGE(Utils::Settings::InstanceM(), {
+                        Utils::Settings::InstanceM().current_project_path = m_ProjectPath;
+                });
+                if (m_ProjectPath == "") {
+                        if (!m_ProjectLayer) {
+                                m_ProjectLayer = new ProjectLayer();
+                        }
+                        PushLayer(m_ProjectLayer);
+
+                        if (m_EditorLayer) {
+                                m_Layers.Pop(m_EditorLayer);
+                                m_Layers.Pop(m_EditorEventHandlerLayer);
+                                delete m_EditorLayer;
+                        }
+                } else {
+                        if (m_EditorLayer) {
+                                m_Layers.Pop(m_EditorLayer);
+                                delete m_EditorLayer;
+                        }
+
+                        m_EditorLayer = new EditorLayer();
+                        if (!m_EditorEventHandlerLayer)
+                                m_EditorEventHandlerLayer = new EditorEventHandlerLayer();
+
+                        PushLayer(m_EditorLayer);
+                        PushLayer(m_EditorEventHandlerLayer);
+                        if (m_ProjectLayer) {
+                                m_Layers.Pop(m_ProjectLayer);
+                        }
+                }
+        }
+
+        void LoadProject() override
+        {
+                m_ProjectPath = Utils::Settings::ProjectPath();
+                Project::Deserialize(std::filesystem::path(m_ProjectPath) / "project.bproj");
+                SendEvent<SwitchProjectEvent>(m_ProjectPath);
+        }
+
+        void ChangeSceneFunc(const std::string& path) override
+        {
+                if (!IsPlaying()) {
+                        SceneTabBar::ChangeScene(path);
+                        Project::InstanceM()->last_scene_opened_path = path;
+                } else {
+                        Application::ChangeSceneFunc(path);
+                        SceneTabBar::RuntimeChangeScene(m_CurrentScene);
+                }
+        }
+
+        void
+        OnRenderEnd() override
+        {
+                m_FrameBuffer->Unbind();
+        }
+
+        bool
+        HandleRubyException(const RubyException&) override
+        {
+                mrb_state* mrb = m_RubyEngine->GetRubyVM();
+                RBModules::ChangesExporter::Reset(mrb);
+                m_EditorLayer->OnGameEnded();
+                auto path = Project::Instance().last_scene_opened_path;
+                SceneTabBar::ChangeScene(path, true);
+                m_Started = false;
+                EditorState::game_state = GameState::kStopped;
+                BOREK_ENGINE_ERROR("{}", get_mrb_exc_text());
+                Notifications::Add(Notification()
+                        .Type(NotificationType_Error)
+                        .Text("Error happened during execution, stopping game. "
+                              "Check log for trace.")
+                        .Title("Ruby Error"));
+                return true;
+        }
+
+        void
+        OnMouseButton(MouseButtonEvent& e)
+        {
+                glm::vec2 mpos_rel = glm::abs(Input::GetMousePosRelative());
+                if (mpos_rel.x > 1.0f || mpos_rel.y >= 1.0f)
+                        return;
+
+                if (!IsPlaying() && e.IsPressed() && e.GetButton() == MouseButton::BUTTON_LEFT) {
+                        FZX::SmallList<uint32_t> res;
+                        glm::vec2 pos = Input::GetMouseWorldPos() - m_CameraTransform.position;
+                        m_SpriteGrid.GetCollisions(pos, UINT32_MAX, &res);
+
+                        if (res.size() == 0)
+                                return;
+
+                        float zindex = std::numeric_limits<float>::min();
+                        Entity top;
+                        for (Entity e : res) {
+                                float ezindex = e.GetComponent<ZIndexComponent>().value;
+                                if (ezindex > zindex) {
+                                        zindex = ezindex;
+                                        top = e;
+                                }
+                        }
+
+                        Entity parent = top.GetParent();
+                        while (!parent.IsNil()) {
+                                if (parent.HasComponent<PrefabComponent>())
+                                        top = parent;
+
+                                parent = parent.GetParent();
+                        }
+
+                        Application::SendEvent<ChangeEntityEvent>(top);
+                }
+        }
+
+        void OnWindowResize(WindowResizeEvent& e)
+        {
+                m_EditorInputLayer->GetCamera().OnWindowResized(e);
+        }
+
+        EditorLayer* m_EditorLayer = nullptr;
+        ResourceLayer* m_ResourceLayer = nullptr;
+        EditorInputLayer* m_EditorInputLayer = nullptr;
+        EditorEventHandlerLayer* m_EditorEventHandlerLayer = nullptr;
+        ProjectLayer* m_ProjectLayer = nullptr;
+
         bool m_Started = false;
 
         bool m_IsDragging = false;

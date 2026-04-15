@@ -2,11 +2,13 @@
 
 #pragma once
 
+#include "Include/Scripting/Ruby/RubyEngine.h"
+
 namespace Borek {
 namespace RBModules {
 
 class RBModule {
-        static void Init(class RubyEngine& vm) {}
+        static void Init(RubyEngine& vm) {}
 };
 
 }  // namespace RBModules

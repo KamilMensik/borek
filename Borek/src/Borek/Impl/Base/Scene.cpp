@@ -1,25 +1,27 @@
-// Copyright 2024-2025 <kamilekmensik@gmail.com>
-
-#include "Include/Base/Entity.h"
-#include "Include/Components/ZIndexComponent.h"
-#include "Include/Debug/Log.h"
 #include <format>
-#include <ranges>
 
 #include <ECS/Archetype.h>
 #include <ECS/World.h>
 #include <ECS/Component.h>
 
+#include "Include/Core.h"
 #include "Include/Base/Scene.h"
 #include "Include/Components/TransformComponent.h"
 #include "Include/Components/IDComponent.h"
 #include "Include/Components/TagComponent.h"
+#include "Include/Base/Entity.h"
+#include "Include/Components/ZIndexComponent.h"
+#include "Include/Components/PrefabComponent.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Base/Application.h"
+#include "Include/Engine/EntityInitializer.h"
+#include "Include/Engine/EntityUninitializer.h"
 
 namespace Borek {
 
 static ECS::Archetype base_entity;
 
-Scene::Scene()
+Scene::Scene() : m_Initialized(false)
 {
         base_entity = ECS::Archetype::Get<
                 IDComponent, TransformComponent, TagComponent, ZIndexComponent
@@ -28,295 +30,180 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+        std::move(m_SceneTree).Destroy([this](Entity e){
+                m_World->remove(e);
+        });
 }
 
 void
 Scene::Init()
 {
+        if (m_World)
+                return;
+
         m_World = NewUniq<ECS::World>();
-        m_RootEntity = NewEntity("Root");
+        m_SceneTree.SetRootEntity(NewEntity("Root"));
+}
+
+void
+Scene::Initialize()
+{
+        if (m_Initialized == true)
+                return;
+
+        m_SceneTree.TraverseScene(EntityInitializer::InitializeBegin,
+                                  EntityInitializer::InitializeEnd);
+        m_Initialized = true;
+}
+
+void
+Scene::Uninitialize()
+{
+        if (m_Initialized == false)
+                return;
+
+        m_SceneTree.TraverseScene(EntityUninitializer::UninitializeBegin,
+                                  EntityUninitializer::UninitializeEnd);
+        m_Initialized = false;
 }
 
 Entity
-Scene::NewEntity(const std::string& value, NodeType type)
+Scene::NewEntity(Symbol value, NodeType type, Entity parent)
 {
         Entity e(m_World->entity(base_entity));
-        m_EntityNodeTypes[e] = NodeType::Node;
-
-        TagComponent& tc = GetComponent<TagComponent>(e);
-        GetComponent<IDComponent>(e).ecs_id = e.GetId();
-
-        tc.value = std::string(value.empty() ? std::format("Entity {}", e.GetId()) : value);
-
+        e.GetComponent<IDComponent>().ecs_id = e;
+        if (value.IsNil()) {
+                value = std::format("Entity {}", e.GetId());
+        }
+        m_SceneTree.AddEntity(e, value, type, parent);
         e.InitializeNode(type);
+        m_LastCreatedEntity = e;
 
         return e;
 }
 
 void
-Scene::ChangeEntityNodeType(Entity e, NodeType type)
-{
-        e.InitializeNode(type);
-}
-
-
-void
 Scene::DeleteEntity(Entity e)
 {
+        if (Application::IsPlaying()) {
+                EntityUninitializer::UninitializeEntity(e);
+        }
         e.DeleteChildren();
-        RemoveEntityFromGraph(e);
-        m_EntityNodeTypes.erase(e);
+        m_SceneTree.RemoveEntity(e);
         m_World->remove(e.m_Id);
-}
-
-Entity&
-Scene::RootEntity()
-{
-        return m_RootEntity;
 }
 
 uint32_t
 Scene::GetEntityCount()
 {
-        return m_EntityNodeTypes.size();
+        return m_SceneTree.GetEntityCount();
 }
 
-void
-Scene::TraverseScene(std::function<void(Entity e)> iter_func)
-{
-        TraverseSceneHelper(m_RootEntity, iter_func);
-}
-
-void
-Scene::TraverseSceneReverse(std::function<void(Entity e)> iter_func)
-{
-        TraverseSceneReverseHelper(m_RootEntity, iter_func);
-}
-
-void
-Scene::TraverseScene(iteration_func before, iteration_func after)
-{
-        TraverseSceneHelper(m_RootEntity, before, after);
-}
-
-void
-Scene::TraverseSceneReverse(iteration_func before, iteration_func after)
-{
-        TraverseSceneReverseHelper(m_RootEntity, before, after);
-}
-
-Entity
-Scene::EntityFindFirstChild(const std::string& name, Entity parent)
-{
-        if (parent.IsNil())
-                parent = m_RootEntity;
-
-        auto children = m_SceneGraphByName.find({ name, parent });
-        if (children == m_SceneGraphByName.end())
-                return Entity();
-
-        return Entity(children->second);
-}
-
-void
-Scene::EntityAppendChild(Entity entity, Entity dest)
-{
-        if (GetEntityParentId(entity) != UINT32_MAX) {
-                if (GetEntityParentId(entity) != dest) {
-                        RemoveEntityFromGraph(entity);
-                } else {
-                        RemoveEntityFromSceneGraph(entity);
-                }
-        }
-
-        m_EntityParents[entity] = dest;
-        m_SceneGraph[dest].emplace_back(entity);
-        m_SceneGraphByName[{entity.GetName(), dest}] = entity;
-}
-
-void
-Scene::EntityPrependChild(Entity entity, Entity dest)
-{
-        uint32_t dest_parent_id = dest;
-
-        if (GetEntityParentId(entity) != UINT32_MAX) {
-                if (GetEntityParentId(entity) != dest_parent_id) {
-                        RemoveEntityFromGraph(entity);
-                } else {
-                        RemoveEntityFromSceneGraph(entity);
-                }
-        }
-
-        auto it = m_SceneGraph[dest_parent_id].begin();
-        m_EntityParents[entity] = dest_parent_id;
-        m_SceneGraph[dest_parent_id].insert(it, entity);
-        m_SceneGraphByName[{entity.GetName(), dest_parent_id}] = entity;
-}
-
-void
-Scene::EntityAppend(Entity entity, Entity dest)
-{
-        uint32_t dest_parent_id = GetEntityParentId(dest);
-
-        if (GetEntityParentId(entity) != UINT32_MAX) {
-                if (GetEntityParentId(entity) != dest_parent_id) {
-                        RemoveEntityFromGraph(entity);
-                } else {
-                        RemoveEntityFromSceneGraph(entity);
-                }
-        }
-
-        auto it = std::find(m_SceneGraph[dest_parent_id].begin(),
-                            m_SceneGraph[dest_parent_id].end(),
-                            dest);
-
-        m_EntityParents[entity] = dest_parent_id;
-        m_SceneGraph[dest_parent_id].insert(it + 1, entity);
-        m_SceneGraphByName[{entity.GetName(), dest_parent_id}] = entity;
-}
-
-void
-Scene::EntityPrepend(Entity entity, Entity dest)
-{
-        uint32_t dest_parent_id = GetEntityParentId(dest);
-
-        if (GetEntityParentId(entity) != UINT32_MAX) {
-                if (GetEntityParentId(entity) != dest_parent_id) {
-                        RemoveEntityFromGraph(entity);
-                } else {
-                        RemoveEntityFromSceneGraph(entity);
-                }
-        }
-
-        auto it = std::find(m_SceneGraph[dest_parent_id].begin(),
-                            m_SceneGraph[dest_parent_id].end(),
-                            dest);
-
-        m_EntityParents[entity] = dest_parent_id;
-        m_SceneGraph[dest_parent_id].insert(it, entity);
-        m_SceneGraphByName[{entity.GetName(), dest_parent_id}] = entity;
-}
-
-Entity
-Scene::GetEntityParent(Entity entity)
-{
-        return Entity(GetEntityParentId(entity));
-}
-
-bool
-Scene::HasEntityChildren(Entity entity)
-{
-        auto children = m_SceneGraph.find(entity);
-
-        return children != m_SceneGraph.end() && children->second.size() > 0;
-}
-
-std::vector<uint32_t>*
-Scene::GetEntityChildren(Entity entity)
-{
-        auto children = m_SceneGraph.find(entity);
-        if (children == m_SceneGraph.end())
-                return nullptr;
-
-        return &children->second;
-}
-
-NodeType
-Scene::GetEntityNodeType(Entity e)
-{
-        return m_EntityNodeTypes[e];
-}
-
-void
-Scene::TraverseSceneHelper(Entity e, std::function<void(Entity e)> iter_func)
-{
-        iter_func(e);
-
-        if (auto children = m_SceneGraph.find(e.GetId()); children != m_SceneGraph.end()) {
-                for (uint32_t entity_id : std::ranges::views::reverse(children->second)) {
-                        Entity e(entity_id);
-                        TraverseSceneHelper(e, iter_func);
-                }
-        }
-}
-
-void
-Scene::TraverseSceneReverseHelper(Entity e, std::function<void(Entity e)> iter_func)
-{
-        if (auto children = m_SceneGraph.find(e.GetId()); children != m_SceneGraph.end()) {
-                for (uint32_t entity_id : children->second) {
-                        Entity e(entity_id);
-                        TraverseSceneHelper(e, iter_func);
-                }
-        }
-
-        iter_func(e);
-}
-
-void
-Scene::TraverseSceneHelper(Entity e, iteration_func before,
-                           iteration_func after)
-{
-        before(e);
-
-        if (auto children = m_SceneGraph.find(e.GetId()); children != m_SceneGraph.end()) {
-                for (uint32_t entity_id : std::ranges::views::reverse(children->second)) {
-                        Entity e(entity_id);
-                        TraverseSceneHelper(e, before, after);
-                }
-        }
-
-        after(e);
-}
-
-void
-Scene::TraverseSceneReverseHelper(Entity e, iteration_func before,
-                                  iteration_func after)
-{
-        before(e);
-
-        if (auto children = m_SceneGraph.find(e.GetId()); children != m_SceneGraph.end()) {
-                for (uint32_t entity_id : std::ranges::views::reverse(children->second)) {
-                        Entity e(entity_id);
-                        TraverseSceneHelper(e, before, after);
-                }
-        }
-
-        after(e);
-}
-
-void
-Scene::RemoveEntityFromSceneGraph(Entity e)
-{
-        uint32_t parent_id = GetEntityParentId(e);
-        auto it = std::find(m_SceneGraph[parent_id].begin(),
-                            m_SceneGraph[parent_id].end(), e);
-
-        m_SceneGraph[parent_id].erase(it);
-}
-
-void
-Scene::RemoveEntityFromGraph(Entity e)
-{
-        RemoveEntityFromSceneGraph(e);
-        uint32_t parent_id = GetEntityParentId(e);
-        m_EntityParents.erase(e);
-        m_SceneGraphByName.erase({e.GetName(), parent_id});
-}
-
-uint32_t
-Scene::GetEntityParentId(Entity e)
-{
-        if (auto p = m_EntityParents.find(e); p != m_EntityParents.end())
-                return p->second;
-
-        return UINT32_MAX;
-}
 
 FZX::FACD&
 Scene::GetPhysicsWorld()
 {
         return m_PhysicsWorld;
+}
+
+SceneTree&
+Scene::GetTree()
+{
+        return m_SceneTree;
+}
+
+const std::filesystem::path&
+Scene::GetPath() const
+{
+        return m_Path;
+}
+
+void
+Scene::SetPath(const std::filesystem::path& path, bool force_extension)
+{
+        m_Path = path;
+        if (force_extension)
+                m_Path.replace_extension("scn");
+}
+
+SceneExport
+Scene::ExportEntity(Entity e)
+{
+        SceneExport exp;
+        m_SceneTree.TraverseScene(e, [&exp, this](Entity e) {
+                exp.emplace_back(m_World->get_export(e),
+                                 e.GetNameSym(), e.GetNodeType(), 1);
+        }, [&exp](Entity e) {
+                exp.back().m -= 1;
+        });
+
+        m_SceneTree.DestroyEntity(e);
+
+        return exp;
+}
+
+Entity
+Scene::ImportEntity(SceneExport& exp)
+{
+        if (exp.size() == 1) {
+                Entity e(m_World->entity(exp.back()));
+                e.GetComponent<IDComponent>().ecs_id = e;
+                m_SceneTree.SetEntityName(e, exp.back().entity_name);
+                m_SceneTree.SetEntityNodeType(e, exp.back().entity_node_type);
+                return e;
+        }
+
+        std::vector<Entity> entity_stack;
+        for (auto& item : exp) {
+                Entity e(m_World->entity(item));
+                e.GetComponent<IDComponent>().ecs_id = e;
+                m_SceneTree.SetEntityName(e, item.entity_name);
+                m_SceneTree.SetEntityNodeType(e, item.entity_node_type);
+
+                if (!entity_stack.empty()) {
+                        m_SceneTree.EntityAppendChild(e, entity_stack.back());
+                }
+
+                if (item.m > 0) {
+                        entity_stack.emplace_back(e);
+                        continue;
+                }
+
+                for (int i = item.m; i < 0; i++) {
+                        if (entity_stack.size() == 1)
+                                break;
+
+                        entity_stack.pop_back();
+                }
+        }
+
+        return entity_stack.back();
+}
+
+Entity
+Scene::GetLastCreatedEntity()
+{
+        return m_LastCreatedEntity;
+}
+
+Entity
+Scene::CreateFromPrefab(std::string_view path, Entity parent)
+{
+        Entity e = NewEntity().AddComponent<PrefabComponent>();
+        auto& prefab = e.GetComponent<PrefabComponent>();
+        prefab.scene = AssetManager::Get<SceneAsset>(path);
+        prefab.Update(e);
+
+        auto begin = path.find_last_of('/');
+        auto end = path.find_last_of('.');
+        Symbol name = path.substr(begin + 1, end - begin - 1);
+
+        if (parent.IsNil())
+                parent = m_SceneTree.GetRootEntity();
+
+        m_SceneTree.EntityAppendChild(e, parent);
+        e.SetNameSym(name);
+        return e;
 }
 
 }  // namespace Borek

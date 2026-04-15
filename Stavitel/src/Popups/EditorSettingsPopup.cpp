@@ -20,6 +20,7 @@ namespace Popups {
 bool
 EditorSettingsPopup::Tick()
 {
+        Popup::Tick();
         bool is_open = true;
         ImGui::Begin("Editor Settings", &is_open);
 

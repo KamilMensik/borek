@@ -19,6 +19,7 @@ struct SpriteComponent {
         Asset<TexAsset> texture;
         Color color;
         BitFlags flags;
+        uint16_t size_x = 32, size_y = 32;
 
         SpriteComponent() : color(Colors::WHITE) {}
         SpriteComponent(Asset<TexAsset>& texture,

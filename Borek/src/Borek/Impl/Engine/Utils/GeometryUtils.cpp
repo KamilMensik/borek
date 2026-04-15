@@ -19,7 +19,7 @@ rotate_point(const glm::vec2& origin, const glm::vec2& point, float angle)
         const float xoff = p.x * c - p.y * s;
         const float yoff = p.x * s + p.y * c;
 
-        return point + glm::vec2(xoff, yoff);
+        return origin + glm::vec2(xoff, yoff);
 }
 
 }  // namespace Geometry

@@ -13,6 +13,8 @@ enum AssetType {
         AssetType_Script,
         AssetType_Sound,
         AssetType_Scene,
+        AssetType_Animation,
+        AssetType_Font,
 };
 
 class IAsset {

@@ -1,5 +1,12 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Scripting/Ruby/Modules/Nodes/RBNode.h"
+#include "Include/Scripting/Ruby/Modules/RBAsset.h"
+#include "Include/Scripting/Ruby/Modules/RBChangesExporter.h"
+#include "Include/Scripting/Ruby/Modules/RBIter.h"
+#include "Include/Scripting/Ruby/Modules/RBMsgConnection.h"
+#include "Include/Scripting/Ruby/Modules/RBNDatatypes.h"
+#include "Include/Scripting/Ruby/Modules/RBYaml.h"
 #include <mruby.h>
 #include <mruby/compile.h>
 #include <mruby/array.h>
@@ -19,6 +26,7 @@
 #include "Include/Scripting/Ruby/Modules/RBScriptable.h"
 #include "Include/Scripting/Ruby/Modules/RBInput.h"
 #include "Include/Scripting/Ruby/Modules/RBScene.h"
+#include "Include/Scripting/Ruby/Modules/RBFile.h"
 
 namespace Borek {
 
@@ -36,13 +44,21 @@ RubyEngine::~RubyEngine()
 
 void RubyEngine::InitModules()
 {
-        RBModules::Datatypes::Init(*this);
+        RBModules::RBDatatypes::Init(*this);
+        RBModules::RBNDatatypes::Init(*this);
+        RBModules::Component::Init(*this);
+        RBModules::RBNode::Init(*this);
         RBModules::Log::Init(*this);
         RBModules::Entity::Init(*this);
-        RBModules::Component::Init(*this);
         RBModules::Scriptable::Init(*this);
         RBModules::Input::Init(*this);
         RBModules::Scene::Init(*this);
+        RBModules::ChangesExporter::Init(*this);
+        RBModules::RBAsset::Init(*this);
+        RBModules::RBMsgConnection::Init(*this);
+        RBModules::RBFile::Init(*this);
+        RBModules::RBIter::Init(*this);
+        RBModules::RBYaml::Init(*this);
 }
 
 mrbcpp::VM& RubyEngine::GetRubyVM()
@@ -74,7 +90,7 @@ std::vector<std::string>& RubyEngine::GetClasses()
 
         auto arena = mrb_gc_arena_save(mrb);
         for (int i = 0; i < size; i++) {
-                char* cnames = mrb_str_to_cstr(mrb, mrb_obj_as_string(mrb, class_names[i]));
+                const char* cnames = mrb_string_cstr(mrb, mrb_obj_as_string(mrb, class_names[i]));
                 m_DefinedClasses.emplace_back(cnames);
         }
         mrb_gc_arena_restore(mrb, arena);

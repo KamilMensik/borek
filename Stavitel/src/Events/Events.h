@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Commands/ICommand.h"
 #include <string>
 
 #include <Borek/Include/Events/Event.h>
@@ -27,18 +28,6 @@ public:
 
 private:
         std::string m_AssetPath;
-};
-
-class ChangeSceneEvent : public Event {
-_BASE_EVENT_HEADER(ChangeSceneEvent)
-public:
-        ChangeSceneEvent(const std::string& scene_path)
-                : m_ScenePath(scene_path) {}
-
-        inline std::string& GetScenePath() { return m_ScenePath; }
-
-private:
-        std::string m_ScenePath;
 };
 
 class AddComponentEvent : public Event {
@@ -67,16 +56,15 @@ private:
         uint32_t m_Id;
 };
 
-class RemoveEntityEvent : public Event {
-_BASE_EVENT_HEADER(RemoveEntityEvent)
+class EditorCommandEvent : public Event {
+_BASE_EVENT_HEADER(EditorCommandEvent);
 public:
-        RemoveEntityEvent(Entity e) : m_Entity(e) {}
+        EditorCommandEvent(Uniq<ICommand> cmd) : m_Command(std::move(cmd)) {}
 
-        inline Entity
-        GetEntity() { return m_Entity; }
+        inline Uniq<ICommand>& GetCommand() { return m_Command; }
 
 private:
-        Entity m_Entity;
+        Uniq<ICommand> m_Command;
 };
 
 }  // namespace Borek

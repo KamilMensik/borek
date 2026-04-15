@@ -39,12 +39,6 @@ SoundEngine::Play(const std::string& path)
         BOREK_ENGINE_INFO("Played sound, got result: {}", (int)ma_engine_play_sound(&s_Engine, path.c_str(), NULL));
 }
 
-bool
-SoundEngine::IsSoundValid(const SoundAsset& sound)
-{
-        return s_EngineInitialized && sound.engine_generation == s_EngineGeneration;
-}
-
 ma_engine SoundEngine::s_Engine;
 bool SoundEngine::s_EngineInitialized = false;
 int SoundEngine::s_EngineGeneration = 0;

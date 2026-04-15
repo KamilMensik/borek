@@ -12,7 +12,7 @@ struct Settings {
         CHANGEABLE_OBJECT(OnChange(););
 
         std::string current_project_path;
-        std::string last_scene_opened_path;
+        //std::string last_scene_opened_path;
 
         /*
          * Returns unmodifiable version of settings.

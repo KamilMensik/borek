@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 #define EVENT_FN(_fn) [this](auto& e) { return this->_fn(e); }
 
@@ -39,6 +42,37 @@ inline Uniq<T> NewUniq(Args&&... args)
 {
         return std::make_unique<T>(std::forward<Args>(args)...);
 }
+
+struct string_hash {
+        using is_transparent = void;
+
+        [[nodiscard]] size_t
+        operator()(const char *txt) const {
+                return std::hash<std::string_view>{}(txt);
+        }
+
+        [[nodiscard]] size_t
+        operator()(std::string_view txt) const {
+                return std::hash<std::string_view>{}(txt);
+        }
+
+        [[nodiscard]] size_t
+        operator()(const std::string &txt) const {
+                return std::hash<std::string>{}(txt);
+        }
+};
+
+template <class V>
+using StringMap = std::unordered_map<std::string, V, string_hash, std::equal_to<>>;
+
+template <class V>
+using StringSet = std::unordered_set<std::string, V, string_hash, std::equal_to<>>;
+
+template <class K, class V, typename Hash = std::hash<K>>
+using Map = std::unordered_map<K, V, Hash>;
+
+template <class K, typename Hash = std::hash<K>>
+using Set = std::unordered_set<K, Hash>;
 
 // Enum with its members values being its sizes.
 enum class Datatype : uint8_t {
@@ -92,7 +126,13 @@ struct BitFlags {
         operator&(uint32_t value) const { return val & value; }
 
         inline uint32_t
+        operator&(int value) const { return val & value; }
+
+        inline uint32_t
         operator|(uint32_t value) const { return val | value; }
+
+        inline uint32_t
+        operator|(int value) const { return val | value; }
 
         inline uint32_t
         operator~() const { return ~val; }

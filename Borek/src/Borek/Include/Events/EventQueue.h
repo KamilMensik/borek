@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Include/Core.h"
 #include "Include/Debug/Log.h"
 #include <concepts>
 #include <cstdint>
@@ -16,20 +17,25 @@ struct EventQueueItem {
         uint32_t item_size;
         uint32_t cur;
         uint32_t max_size;
+        void (*move_op)(void* dest, void* src);
 
         EventQueueItem() = default;
-        EventQueueItem(uint32_t item_size);
+        EventQueueItem(uint32_t item_size, void(*move_op)(void*,void*));
 
         void
         Grow();
 
         void*
         Get(uint32_t index);
+
+        void
+        Clean();
 };
 
 class EventQueue {
 public:
         EventQueue();
+        ~EventQueue();
 
         template <class T, typename ... Args> requires std::derived_from<T, Event>
         void
@@ -38,16 +44,17 @@ public:
                 const uint32_t event_id = GetEventId<T>();
 
                 if (m_Items->size() <= event_id) {
-                        m_ItemsA.emplace_back(sizeof(T));
-                        m_ItemsB.emplace_back(sizeof(T));
+                        auto move_op = [](void* dest, void* src) {
+                                new(dest) T(std::move(*RCAST<T*>(src)));
+                        };
+                        m_ItemsA.emplace_back(sizeof(T), move_op);
+                        m_ItemsB.emplace_back(sizeof(T), move_op);
                 }
 
                 EventQueueItem& eqm = m_Items->at(event_id);
-                if (eqm.cur == eqm.max_size)
-                        eqm.Grow();
-
                 m_Queue->emplace_back(event_id, eqm.cur);
-                new(eqm.Get(eqm.cur++)) T(std::forward<Args>(args)...);
+                new(eqm.Get(eqm.cur)) T(std::forward<Args>(args)...);
+                eqm.cur++;
         }
 
         void

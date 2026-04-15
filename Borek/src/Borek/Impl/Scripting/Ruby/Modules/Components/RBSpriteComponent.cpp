@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Scripting/Ruby/Modules/RBChangesExporter.h"
+#include "Include/Scripting/Ruby/Modules/RBNDatatypes.h"
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/string.h>
@@ -9,7 +11,6 @@
 
 #include <mrbcpp.h>
 
-#include "Include/Core.h"
 #include "Include/Components/SpriteComponent.h"
 #include "Include/Base/Entity.h"
 #include "Include/Scripting/Ruby/RubyEngine.h"
@@ -20,89 +21,42 @@ namespace RBModules {
 
 using namespace mrbcpp;
 
-static const mrb_data_type component_type = {
-        "Component", mrb_free
-};
-
-//static Class vec2;
-//static Class vec3;
-//static Class vec4;
-
-
-static MRB_FUNC(ComponentInitialize)
+static MRB_FUNC(Initialize)
 {
-        mrb_int entity_id;
-        mrb_get_args(mrb, "i", &entity_id);
-        
-        Entity* entity = RCAST<Entity*>(malloc(sizeof(Entity)));
-        entity->m_Id = entity_id;
+        mrb_value node = MRB_ARG1;
+        std::array<mrb_value, 3> args;
 
-        mrb_data_init(self, entity, &component_type);
+        Entity e(mrb_integer(MRB_GET_IV(node, "@entity_id")));
+        auto& sprite = e.GetComponent<SpriteComponent>();
+        args = { self, MRB_NUM(sprite.size_x), MRB_NUM(sprite.size_y) };
+
+        MRB_SET_IV(self, "@size",
+                   mrb_class_new_instance(mrb, 3, args.data(), RBNDatatypes::vec2_class));
+
+        MRB_SET_IV(self, "@flip_x", mrb_false_value());
+        MRB_SET_IV(self, "@flip_y", mrb_false_value());
+        MRB_SET_IV(self, "@node", node);
         
         return self;
 }
 
-static MRB_FUNC(GetFlipX)
+static MRB_FUNC(Notify)
 {
-        Entity *e;
-
-        Data_Get_Struct(mrb, self, &component_type, e);
-        const SpriteComponent& spr = e->GetComponent<SpriteComponent>();
-
-        return MRB_BOOL(spr.flags.HasFlags(SpriteComponentFlags_FlipX));
-}
-
-static MRB_FUNC(SetFlipX)
-{
-        Entity *e;
-
-        Data_Get_Struct(mrb, self, &component_type, e);
-        SpriteComponent& spr = e->GetComponent<SpriteComponent>();
-        
-        spr.flags.SetFlags(SpriteComponentFlags_FlipX, mrb_bool(MRB_ARG1));
-
-        return MRB_NIL;
-}
-
-static MRB_FUNC(GetFlipY)
-{
-        Entity *e;
-
-        Data_Get_Struct(mrb, self, &component_type, e);
-        const SpriteComponent& spr = e->GetComponent<SpriteComponent>();
-
-        return MRB_BOOL(spr.flags.HasFlags(SpriteComponentFlags_FlipY));
-}
-
-static MRB_FUNC(SetFlipY)
-{
-        Entity *e;
-
-        Data_Get_Struct(mrb, self, &component_type, e);
-        SpriteComponent& spr = e->GetComponent<SpriteComponent>();
-        
-        spr.flags.SetFlags(SpriteComponentFlags_FlipY, mrb_bool(MRB_ARG1));
-
+        ChangesExporter::AddSprite(mrb, MRB_GET_IV(self, "@node"));
         return MRB_NIL;
 }
 
 void RBSpriteComponent::Init(RubyEngine& engine)
 {
         Module& borek = engine.GetBorekModule();
-        // Setup of internal static variables in order to run functions faster.
-        //vec2 = Class(vm, mrb_class_get_under(vm, borek, "Vec2"));
-        //vec3 = mrb_class_get(vm, "Borek::Vec3");
-        //vec4 = mrb_class_get(vm, "Borek::Vec4");
 
-        borek.define_class("SpriteComponent")
-                .define_method("initialize", ComponentInitialize,
+        sprite_component_class = borek.define_class("SpriteComponent")
+                .define_method("initialize", Initialize,
                                FuncArgs().Required(1))
-                .define_method("flip_x", GetFlipX)
-                .define_method("flip_x=", SetFlipX, FuncArgs().Required(1))
-                .define_method("flip_y", GetFlipY)
-                .define_method("flip_y=", SetFlipY, FuncArgs().Required(1))
-                .define_const("COMPONENT_ID", MRB_NUM(ECS::GetId<SpriteComponent>()));
+                .define_method("notify", Notify);
 }
+
+Class RBSpriteComponent::sprite_component_class;
 
 }  // namespace RBModules
 }  // namespace Borek

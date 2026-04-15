@@ -24,6 +24,7 @@ AddEntityPopup::AddEntityPopup(uint32_t parent_id)
 bool
 AddEntityPopup::Tick()
 {
+        Popup::Tick();
         bool is_open = true;
         ImGui::Begin("Add Node", &is_open);
 
@@ -38,8 +39,7 @@ AddEntityPopup::Tick()
                 }
 
                 bool is_selected = m_SelectedItem == i;
-                ImGui::Image(get_node_type_icon(SCAST<NodeType>(i))->GetId(),
-                             {32, 32}, {0, 1}, {1, 0});
+                ImGui::Text("%s", get_node_type_icon(SCAST<NodeType>(i)));
                 ImGui::SameLine();
                 if (ImGui::Selectable(item.c_str(), is_selected))
                         m_SelectedItem = i;
@@ -56,7 +56,7 @@ AddEntityPopup::Tick()
 
         if (ImGui::Button("Create")) {
                 Entity e = Application::GetScene()->NewEntity(m_NodeName, SCAST<NodeType>(m_SelectedItem));
-                Application::GetScene()->EntityPrependChild(e, m_ParentId);
+                Application::GetScene()->GetTree().EntityPrependChild(e, m_ParentId);
                 is_open = false;
         }
 

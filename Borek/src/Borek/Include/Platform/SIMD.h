@@ -2,86 +2,80 @@
 
 #pragma once
 
-#include "glm/ext/vector_float2.hpp"
-#include <ostream>
-
 /*
  *      This header files contains definitions of simd instructions for all supported platforms, so SIMD can be the same in code.
  * */
 
+#include "glm/ext/vector_float2.hpp"
 #define PLATFORM_X86
 #ifdef PLATFORM_X86
 
 #include <xmmintrin.h>
 
-#define __M128I __m128i
-#define __M128 __m128
+#define M128I __m128i
+#define M128 __m128
+
+struct alignas(16) int4 {
+        int x, y, z, w;
+        inline operator int*() { return &x; }
+};
+
+struct alignas(16) float4 {
+        float x, y, z, w;
+        inline operator float*() { return &x; }
+};
 
 #else
 #error Only supporting X86 so far!
 #endif
 
-struct SimdVec4f {
-        union {
-                alignas(16)
-                float data[4];
-                struct { float x, y, z, w; };
-                struct { float x1, y1, x2, y2; };
-        };
+// M128I
 
-        operator __M128() const;
+// Creation methods
+M128I simd_scalar4i(int from);
+M128I simd_create4i(int a, int b, int c, int d);
+M128I simd_zero4i();
+int4 simd_dump4i(M128I val);
 
-        SimdVec4f() = default;
-        SimdVec4f(__M128 val);
-        SimdVec4f(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+// Convertion methods
+M128I simd_ftoi4f(M128 val);
 
-        friend std::ostream& operator <<(std::ostream& ost, const SimdVec4f&);
-};
+// Comparison operators
+M128I simd_min4i(M128I a, M128I b);
+M128I simd_max4i(M128I a, M128I b);
 
-struct SimdVec4i {
-        union {
-                alignas(16) int data[4];
-                struct { int x, y, z, w; };
-                struct { int x1, y1, x2, y2; };
-        };
+M128I simd_clamp4i(M128I val, M128I min, M128I max);
+// Arithmetics
+M128I simd_add4i(M128I a, M128I b);
+M128I simd_sub4i(M128I a, M128I b);
+M128I simd_mul4i(M128I a, M128I b);
 
-        operator __M128I() const;
 
-        SimdVec4i() = default;
-        SimdVec4i(__M128I val);
-        SimdVec4i(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
+// M128
 
-        friend std::ostream& operator <<(std::ostream& ost, const SimdVec4i&);
-};
+// Creation methods
+M128 simd_create4f(float x, float y, float z, float w);
+M128 simd_scalar4f(float from);
+M128 simd_zero4f();
+float4 simd_dump4f(M128 val);
 
-__M128I simd_min4i(__M128I a, __M128I b);
-__M128I simd_max4i(__M128I a, __M128I b);
-__M128I simd_clamp4i(__M128I val, __M128I min, __M128I max);
-__M128I simd_add4i(__M128I a, __M128I b);
-__M128I simd_sub4i(__M128I a, __M128I b);
-__M128I simd_mul4i(__M128I a, __M128I b);
-__M128I simd_create4i(int a, int b, int c, int d);
-__M128I simd_ftoi4f(__M128 val);
-__M128I simd_zero4i();
-SimdVec4i simd_store4i(__M128I val);
-__M128I simd_load4i(const SimdVec4i& vec);
+// Conversion methods
+M128 simd_itof4i(M128I val);
 
-__M128I simd_scalar4i(int from);
+// Arithmetic methods
+M128 simd_mul4f(M128 a, M128 b);
+M128 simd_sub4f(M128 a, M128 b);
+M128 simd_add4f(M128 a, M128 b);
+M128 simd_div4f(M128 a, M128 b);
+M128 simd_abs(M128 a);
+float simd_fmin4f(M128 val);
+float simd_fmax4f(M128 val);
 
-__M128 simd_create4f(float x, float y, float z, float w);
-__M128 simd_mul4f(__M128 a, __M128 b);
-__M128 simd_sub4f(__M128 a, __M128 b);
-__M128 simd_add4f(__M128 a, __M128 b);
+// Misc
+M128 simd_flip4f(M128 a);
 
-SimdVec4f simd_store4f(__M128 val);
-__M128 simd_load4f(const SimdVec4f& vec);
-__M128 simd_loadu4f(const SimdVec4f& vec);
-__M128 simd_loadu4f(const float* vec);
-__M128 simd_itof4i(__M128I val);
-__M128 simd_scalar4f(float from);
+// Misc
+bool simd_rect_intersect4f(M128 a, M128 b);
 
-__M128 simd_abs(__M128 a);
-
-bool simd_rect_intersect4f(__M128 a, __M128 b);
-
-__M128 simd_flip4f(__M128 a);
+void simd_rotate_rect(const glm::vec2& pos, const glm::vec2& size, float degrees,
+                      float4& xout, float4& yout);

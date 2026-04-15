@@ -2,15 +2,14 @@
 
 #pragma once
 
-#include <array>
 #include <string>
 #include <format>
 #include <cstdint>
-#include <vector>
-#include <iostream>
 
 #include <mruby.h>
 #include <mruby/variable.h>
+#include <mruby/value.h>
+#include <mruby/istruct.h>
 
 #include "helper_macros.h"
 
@@ -26,6 +25,8 @@ mrb_value _name(mrb_state* mrb, mrb_value self)
 #define MRB_STRING(_val) mrb_str_new_cstr(mrb, _val)
 #define MRB_SYM(_val) mrb_intern_cstr(mrb, _val)
 #define MRB_BOOL(_val) mrb_bool_value(_val)
+#define MRB_ISTRUCT_VAL(_val, _type) \
+        reinterpret_cast<_type*>(ISTRUCT_PTR(_val))
 
 #define MRB_OPT_KWARG(_index, _val) \
 if (mrb_undef_p(kw_values[_index])) { kw_values[_index] = MRB_NUM(UINT32_MAX); }
@@ -89,6 +90,8 @@ public:
         FuncArgs();
         FuncArgs& Required(unsigned n);
         FuncArgs& Optional(unsigned n);
+        FuncArgs& Rest();
+        FuncArgs& Block();
         operator mrb_aspec();
 
 private:
@@ -103,8 +106,10 @@ public:
         Class(mrb_state* vm, RClass* self);
         Class& define_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
         Class& define_class_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
+        Class& define_private_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
         Class& define_const(const std::string& name, mrb_value val);
         Class& define_class_iv(const std::string& name, mrb_value val);
+        Class& include(class Module& module);
         
         template <FixedString name>
         Class& define_attr_reader()
@@ -150,9 +155,12 @@ public:
         Module(mrb_state* vm, RClass* self);
         Class define_class(const std::string& name);
         Class define_class(const std::string& name, Class super);
+        Module& define_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
+        Module& define_module_method(const std::string& name, mrbcpp_func_t func, FuncArgs args = FuncArgs());
         Module define_module(const std::string& name);
         Module& define_const(const std::string& name, mrb_value val);
         Class get_class(const std::string& name);
+        Module& include(Module& module);
 
         operator RClass*();
 private:
@@ -164,8 +172,9 @@ class VM {
 public:
         VM();
         explicit VM(mrb_state* state);
-        Class define_class(const std::string& name);
-        Class define_class(const std::string& name, Class super);
+        Class define_class(const std::string& name, mrb_vtype type = MRB_TT_DATA);
+        Class define_class(const std::string& name, Class super,
+                           mrb_vtype type = MRB_TT_DATA);
         Module define_module(const std::string& name);
         operator mrb_state*();
         mrb_state* GetSelf();

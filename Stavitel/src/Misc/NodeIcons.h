@@ -3,11 +3,10 @@
 #pragma once
 
 #include <Include/Base/Node.h>
-#include <Include/Graphics/Texture.h>
 
 namespace Borek {
 
-const Ref<Graphics::Texture2D>
+const char*
 get_node_type_icon(NodeType type);
 
 }  // namespace Borek

@@ -13,6 +13,7 @@ struct NodeIcons {
         TexAsset dynamic_body;
         TexAsset static_body;
         TexAsset sprite;
+        TexAsset animated_sprite;
         TexAsset text;
         TexAsset tilemap;
         TexAsset sound;
@@ -31,6 +32,11 @@ struct FileIcons {
         TexAsset text_file_icon;
 };
 
+struct UIIcons {
+        TexAsset connect_icon;
+        TexAsset disconnect_icon;
+};
+
 struct EditorTextures {
         static void
         Init();
@@ -40,6 +46,7 @@ struct EditorTextures {
 
         static NodeIcons node_icons;
         static FileIcons file_icons;
+        static UIIcons ui_icons;
 };
 
 }  // namespace Borek

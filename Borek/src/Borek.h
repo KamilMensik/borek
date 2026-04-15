@@ -12,7 +12,6 @@
 #include "Include/Base/Input.h"
 #include "Include/Graphics/Renderer.h"
 #include "Include/Graphics/Texture.h"
-#include "Include/Base/Renderer2D.h"
 #include "Include/Base/Colors.h"
 
 namespace B = Borek;

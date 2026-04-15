@@ -1,5 +1,9 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/SceneAsset.h"
+#include "Include/Scripting/Ruby/Modules/RBAsset.h"
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/string.h>
@@ -14,15 +18,16 @@
 #include "Include/Scripting/Ruby/RubyEngine.h"
 #include "Include/Scripting/Ruby/Modules/RBScene.h"
 #include "Include/Base/Application.h"
+#include <string_view>
 
 namespace Borek {
 namespace RBModules {
 
 using namespace mrbcpp;
 
-MRB_FUNC(FindChild) {
-        std::string name = mrb_str_to_cstr(mrb, MRB_ARG1);
-        Entity child = Application::GetScene()->EntityFindFirstChild(name);
+static MRB_FUNC(FindChild) {
+        std::string name = mrb_string_cstr(mrb, MRB_ARG1);
+        Entity child = Application::GetScene()->GetTree().EntityFindChild(name);
 
         if (!child.IsNil()) {
                 mrb_value val = MRB_NUM(child.GetId());
@@ -32,13 +37,30 @@ MRB_FUNC(FindChild) {
         }
 }
 
+static MRB_FUNC(Change) {
+        mrb_value arg = MRB_ARG1;
+        ASSET_TYPE_ASSERT(arg, scene);
+
+        Asset<SceneAsset> ass(RCAST<uint64_t>(DATA_PTR(arg)));
+        auto path = std::string_view(ass->scene_path).substr(0, ass->scene_path.size() - 1);
+        Application::SendEvent<ChangeSceneEvent>(path);
+        return MRB_NIL;
+}
+
+static MRB_FUNC(Restart) {
+        Application::SendEvent<ChangeSceneEvent>(Application::GetScene()->GetPath().string());
+        return MRB_NIL;
+}
+
 void Scene::Init(RubyEngine& engine)
 {
         Module& borek = engine.GetBorekModule();
 
         borek.define_class("Scene")
                 .define_class_method("find_child", FindChild,
-                                     FuncArgs().Required(1));
+                                     FuncArgs().Required(1))
+                .define_class_method("change", Change, FuncArgs().Required(1))
+                .define_class_method("restart", Restart);
 }
 
 }  // namespace RBModules

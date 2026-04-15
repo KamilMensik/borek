@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Include/Scripting/Ruby/Modules/RBModule.h"
+#include "mrbcpp.h"
 
 namespace Borek {
 namespace RBModules {
@@ -10,6 +11,7 @@ namespace RBModules {
 class RBSpriteComponent : RBModule {
 public:
         static void Init(class RubyEngine& vm);
+        static mrbcpp::Class sprite_component_class;
 };
 
 }  // namespace RBModules

@@ -2,19 +2,19 @@
 
 #pragma once
 
-#include "Include/Debug/Log.h"
-#include "Include/Engine/Assets/ResourceAssetifier.h"
-#include "Include/Engine/Utils/PathHelpers.h"
 #include <concepts>
 #include <cstdint>
 #include <filesystem>
 #include <string>
-#include <unordered_map>
+#include <utility>
 #include <vector>
 #include <memory>
 
 #include "Include/Core.h"
 #include "Include/Engine/Assets/IAsset.h"
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Assets/ResourceAssetifier.h"
+#include "Include/Engine/Utils/PathHelpers.h"
 
 namespace Borek {
 
@@ -39,6 +39,9 @@ public:
         bool
         IsValid() const;
 
+        uint32_t
+        Take() &&;
+
         operator uint32_t() const;
         operator T&() const;
         T* operator ->() const;
@@ -54,13 +57,13 @@ friend class ResourceAssetifier;
 public:
         template <class T> requires std::derived_from<T, IAsset>
         static Asset<T>
-        Get(const std::string& path);
+        Get(std::string_view path);
 
         static void
-        Refresh(const std::string& path, Uniq<IAsset> asset);
+        Refresh(std::string_view path, Uniq<IAsset> asset);
 
         static void
-        RefreshPath(const std::string& from, const std::string& to);
+        RefreshPath(std::string_view from, std::string_view to);
 
         template <class T> requires std::derived_from<T, IAsset>
         static T&
@@ -85,14 +88,14 @@ public:
         Remove(uint32_t id);
 
         static void
-        Remove(const std::string& path);
+        Remove(std::string_view path);
 
 private:
         static std::vector<Uniq<IAsset>> s_Assets;
         static std::vector<int> s_AssetReferences;
         static std::vector<uint32_t> s_AssetTypes;
         static std::vector<std::string> s_AssetPaths;
-        static std::unordered_map<std::string, uint32_t> s_AssetByPath;
+        static StringMap<uint32_t> s_AssetByPath;
         static uint32_t s_FirstFreeSlot;
 };
 
@@ -206,11 +209,17 @@ Asset<T>::IsValid() const
                T().GetType() == AssetManager::GetAssetType(m_Id);
 }
 
+template <class T> requires std::derived_from<T, IAsset>
+uint32_t
+Asset<T>::Take() &&
+{
+        return std::exchange(m_Id, UINT32_MAX);
+}
 
 // AssetManager definitions
 template <class T> requires std::derived_from<T, IAsset>
 Asset<T>
-AssetManager::Get(const std::string& path)
+AssetManager::Get(std::string_view path)
 {
         if (auto res = s_AssetByPath.find(path); res != s_AssetByPath.end())
                 return Asset<T>(res->second);
@@ -237,7 +246,7 @@ AssetManager::Get(const std::string& path)
                 s_AssetTypes.emplace_back(0);
         }
 
-        s_AssetByPath[path] = slot;
+        s_AssetByPath[std::string(path)] = slot;
         s_Assets[slot] = NewUniq<T>();
         s_Assets[slot]->Deserialize(absolute);
         s_AssetTypes[slot] = s_Assets[slot]->GetType();

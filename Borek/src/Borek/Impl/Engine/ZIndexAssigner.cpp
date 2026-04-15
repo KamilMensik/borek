@@ -13,7 +13,7 @@ ZIndexAssigner::Assign()
         Scene& scene = *Application::GetScene();
 
         s_Current = scene.GetEntityCount() * 0.00006f;
-        scene.TraverseScene(AssignHelper);
+        scene.GetTree().TraverseScene(AssignHelper);
         s_Current = scene.GetEntityCount() * 0.00006f;
 }
 

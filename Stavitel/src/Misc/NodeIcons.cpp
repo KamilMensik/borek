@@ -1,36 +1,38 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Misc/EditorTextures.h"
-#include <Include/Engine/Assets/TexAsset.h>
-
 #include "NodeIcons.h"
+#include "Misc/FontAwesome.h"
 
 namespace Borek {
 
-const Ref<Graphics::Texture2D>
+const char*
 get_node_type_icon(NodeType type)
 {
         switch (type) {
         case NodeType::Node:
-                return EditorTextures::node_icons.node;
+                return ICON_FA_SQUARE;
         case NodeType::Area:
-                return EditorTextures::node_icons.area;
+                return ICON_FA_BORDER_NONE;
         case NodeType::Camera:
-                return EditorTextures::node_icons.camera;
+                return ICON_FA_VIDEO;
         case NodeType::DynamicBody:
-                return EditorTextures::node_icons.dynamic_body;
+                return ICON_FA_PERSON_RUNNING;
         case NodeType::StaticBody:
-                return EditorTextures::node_icons.static_body;
+                return ICON_FA_BRIDGE;
         case NodeType::Sprite:
-                return EditorTextures::node_icons.sprite;
+                return ICON_FA_IMAGE;
         case NodeType::Text:
-                return EditorTextures::node_icons.text;
+                return ICON_FA_T;
         case NodeType::Tilemap:
-                return EditorTextures::node_icons.tilemap;
+                return ICON_FA_LAYER_GROUP;
         case NodeType::SoundPlayer:
-                return EditorTextures::node_icons.sound;
+                return ICON_FA_VOLUME_LOW;
+        case NodeType::AnimatedSprite:
+                return ICON_FA_IMAGES;
+        case NodeType::ParticleEmmiter:
+                return ICON_FA_HURRICANE;
         default:
-                return nullptr;
+                return ICON_FA_QUESTION;
         }
 }
 

@@ -150,7 +150,9 @@ enum class MouseButton {
 
 class Input {
 public:
+        static void Init();
         static bool IsKeyPressed(KeyCode key);
+        static bool IsKeyJustPressed(KeyCode key);
         static bool IsMouseButtonPressed(MouseButton button);
         static inline double GetMouseX()
         {

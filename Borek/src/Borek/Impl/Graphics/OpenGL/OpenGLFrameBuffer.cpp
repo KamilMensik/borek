@@ -63,5 +63,15 @@ void OpenGLFrameBuffer::Unbind()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void
+OpenGLFrameBuffer::Blit()
+{
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_Id);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitFramebuffer(0, 0, m_Settings.width, m_Settings.height,
+                          0, 0, m_Settings.width, m_Settings.height,
+                          GL_COLOR_BUFFER_BIT, GL_NEAREST);
+}
+
 }  // namespace Graphics
 }  // namespace Borek

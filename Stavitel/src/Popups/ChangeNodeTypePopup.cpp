@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Commands/EntityCommands.h"
+#include "Misc/SceneTabBar.h"
 #include <string>
 
 #include <imgui.h>
@@ -23,6 +25,7 @@ ChangeNodeTypePopup::ChangeNodeTypePopup(uint32_t parent_id)
 bool
 ChangeNodeTypePopup::Tick()
 {
+        Popup::Tick();
         bool is_open = true;
         ImGui::Begin("Change Node Type", &is_open);
 
@@ -35,8 +38,7 @@ ChangeNodeTypePopup::Tick()
                         continue;
 
                 bool is_selected = m_SelectedItem == i;
-                ImGui::Image(get_node_type_icon(SCAST<NodeType>(i))->GetId(),
-                             {32, 32}, {0, 1}, {1, 0});
+                ImGui::Text("%s", get_node_type_icon(SCAST<NodeType>(i)));
                 ImGui::SameLine();
                 if (ImGui::Selectable(item.c_str(), is_selected))
                         m_SelectedItem = i;
@@ -49,7 +51,8 @@ ChangeNodeTypePopup::Tick()
         ImGui::Separator();
 
         if (ImGui::Button("Create")) {
-                Application::GetScene()->ChangeEntityNodeType(m_EntityId, SCAST<NodeType>(m_SelectedItem));
+                SceneTabBar::SendCommand<ChangeEntityNodeTypeCommand>(
+                        m_EntityId, SCAST<NodeType>(m_SelectedItem));
                 is_open = false;
         }
 

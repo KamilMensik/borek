@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Application.h"
 #include <filesystem>
 
 #include "Include/Engine/Utils/PathHelpers.h"
@@ -15,14 +16,14 @@ fs::path ToRelative(const fs::path path)
 {
         using Utils::Settings;
 
-        return fs::relative(path, Settings::Instance().current_project_path);
+        return fs::relative(path, Application::ProjectPath());
 }
 
 fs::path FromRelative(const fs::path path)
 {
         using Utils::Settings;
 
-        return fs::path(Settings::Instance().current_project_path) / path;
+        return fs::path(Application::ProjectPath()) / path;
 }
 
 }  // namespace Path

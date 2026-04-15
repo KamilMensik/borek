@@ -10,6 +10,7 @@ namespace RBModules {
 class RBSoundPlayerComponent : RBModule {
 public:
         static void Init(class RubyEngine& vm);
+        static mrbcpp::Class sound_player_component_class;
 };
 
 }  // namespace RBModules

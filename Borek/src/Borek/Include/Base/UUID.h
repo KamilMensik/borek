@@ -10,8 +10,8 @@ class UUID {
 public:
         UUID();
         explicit UUID(uint64_t value);
-        operator uint64_t();
-        uint64_t GetValue();
+        operator uint64_t() const;
+        uint64_t GetValue() const;
 
 private:
         uint64_t m_Value;

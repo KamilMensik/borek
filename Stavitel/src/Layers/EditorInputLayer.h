@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Include/Base/Layer.h"
+#include "Include/Components/CameraComponent.h"
 #include "Include/Components/TransformComponent.h"
 #include "Include/Events/Event.h"
 #include "Include/Events/MouseEvents.h"
@@ -16,12 +17,16 @@ public:
 
         const TransformComponent&
         GetCameraTransform();
+        
+        CameraComponent&
+        GetCamera();
 
 private:
         TransformComponent m_CameraTransform;
+        CameraComponent m_EditorCamera;
         glm::vec2 m_MouseOffset;
         glm::vec2 m_MouseS;
-        std::array<EVHandle, 3> m_EventHandles;
+        std::array<EVHandle, 4> m_EventHandles;
         bool m_IsDragging = false;
 
         void

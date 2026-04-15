@@ -1,15 +1,15 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Scripting/Ruby/Modules/RBMsgConnection.h"
+#include <mrbcpp.h>
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/string.h>
 #include <mruby/variable.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
+#include <mruby/istruct.h>
 
-#include <mrbcpp.h>
-
-#include "Include/Core.h"
 #include "Include/Components/SoundplayerComponent.h"
 #include "Include/Base/Entity.h"
 #include "Include/Scripting/Ruby/RubyEngine.h"
@@ -20,63 +20,37 @@ namespace RBModules {
 
 using namespace mrbcpp;
 
-static const mrb_data_type component_type = {
-        "Component", mrb_free
-};
-
 //static Class vec2;
 //static Class vec3;
 //static Class vec4;
 
 
-static MRB_FUNC(ComponentInitialize)
+static MRB_FUNC(Initialize)
 {
-        mrb_int entity_id;
-        mrb_get_args(mrb, "i", &entity_id);
-        
-        Entity* entity = RCAST<Entity*>(malloc(sizeof(Entity)));
-        entity->m_Id = entity_id;
+        mrb_value node = MRB_ARG1;
+        Entity e(mrb_integer(MRB_GET_IV(node, "@entity_id")));
+        auto& sc = e.GetComponent<SoundPlayerComponent>();
 
-        mrb_data_init(self, entity, &component_type);
+        auto on_finished = mrb_class_new_instance(
+                mrb, 0, nullptr, RBMsgConnection::msg_connection_class);
+
+        auto onf_data = MRB_ISTRUCT_VAL(on_finished, RBMsgConnection::Data);
+        onf_data->connection = sc.on_finished.get();
+        MRB_SET_IV(self, "@on_finished", on_finished);
         
         return self;
-}
-
-static MRB_FUNC(Play)
-{
-        Entity *e;
-
-        Data_Get_Struct(mrb, self, &component_type, e);
-        e->GetComponent<SoundPlayerComponent>().Play();
-
-        return MRB_NIL;
-}
-
-static MRB_FUNC(Stop)
-{
-        Entity *e;
-
-        Data_Get_Struct(mrb, self, &component_type, e);
-        e->GetComponent<SoundPlayerComponent>().Stop();
-
-        return MRB_NIL;
 }
 
 void RBSoundPlayerComponent::Init(RubyEngine& engine)
 {
         Module& borek = engine.GetBorekModule();
-        // Setup of internal static variables in order to run functions faster.
-        //vec2 = Class(vm, mrb_class_get_under(vm, borek, "Vec2"));
-        //vec3 = mrb_class_get(vm, "Borek::Vec3");
-        //vec4 = mrb_class_get(vm, "Borek::Vec4");
 
-        borek.define_class("SoundPlayerComponent")
-                .define_method("initialize", ComponentInitialize,
-                               FuncArgs().Required(1))
-                .define_method("play", Play)
-                .define_method("stop", Stop)
-                .define_const("COMPONENT_ID", MRB_NUM(ECS::GetId<SoundPlayerComponent>()));
+        sound_player_component_class = borek.define_class("SoundPlayerComponent")
+                .define_method("initialize", Initialize,
+                               FuncArgs().Required(1));
 }
+
+Class RBSoundPlayerComponent::sound_player_component_class;
 
 }  // namespace RBModules
 }  // namespace Borek

@@ -2,15 +2,22 @@
 
 #pragma once
 
-#include "Include/Base/String.h"
+#include "Include/Engine/Utils/SmallVecSet.h"
+#include "Include/Base/Symbol.h"
 
 namespace Borek {
 
-struct TagComponent {
-        String value;
+struct TagComponent : public SmallVecSet<Symbol, 5> {
+        TagComponent();
 
-        TagComponent() : value() {}
-        TagComponent(const std::string& value) : value(value) {}
+        void
+        AddTag(const Symbol& tag);
+
+        void
+        RemoveTag(const Symbol& tag);
+
+        bool
+        Contains(const Symbol& sym);
 };
 
 }  // namespace Borek

@@ -11,7 +11,6 @@ namespace Geometry {
 glm::vec2
 rotate_point(const glm::vec2& origin, const glm::vec2& point, float angle);
 
-
 }  // namespace Geometry
 }  // namespace Utils
 }  // namespace Borek

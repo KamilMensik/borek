@@ -20,18 +20,29 @@ struct BRendererData {
         BRendererData() = default;
         BRendererData(size_t elem_size, uint32_t index_count,
                       uint32_t batch_size);
+        BRendererData(const BRendererData& other) = delete;
+        BRendererData(BRendererData&& other);
         ~BRendererData();
+
+        BRendererData&
+        operator =(const BRendererData& other) = delete;
+
+        BRendererData&
+        operator =(BRendererData&& other);
 
         // Please call this after adding an element
         void ElemAddedCallback();
 
         uint32_t batch_size;
         uint32_t elem_size;
+        uint32_t index_count;
+        uint32_t id;
         uint8_t* data = nullptr;
         uint32_t* index_data = nullptr;
         void (*draw_callback)(BRendererData& data);
         uint32_t data_count = 0;
         uint32_t index_data_count = 0;
+
 
         Ref<Graphics::VertexBuffer> vertex_buf;
         Ref<Graphics::IndexBuffer> index_buf;

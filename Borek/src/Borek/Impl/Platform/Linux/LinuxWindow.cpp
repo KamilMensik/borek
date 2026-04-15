@@ -66,6 +66,7 @@ void Window::Init()
                 s_GLFW_Initialized = true;
         }
 
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
         m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(),
                                     nullptr, nullptr);
 
@@ -99,7 +100,7 @@ void Window::Init()
                 }
                 case GLFW_RELEASE:
                 {
-                        Application::SendEvent<KeyEvent>(SCAST<KeyCode>(key), true);
+                        Application::SendEvent<KeyEvent>(SCAST<KeyCode>(key), false);
                         break;
                 }
                 case GLFW_REPEAT:

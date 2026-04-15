@@ -8,7 +8,6 @@
 #include "Include/Components/PrefabComponent.h"
 #include "Include/Engine/Assets/Asset.h"
 #include "Include/Engine/Utils/PathHelpers.h"
-#include "Include/Engine/Utils/Settings.h"
 #include "Include/Engine/Utils/StringHelpers.h"
 #include "Misc/EditorTextures.h"
 
@@ -21,7 +20,7 @@ on_resource_renamed(ResourceRenamedEvent& ev)
 {
         fs::path og_asset = ev.GetFrom();
 
-        switch (Hash(ev.GetFrom().extension())) {
+        switch (HashP(ev.GetFrom().extension())) {
         case Hash(".tex"):
                 og_asset.replace_extension("png");
                 if (fs::exists(og_asset))
@@ -67,8 +66,8 @@ on_resource_renamed(ResourceRenamedEvent& ev)
         }
 
         fs::rename(og_asset, ev.GetTo().parent_path() / og_asset.filename());
-        AssetManager::RefreshPath(Utils::Path::ToRelative(ev.GetFrom()),
-                                  Utils::Path::ToRelative(ev.GetTo()));
+        AssetManager::RefreshPath(Utils::Path::ToRelative(ev.GetFrom()).string(),
+                                  Utils::Path::ToRelative(ev.GetTo()).string());
 
         return true;
 }
@@ -77,7 +76,8 @@ void
 ResourceLayer::OnUpdate(float delta)
 {
         if (--m_TickCounter <= 0) {
-                ResourceAssetifier::AssetifyFolder(Utils::Settings::ProjectPath());
+                ResourceAssetifier::AssetifyFolder(Application::ProjectPath());
+                Application::LoadScripts();
                 for (auto& [id, prefab] : Query<IDComponent, PrefabComponent>()) {
                         prefab->Update(id->ecs_id);
                 }
@@ -88,7 +88,7 @@ ResourceLayer::OnUpdate(float delta)
 void
 ResourceLayer::OnAttach()
 {
-        ResourceAssetifier::AssetifyFolder(Utils::Settings::ProjectPath());
+        ResourceAssetifier::AssetifyFolder(Application::ProjectPath());
         EditorTextures::Init();
         m_EventHandles[0] = ResourceRenamedEvent::AddListener(on_resource_renamed);
 }

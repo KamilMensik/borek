@@ -31,6 +31,9 @@ target_link_libraries(BOREK miniaudio)
 add_subdirectory(hat-trie-master)
 target_link_libraries(BOREK tsl_hat_trie)
 
+add_subdirectory(im-neo-sequencer)
+target_link_libraries(BOREK im-neo-sequencer)
+
 # Add ImSearch - Cant bother to fork it.
 add_library(imsearch STATIC "./imsearch/imsearch.cpp")
 target_include_directories(imsearch PRIVATE "./imsearch"

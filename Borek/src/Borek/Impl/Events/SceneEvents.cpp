@@ -6,5 +6,6 @@
 namespace Borek {
 
 _BASE_EVENT_IMPL(SceneChangedEvent, Event);
+_BASE_EVENT_IMPL(ChangeSceneEvent, Event);
 
 }  // namespace Borek

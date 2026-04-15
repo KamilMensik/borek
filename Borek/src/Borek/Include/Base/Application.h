@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Include/Events/EventQueue.h"
+#include "Include/Engine/Exceptions/RubyException.h"
 #include <concepts>
 #include <utility>
 
@@ -19,6 +19,9 @@
 #include "Include/Scripting/Ruby/RubyEngine.h"
 #include "Include/Components/CameraComponent.h"
 #include "Include/Components/TransformComponent.h"
+#include "Include/Events/EntityEvents.h"
+#include "Include/Events/SceneEvents.h"
+#include "Include/Events/EventQueue.h"
 
 namespace Borek {
 
@@ -41,12 +44,32 @@ public:
         {
                 s_Instance->m_EventQueue.Add<T>(std::forward<Args>(args)...);
         }
+        template <class T, typename ... Args> requires std::derived_from<T, Event>
+        static void SendEventImmediate(Args...args)
+        {
+                T ev(std::forward<Args>(args)...);
+                ev.Notify();
+        }
         static void OpenPopup(Popup* popup);
         static RubyEngine& GetRubyEngine();
         static std::pair<glm::vec2, glm::vec2> GetMouseOffset();
         static void Log(const std::string& str);
         static FZX::CGrid& GetSpriteGrid();
         static bool IsPlaying();
+        static void
+        ChangeScene(const std::string& path);
+        static const std::string&
+        ProjectPath();
+        static Time
+        GetTime();
+        static void
+        LoadScripts();
+        static float
+        GetDelta();
+        static uint64_t
+        GetTick();
+        static void
+        RestartScene();
 
         void Run();
 
@@ -68,20 +91,26 @@ protected:
         EventQueue m_EventQueue;
         std::vector<Popup*> m_ActivePopups = {};
 
-        RubyEngine m_RubyEngine;
+        Uniq<RubyEngine> m_RubyEngine;
 
         FZX::CGrid m_SpriteGrid;
+        std::string m_ProjectPath;
 
+        uint64_t m_CurrentTick = 0;
+        double m_Delta = 1.0f;
         float m_AspectRatio = 1.6f;
         bool m_Running = true;
 
         bool OnWindowClose(WindowCloseEvent& e);
         bool OnWindowResize(WindowResizeEvent& e);
         bool OnMouseButton(MouseButtonEvent& e);
+        bool OnDestroyEntity(DestroyEntityEvent& e);
+        bool OnChangeScene(ChangeSceneEvent& e);
 
+        void GameTick();
         void RunEntityScripts(double delta);
+        void HandlePhysics();
         void DrawEntities();
-        void SendEventToEntities(Event& e);
 
         virtual void OnUpdate(float delta) {}
         virtual void OnRenderBegin();
@@ -92,6 +121,11 @@ protected:
         virtual bool Playing() { return true; }
         virtual void SetCamera();
         virtual void HandleEvents();
+        virtual void LoadProject();
+        virtual void ChangeSceneFunc(const std::string& path);
+
+        virtual bool HandleRubyException(const RubyException& exc);
+
         virtual std::pair<glm::vec2, glm::vec2> GetMouseOffsetInternal();
 };
 

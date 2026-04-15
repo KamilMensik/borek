@@ -8,22 +8,25 @@
 
 namespace Borek {
 
-EventQueueItem::EventQueueItem(uint32_t item_size)
+EventQueueItem::EventQueueItem(uint32_t item_size, void(*move_op)(void*, void*))
 {
         data = new uint8_t[item_size * 5];
         this->item_size = item_size;
         cur = 0;
         max_size = 5;
+        this->move_op = move_op;
 }
 
 void
 EventQueueItem::Grow()
 {
-        BOREK_ENGINE_INFO("Growing event queue from {}, to {}", max_size, max_size * 2);
         max_size = max_size * 2;
         uint8_t* new_data = new uint8_t[max_size * item_size];
 
-        std::memcpy(new_data, data, cur * item_size);
+        for (uint32_t i = 0; i < cur; i++) {
+                const uint32_t offset = i * item_size;
+                move_op(new_data + offset, data + offset);
+        }
 
         delete[] data;
         data = new_data;
@@ -38,10 +41,31 @@ EventQueueItem::Get(uint32_t index)
         return &(data[item_size * index]);
 }
 
+void
+EventQueueItem::Clean()
+{
+        for (uint32_t i = 0; i < cur; i++) {
+                const uint32_t offset = i * item_size;
+                RCAST<Event*>(data + offset)->~Event();
+        }
+}
+
 EventQueue::EventQueue()
 {
         m_Queue = &m_QueueA;
         m_Items = &m_ItemsA;
+}
+
+EventQueue::~EventQueue()
+{
+        for (auto& item : m_ItemsA) {
+                item.Clean();
+                delete[] item.data;
+        }
+        for (auto& item : m_ItemsB) {
+                item.Clean();
+                delete[] item.data;
+        }
 }
 
 void
@@ -55,6 +79,7 @@ EventQueue::Handle()
         for (auto [eqm_id, index] : queue) {
                 Event* e = RCAST<Event*>(items[eqm_id].Get(index));
                 e->Notify();
+                e->~Event();
         }
 
         for (EventQueueItem& eqm : items) {

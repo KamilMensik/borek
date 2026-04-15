@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Application.h"
+#include "Include/Base/Popup.h"
 #include <filesystem>
 
 #include <imgui.h>
@@ -42,6 +44,7 @@ TilemapAssetFormPopup::TilemapAssetFormPopup(const fs::path& path,
 
 bool TilemapAssetFormPopup::Tick()
 {
+        Popup::Tick();
         bool is_open = true;
         ImGui::Begin("Tilemap Form", &is_open);
 
@@ -59,7 +62,7 @@ bool TilemapAssetFormPopup::Tick()
         ImGui::SameLine();
         if (ImGui::Button("Open")) {
                 FileExplorer::Open("Open Spritesheet", FileExplorerType_OpenFile,
-                                   Utils::Settings::Instance().current_project_path,
+                                   Application::ProjectPath(),
                                    { ".sst" });
         }
 
@@ -115,14 +118,14 @@ bool TilemapAssetFormPopup::Tick()
 
                 if (m_NewSpriteSheet) {
                         m_Tilemap->Serialize(m_Path / m_AssetName);
-                        AssetManager::Refresh(Utils::Path::ToRelative(m_Path), std::move(m_Tilemap));
+                        AssetManager::Refresh(Utils::Path::ToRelative(m_Path).string(), std::move(m_Tilemap));
                 } else {
                         if (m_AssetName != m_Path.filename())
                                 fs::remove(m_Path);
 
                         m_Path.replace_filename(m_AssetName);
                         m_Tilemap->Serialize(m_Path);
-                        AssetManager::Refresh(Utils::Path::ToRelative(m_Path), std::move(m_Tilemap));
+                        AssetManager::Refresh(Utils::Path::ToRelative(m_Path).string(), std::move(m_Tilemap));
                 }
 
                 is_open = false;

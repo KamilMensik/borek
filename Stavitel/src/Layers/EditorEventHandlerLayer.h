@@ -12,7 +12,7 @@ public:
         void OnDetach() override;
 
 private:
-        std::array<EVHandle, 5> m_EventHandles;
+        std::array<EVHandle, 6> m_EventHandles;
 };
 
 }  // namespace Borek

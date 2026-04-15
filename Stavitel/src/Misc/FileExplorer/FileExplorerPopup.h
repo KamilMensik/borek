@@ -29,7 +29,6 @@ private:
         std::filesystem::path m_ContextPath;
         std::string m_Input;
         State m_State;
-        bool m_Initialized = false;
 };
 
 }  // namespace Popups

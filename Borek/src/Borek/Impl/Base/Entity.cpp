@@ -1,23 +1,41 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Utils/GeometryUtils.h"
+#include <string_view>
+
 #include "Include/Base/Node.h"
 #include "Include/Base/Entity.h"
 #include "Include/Base/Scene.h"
 #include "Include/Base/Application.h"
-#include "Include/Components/SoundplayerComponent.h"
-#include "Include/Components/TilemapComponent.h"
-#include "Include/Debug/Log.h"
 #include "Include/Debug/Assert.h"
+#include "Include/Engine/FZX/Body.h"
+#include "Include/Engine/SceneTree.h"
+#include "Include/Events/ComponentEvents.h"
 
 #include "Include/Components/Text2DComponent.h"
 #include "Include/Components/SpriteComponent.h"
-#include "Include/Components/TagComponent.h"
 #include "Include/Components/IDComponent.h"
-
-#include "Include/Engine/FZX/Body.h"
-#include "Include/Events/ComponentEvents.h"
+#include "Include/Components/FZXComponents.h"
+#include "Include/Components/SoundplayerComponent.h"
+#include "Include/Components/TilemapComponent.h"
+#include "Include/Components/AnimatedSpriteComponent.h"
+#include "Include/Components/ParticleComponent.h"
+#include "Include/Components/ValueComponent.h"
 
 namespace Borek {
+
+static inline Scene&
+get_scene()
+{
+        return *Application::GetScene();
+}
+
+static inline SceneTree&
+get_scene_tree()
+{
+        return Application::GetScene()->GetTree();
+}
 
 Entity::Entity(ECS::EntityId id)
         : m_Id(id) {}
@@ -25,13 +43,19 @@ Entity::Entity(ECS::EntityId id)
 void*
 Entity::GetComponent(ECS::ComponentId cid)
 {
-        return Application::GetScene()->m_World->get_component(m_Id, cid);
+        return get_scene().m_World->get_component(m_Id, cid);
+}
+
+const void*
+Entity::GetComponentC(ECS::ComponentId cid) const
+{
+        return get_scene().m_World->get_component(m_Id, cid);
 }
 
 Entity&
 Entity::AddComponent(ECS::ComponentId cid)
 {
-        Application::GetScene()->m_World->add_component(m_Id, cid);
+        get_scene().m_World->add_component(m_Id, cid);
         Application::SendEvent<ComponentAddedEvent>(cid, m_Id);
         return *this;
 }
@@ -39,21 +63,21 @@ Entity::AddComponent(ECS::ComponentId cid)
 Entity&
 Entity::RemoveComponent(ECS::ComponentId cid)
 {
-        Application::GetScene()->m_World->remove_component(m_Id, cid);
+        get_scene().m_World->remove_component(m_Id, cid);
         Application::SendEvent<ComponentRemovedEvent>(cid, m_Id);
         return *this;
 }
 
 bool
-Entity::HasComponent(ECS::ComponentId cid)
+Entity::HasComponent(ECS::ComponentId cid) const
 {
-        return Application::GetScene()->m_World->has_component(m_Id, cid);
+        return get_scene().m_World->has_component(m_Id, cid);
 }
 
 void
 Entity::Delete()
 {
-        Application::GetScene()->DeleteEntity(*this);
+        get_scene().DeleteEntity(*this);
 }
 
 TransformComponent&
@@ -63,7 +87,7 @@ Entity::Transform()
 }
 
 const TransformComponent
-Entity::GlobalTransform()
+Entity::GlobalTransform() const
 {
         TransformComponent tc;
 
@@ -77,88 +101,118 @@ Entity::GlobalTransform()
 }
 
 const char*
-Entity::GetName()
+Entity::GetName() const
 {
-        return GetComponent<TagComponent>().value;
+        return GetNameSym().Str().c_str();
+}
+
+Symbol
+Entity::GetNameSym() const
+{
+        return get_scene_tree().GetEntityName(*this);
+}
+
+void
+Entity::SetNameSym(Symbol& name)
+{
+        return get_scene_tree().SetEntityName(*this, name);
 }
 
 UUID
-Entity::GetUUID()
+Entity::GetUUID() const
 {
-        return GetComponent<IDComponent>();
+        return GetComponentC<IDComponent>();
 }
 
 bool
-Entity::HasParent()
+Entity::HasParent() const
 {
         return !GetParent().IsNil();
 }
 
 Entity
-Entity::GetParent()
+Entity::GetParent() const
 {
-        return Application::GetScene()->GetEntityParent(*this);
+        return get_scene_tree().GetEntityParent(*this);
+}
+
+Entity
+Entity::GetPrevSibling() const
+{
+        return get_scene_tree().GetEntityPrevSibling(*this);
+}
+
+Entity
+Entity::GetNextSibling() const
+{
+        return get_scene_tree().GetEntityNextSibling(*this);
 }
 
 bool
-Entity::IsParentOf(Entity e)
+Entity::IsParentOf(Entity e) const
 {
-        Entity parent = e.GetParent();
-        while (!parent.IsNil()) {
-                if (parent == *this)
-                        return true;
-
-                parent = parent.GetParent();
-        }
-
-        return false;
+        return get_scene_tree().IsEntityParentOf(*this, e);
 }
 
 bool
-Entity::HasChildren()
+Entity::HasChildren() const
 {
-        return Application::GetScene()->HasEntityChildren(*this);
+        return get_scene_tree().HasEntityChildren(*this);
 }
 
-std::vector<uint32_t>*
-Entity::GetChildren()
+const std::vector<Entity>*
+Entity::GetChildren() const
 {
-        return Application::GetScene()->GetEntityChildren(*this);
+        return get_scene_tree().GetEntityChildren(*this);
 }
 
 void
 Entity::DeleteChildren()
 {
-        auto children = Application::GetScene()->GetEntityChildren(*this);
+        auto children = get_scene_tree().GetEntityChildren(*this);
         if (!children)
                 return;
 
         for (int i = children->size() - 1; i >= 0; i--) {
-                Entity((*children)[i]).Delete();
+                Entity e((*children)[i]);
+                e.Delete();
         }
 }
 
 Entity
-Entity::FindChild(const std::string& name)
+Entity::FindChild(Symbol name) const
 {
-        return Application::GetScene()->EntityFindFirstChild(name, *this);
+        return get_scene_tree().EntityFindChild(name, *this);
 }
 
 NodeType
-Entity::GetNodeType()
+Entity::GetNodeType() const
 {
-        return Application::GetScene()->GetEntityNodeType(*this);
+        return get_scene_tree().GetEntityNodeType(*this);
 }
 
-glm::vec2
+uint32_t
+Entity::ParentCount() const
+{
+        return get_scene_tree().GetEntityParentCount(*this);
+}
+
+uint64_t
+Entity::GetRubyNode() const
+{
+        return get_scene_tree().GetEntityRubyNode(*this);
+}
+
+std::pair<FZX::Collision, glm::vec2>
 Entity::MoveAndCollide(float x, float y)
 {
-        BOREK_ENGINE_ASSERT(GetNodeType() == NodeType::DynamicBody, "Node is not dynamic body. Dont use .Move()");
+        BOREK_ENGINE_ASSERT(GetNodeType() == NodeType::DynamicBody, "Node {} is not dynamic body. Dont use .Move()", GetName());
 
-        auto& body = GetComponent<FZX::BodyComponent>();
+        auto& body = GetComponent<BodyComponent>();
 
         auto res = Application::GetScene()->GetPhysicsWorld().MoveAndCollide(m_Id, body, x, y);
-        Transform().position += res;
+        Transform().position += res.second;
+
         return res;
 }
 
@@ -177,18 +231,19 @@ Entity::InitializeNode(NodeType type)
                 AddComponent<SpriteComponent>();
                 break;
         case NodeType::StaticBody:
-                AddComponent<FZX::BodyComponent>();
-                GetComponent<FZX::BodyComponent>().body_type = FZX::BodyType::Static;
+                AddComponent<BodyComponent>();
+                GetComponent<BodyComponent>().body_type = FZX::BodyType::Static;
                 break;
         case NodeType::DynamicBody:
-                AddComponent<FZX::BodyComponent>();
-                GetComponent<FZX::BodyComponent>().body_type = FZX::BodyType::Dynamic;
+                AddComponent<BodyComponent>();
+                GetComponent<BodyComponent>().body_type = FZX::BodyType::Dynamic;
                 break;
         case NodeType::Camera:
                 AddComponent<CameraComponent>();
                 break;
         case NodeType::Area:
-                BOREK_ENGINE_ERROR("Area does not work yet");
+                AddComponent<AreaComponent>();
+                GetComponent<AreaComponent>().body_type = FZX::BodyType::Area;
                 break;
         case NodeType::Text:
                 AddComponent<Text2DComponent>();
@@ -199,9 +254,15 @@ Entity::InitializeNode(NodeType type)
         case NodeType::SoundPlayer:
                 AddComponent<SoundPlayerComponent>();
                 break;
+        case NodeType::AnimatedSprite:
+                AddComponent<AnimatedSpriteComponent>();
+                break;
+        case NodeType::ParticleEmmiter:
+                AddComponent<ParticleComponent>();
+                break;
         }
 
-        Application::GetScene()->m_EntityNodeTypes[m_Id] = type;
+        get_scene_tree().SetEntityNodeType(*this, type);
         
         return true;
 }
@@ -217,13 +278,13 @@ Entity::DeinitializeNode()
                 break;
         case NodeType::StaticBody:
         case NodeType::DynamicBody:
-                RemoveComponent<FZX::BodyComponent>();
+                RemoveComponent<BodyComponent>();
                 break;
         case NodeType::Camera:
                 RemoveComponent<CameraComponent>();
                 break;
         case NodeType::Area:
-                BOREK_ENGINE_ERROR("Area does not work yet");
+                RemoveComponent<AreaComponent>();
                 break;
         case NodeType::Text:
                 RemoveComponent<Text2DComponent>();
@@ -234,7 +295,41 @@ Entity::DeinitializeNode()
         case NodeType::SoundPlayer:
                 RemoveComponent<SoundPlayerComponent>();
                 break;
+        case NodeType::AnimatedSprite:
+                RemoveComponent<AnimatedSpriteComponent>();
+                break;
+        case NodeType::ParticleEmmiter:
+                RemoveComponent<ParticleComponent>();
+                break;
         }
+}
+
+std::string
+Entity::PathTo(Entity other) const
+{
+        return get_scene_tree().PathTo(*this, other);
+}
+
+std::string
+Entity::GetAbsolutePath() const
+{
+        Entity parent = GetParent();
+        while (!parent.IsNil()) {
+                parent = parent.GetParent();
+        }
+        return get_scene_tree().PathTo(get_scene_tree().GetRootEntity(), *this);
+}
+
+Entity
+Entity::FindFromAbsolutePath(std::string_view path)
+{
+        return get_scene_tree().GetRootEntity().FindEntityByPath(path);
+}
+
+Entity
+Entity::FindEntityByPath(std::string_view path) const
+{
+        return get_scene_tree().FindEntityByPath(*this, path);
 }
 
 }  // namespace Borek

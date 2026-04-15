@@ -14,6 +14,7 @@ public:
         void Bind() override;
         void Unbind() override;
         uint32_t GetColorAttachmentId() override { return m_ColorAttachment; }
+        void Blit() override;
 
 private:
         uint32_t m_ColorAttachment;

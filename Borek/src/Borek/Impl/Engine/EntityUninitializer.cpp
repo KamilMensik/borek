@@ -2,6 +2,7 @@
 
 #include "Include/Base/Application.h"
 #include "Include/Base/Entity.h"
+#include "Include/Components/FZXComponents.h"
 #include "Include/Components/SoundplayerComponent.h"
 #include "Include/Components/TilemapComponent.h"
 #include "Include/Engine/FZX/Body.h"
@@ -13,6 +14,17 @@
 namespace Borek {
 
 void
+EntityUninitializer::UninitializeEntity(Entity e)
+{
+        if (Entity parent = e.GetParent())
+                s_GlobalTransform = parent.GlobalTransform();
+
+        Application::GetScene()->GetTree().TraverseScene(e, UninitializeBegin, UninitializeEnd);
+
+        s_GlobalTransform = TransformComponent();
+}
+
+void
 EntityUninitializer::UninitializeBegin(Entity e)
 {
         s_GlobalTransform += e.GetComponent<TransformComponent>();
@@ -22,11 +34,15 @@ EntityUninitializer::UninitializeBegin(Entity e)
         case NodeType::Camera:
         case NodeType::Text:
         case NodeType::Sprite:
+        case NodeType::AnimatedSprite:
+        case NodeType::ParticleEmmiter:
                 break;
         case NodeType::DynamicBody:
         case NodeType::StaticBody:
-        case NodeType::Area:
                 UninitializeFZXBody(e);
+                break;
+        case NodeType::Area:
+                UninitializeFZXArea(e);
                 break;
         case NodeType::Tilemap:
                 UninitializeTilemap(e);
@@ -35,6 +51,8 @@ EntityUninitializer::UninitializeBegin(Entity e)
                 UninitializeSoundPlayer(e);
                 break;
         }
+
+        UninitializeRubyNode(e);
 }
 
 void
@@ -46,35 +64,30 @@ EntityUninitializer::UninitializeEnd(Entity e)
 void
 EntityUninitializer::UninitializeFZXBody(Entity e)
 {
-        auto& body = e.GetComponent<FZX::BodyComponent>();
+        auto& body = e.GetComponent<BodyComponent>();
 
-        //body.Update(s_GlobalTransform.position, s_GlobalTransform.scale);
-        //Application::GetScene()->m_PhysicsWorld.Remove(e, body);
+        Application::GetScene()->m_PhysicsWorld.Remove(e, body);
+}
+
+void
+EntityUninitializer::UninitializeFZXArea(Entity e)
+{
+        auto& area = e.GetComponent<AreaComponent>();
+
+        Application::GetScene()->m_PhysicsWorld.Remove(e, area);
 }
 
 void
 EntityUninitializer::UninitializeTilemap(Entity e)
 {
-        //TilemapComponent& tc = e.GetComponent<TilemapComponent>();
-        //if (!tc.tilemap.IsValid())
-        //        return;
+        TilemapComponent& tc = e.GetComponent<TilemapComponent>();
+        if (tc.existing_colliders.empty())
+                return;
 
-        //SpriteSheetAsset& spritesheet = tc.tilemap->sprite_sheet.Convert();
-        //const glm::vec2& scale = s_GlobalTransform.scale;
-
-        //for (auto it : tc.items) {
-        //        const auto& pos = it.first;
-        //        const uint16_t index = it.second;
-
-        //        if (!tc.tilemap->tile_coliders[index].Exists())
-        //                continue;
-
-        //        const glm::vec2 real_pos(pos.second * tc.step_x * scale.x, pos.first * tc.step_y * scale.y);
-        //        FZX::Body body;
-        //        body.Update(real_pos, { spritesheet.step_x * scale.x,
-        //                                spritesheet.step_y * scale.y });
-        //        Application::GetScene()->m_PhysicsWorld.Add(e, body);
-        //}
+        FZX::Body body;
+        body.collider_type = FZX::ColliderType::Tilemap;
+        body.body_type = FZX::BodyType::Static;
+        Application::GetScene()->m_PhysicsWorld.Remove(e, body);
 }
 
 void
@@ -82,6 +95,13 @@ EntityUninitializer::UninitializeSoundPlayer(Entity e)
 {
         auto& sp = e.GetComponent<SoundPlayerComponent>();
         sp.Stop();
+}
+
+void
+EntityUninitializer::UninitializeRubyNode(Entity e)
+{
+        mrb_gc_unregister(Application::GetRubyEngine().GetRubyVM(),
+                          { e.GetRubyNode() });
 }
 
 TransformComponent EntityUninitializer::s_GlobalTransform = TransformComponent();

@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Base/Symbol.h"
+#include "Include/Engine/FZX/Collision.h"
 #include <cstdint>
 
 #include <glm/ext/vector_float2.hpp>
@@ -9,6 +11,7 @@
 #include "Include/Base/Node.h"
 #include "Include/Base/UUID.h"
 #include "Include/Components/TransformComponent.h"
+#include <string_view>
 
 #pragma once
 
@@ -20,12 +23,12 @@ public:
         Entity() : m_Id(UINT32_MAX) {}
         Entity(uint32_t id);
 
-        bool operator ==(const Entity& other)
+        bool operator ==(const Entity& other) const
         {
                 return m_Id == other.m_Id;
         }
 
-        bool operator !=(const Entity& other)
+        bool operator !=(const Entity& other) const
         {
                 return m_Id != other.m_Id;
         }
@@ -33,6 +36,10 @@ public:
         template <class T>
         T& GetComponent() { return *RCAST<T*>(GetComponent(ECS::GetId<T>())); }
         void* GetComponent(uint32_t cid);
+
+        template <class T>
+        const T& GetComponentC() const { return *RCAST<const T*>(GetComponentC(ECS::GetId<T>())); }
+        const void* GetComponentC(uint32_t cid) const;
 
         template <class T>
         Entity& AddComponent() { return AddComponent(ECS::GetId<T>()); }
@@ -51,40 +58,54 @@ public:
         void Delete();
 
         template <class T>
-        bool HasComponent() { return HasComponent(ECS::GetId<T>()); }
-        bool HasComponent(uint32_t cid);
-        bool IsNil() { return m_Id == UINT32_MAX; }
+        bool HasComponent() const { return HasComponent(ECS::GetId<T>()); }
+        bool HasComponent(uint32_t cid) const;
+        bool IsNil() const { return m_Id == UINT32_MAX; }
         inline uint32_t GetId() const { return m_Id; }
         operator uint32_t() const { return GetId(); }
 
         TransformComponent& Transform();
-        const TransformComponent GlobalTransform();
-        const char* GetName();
-        UUID GetUUID();
+        const TransformComponent GlobalTransform() const;
+        const char* GetName() const;
+        Symbol GetNameSym() const;
+        void SetNameSym(Symbol& name);
+        UUID GetUUID() const;
 
         bool
-        HasParent();
+        HasParent() const;
 
         Entity
-        GetParent();
+        GetParent() const;
+
+        Entity
+        GetPrevSibling() const;
+
+        Entity
+        GetNextSibling() const;
 
         bool
-        IsParentOf(Entity e);
+        IsParentOf(Entity e) const;
 
         bool
-        HasChildren();
+        HasChildren() const;
 
-        std::vector<uint32_t>*
-        GetChildren();
+        const std::vector<Entity>*
+        GetChildren() const;
 
         void
         DeleteChildren();
 
         Entity
-        FindChild(const std::string& name);
+        FindChild(Symbol name) const;
 
         NodeType
-        GetNodeType();
+        GetNodeType() const;
+
+        uint32_t
+        ParentCount() const;
+
+        uint64_t
+        GetRubyNode() const;
 
         // @return [bool] - Returns true if node type changed.
         bool
@@ -93,6 +114,18 @@ public:
         void
         DeinitializeNode();
 
+        std::string
+        PathTo(Entity other) const;
+
+        std::string
+        GetAbsolutePath() const;
+
+        static Entity
+        FindFromAbsolutePath(std::string_view path);
+
+        Entity
+        FindEntityByPath(std::string_view path) const;
+
         /*
          * Physics engine API
          */
@@ -100,8 +133,9 @@ public:
         //
         // ENTITY NEEDS TO BE CHARACTER BODY!
         //
-        glm::vec2
+        std::pair<FZX::Collision, glm::vec2>
         MoveAndCollide(float x, float y);
+
 
 public:
         uint32_t m_Id;

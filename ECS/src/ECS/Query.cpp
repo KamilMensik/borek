@@ -2,6 +2,7 @@
 
 #include "Query.h"
 #include "ECS/Archetype.h"
+#include "ECS/DisabledComponent.h"
 
 namespace ECS {
 
@@ -20,6 +21,9 @@ std::vector<QueryInternal>& QueryInternal::GetDefinedQueries()
 
 void QueryInternal::TryAdd(Archetype archetype)
 {
+        if (archetype.HasComponent(GetId<DisabledComponent>()))
+                return;
+
         for (auto& component : m_Type) {
                 if (!archetype.HasComponent(component))
                         return;

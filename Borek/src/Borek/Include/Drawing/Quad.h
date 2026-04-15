@@ -2,17 +2,18 @@
 
 #pragma once
 
-#include "Include/Components/SpriteComponent.h"
-#include "Include/Components/TransformComponent.h"
-#include "Include/Drawing/BatchRenderer.h"
-#include "Include/Drawing/DrawingGlobals.h"
 #include <cstdint>
+#include <unordered_map>
 
 #include <glm/ext/vector_float2.hpp>
 
 #include "Include/Base/Colors.h"
 #include "Include/Graphics/Texture.h"
-#include <unordered_map>
+#include "Include/Components/AnimatedSpriteComponent.h"
+#include "Include/Components/SpriteComponent.h"
+#include "Include/Components/TransformComponent.h"
+#include "Include/Drawing/BatchRenderer.h"
+#include "Include/Drawing/DrawingGlobals.h"
 
 namespace Borek {
 namespace Drawing {
@@ -34,7 +35,7 @@ public:
         static void
         Draw(const glm::vec2& pos, const glm::vec2& size,
              const Ref<Graphics::Texture2D>& texture,
-             const Color& color, float zindex,
+             const ColorF& color, float zindex,
              const glm::vec4& tex_cords = {0, 0, 1, 1});
 
         inline static void
@@ -46,7 +47,7 @@ public:
 
         inline static void
         Draw(const glm::vec2& pos, const glm::vec2& size,
-             const Color& color, float zindex = 0)
+             const ColorF& color, float zindex = 0)
         {
                 Draw(pos, size, Globals::GetData().white_tex, color, zindex);
         }
@@ -65,7 +66,7 @@ public:
         static void
         Draw(const glm::vec2& pos, const glm::vec2& size, float rotation,
              const Ref<Graphics::Texture2D>& texture,
-             const Color& color, float zindex);
+             const ColorF& color, float zindex);
 
         inline static void
         Draw(const glm::vec2& pos, const glm::vec2& size, float rotation,
@@ -76,7 +77,7 @@ public:
 
         inline static void
         Draw(const glm::vec2& pos, const glm::vec2& size, float rotation,
-             const Color& color, float zindex = 0)
+             const ColorF& color, float zindex = 0)
         {
                 Draw(pos, size, rotation, Globals::GetData().white_tex, color,
                      zindex);
@@ -96,6 +97,15 @@ public:
         static void
         Draw(const TransformComponent& transform, const SpriteComponent& sprite,
              float zindex = 0);
+
+        static void
+        Draw(const TransformComponent& transform,
+             const AnimatedSpriteComponent& sprite,
+             float zindex = 0);
+
+        static void
+        Draw(const std::vector<glm::vec2>& vertices,
+             const Color& color, float zindex = 0);
 
 private:
         static inline uint32_t GetRDataIndex()

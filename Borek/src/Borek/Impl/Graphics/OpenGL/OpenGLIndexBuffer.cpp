@@ -34,7 +34,7 @@ void OpenGLIndexBuffer::Unbind() const
 
 void OpenGLIndexBuffer::SetData(const void* data, uint32_t count)
 {
-        BOREK_ENGINE_ASSERT(count < m_MaxCount, "Trying to write into index buffer data that is larger than its size");
+        BOREK_ENGINE_ASSERT(count <= m_MaxCount, "Trying to write into index buffer data that is larger than its size");
         m_Count = count;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Id);

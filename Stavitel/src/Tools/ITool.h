@@ -10,6 +10,8 @@ namespace Borek {
  */
 class ITool {
 public:
+        virtual ~ITool() = default;
+
         virtual void
         OnMousePressed(MouseButton button) = 0;
 
@@ -24,6 +26,9 @@ public:
 
         virtual void
         Deactivate() = 0;
+
+        bool
+        IsInsideViewport() const;
 };
 
 }  // namespace Borek

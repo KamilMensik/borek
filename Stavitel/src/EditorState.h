@@ -7,6 +7,7 @@ namespace Borek {
 enum class GameState {
         kStopped,
         kPlaying,
+        kRestarting,
 };
 
 struct EditorState {

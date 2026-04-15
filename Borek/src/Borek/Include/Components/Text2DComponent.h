@@ -4,16 +4,18 @@
 
 #include <glm/vec4.hpp>
 
-#include "Include/Core.h"
-#include "Include/Base/String.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Engine/Assets/FontAsset.h"
+#include "Include/Base/Colors.h"
+#include "Include/Base/Symbol.h"
 
 namespace Borek {
 
 struct Text2DComponent {
-        Ref<class Font> font;
-        String value;
-        glm::vec4 color;
+        Symbol value;
+        Color color;
         float size;
+        Asset<FontAsset> font;
 
         Text2DComponent() = default;
 };

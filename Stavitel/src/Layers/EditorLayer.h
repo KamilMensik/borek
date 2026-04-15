@@ -5,9 +5,9 @@
 #include "Include/Core.h"
 #include "Panels/ConsolePanel.h"
 #include "Panels/Import.h"
-#include "Panels/Test.h"
+#include "Panels/AnimationPanel.h"
 #include "Panels/TilesetPanel.h"
-#include "Panels/ToolbarPanel.h"
+#include "Panels/Toolbar.h"
 #include <glm/ext/vector_float2.hpp>
 
 #include <Borek/Include/Base/Layer.h>
@@ -45,10 +45,10 @@ private:
         Panels::GizmoPanel m_GizmoPanel;
         Panels::Assets m_AssetsPanel;
         Panels::Toolbar m_ToolbarPanel;
-        Panels::Test m_TestPanel;
         Panels::ConsolePanel m_Console;
         Panels::Import m_ImportPanel;
         Panels::Tileset m_TilesetPanel;
+        Panels::AnimationPanel m_KFAnimationPanel;
 
         glm::vec2 m_ViewportSize = glm::vec2(1280, 720);
         glm::vec2 m_ViewportPosition;
