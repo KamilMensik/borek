@@ -21,6 +21,7 @@
 #include "Include/Core.h"
 #include "Include/Graphics/Renderer.h"
 #include "Include/Base/Application.h"
+#include "Include/Base/TransformCache.h"
 #include "Include/Graphics/Camera.h"
 #include "Include/ImGui/ImGuiLayer.h"
 #include "Include/Base/Query.h"
@@ -277,36 +278,27 @@ Application::RunEntityScripts(double delta)
 void
 Application::HandlePhysics()
 {
-        TransformComponent global_tran;
-        GetScene()->GetTree().TraverseScene([&global_tran](Entity e) {
-                auto& transform = e.Transform();
-                global_tran += transform;
-                if (e.HasComponent<BodyComponent>()) {
-                        auto& body = e.GetComponent<BodyComponent>();
-
-                        GetScene()->GetPhysicsWorld()
-                                .Update(e, body, global_tran.position,
-                                        global_tran.scale, global_tran.rotation);
-                } else if (e.HasComponent<AreaComponent>()) {
-                        auto& area = e.GetComponent<AreaComponent>();
-
-                        GetScene()->GetPhysicsWorld()
-                                .Update(e, area, global_tran.position,
-                                        global_tran.scale, global_tran.rotation);
-                }
-        }, [&global_tran](Entity e) {
-                global_tran -= e.GetComponent<TransformComponent>();
-        });
-
         auto& fzxwrld = GetScene()->GetPhysicsWorld();
-        for (auto& [id, body] : Query<IDComponent, BodyComponent>()) {
-                if (body->collider_type == FZX::ColliderType::Tilemap)
-                        continue;
 
-                auto collisions = fzxwrld.GetCollisions(id->ecs_id, *body);
+        for (auto& [id, body] : Query<IDComponent, BodyComponent>()) {
+                auto& tc = TransformCache::GetTransform(id->ecs_id);
+                GetScene()->GetPhysicsWorld().Update(
+                        id->ecs_id,
+                        *body,
+                        tc.position,
+                        scale_tof(tc.scale),
+                        tc.rotation);
         }
 
         for (auto& [id, area] : Query<IDComponent, AreaComponent>()) {
+                auto& tc = TransformCache::GetTransform(id->ecs_id);
+                GetScene()->GetPhysicsWorld().Update(
+                        id->ecs_id,
+                        *area,
+                        tc.position,
+                        scale_tof(tc.scale),
+                        tc.rotation);
+
                 auto collisions = fzxwrld.GetCollisions(id->ecs_id, *area);
                 std::vector<uint32_t> old_collisions = *area->colliding_with;
                 area->colliding_with->clear();
@@ -345,40 +337,40 @@ Application::DrawEntities()
         body.body_type = FZX::BodyType::Static;
 
         for (auto [id, sprite] : Query<IDComponent, SpriteComponent>()) {
-                auto global_tran = Entity(id->ecs_id).GlobalTransform();
-                global_tran.position -= m_CameraTransform.position;
+                auto tc = TransformCache::GetTransform(id->ecs_id);
+                tc.position -= m_CameraTransform.position;
                 body.rc.size_x = sprite->size_x;
                 body.rc.size_y = sprite->size_y;
 
                 if (!m_SpriteGrid.Contains(id->ecs_id)) {
                         m_SpriteGrid.Insert(id->ecs_id, body,
-                                            global_tran.position,
-                                            global_tran.scale,
-                                            global_tran.rotation);
+                                            tc.position,
+                                            scale_tof(tc.scale),
+                                            tc.rotation);
                 } else {
                         m_SpriteGrid.Update(id->ecs_id, body,
-                                            global_tran.position,
-                                            global_tran.scale,
-                                            global_tran.rotation);
+                                            tc.position,
+                                            scale_tof(tc.scale),
+                                            tc.rotation);
                 }
         }
 
         for (auto [id, sprite] : Query<IDComponent, AnimatedSpriteComponent>()) {
-                auto global_tran = Entity(id->ecs_id).GlobalTransform();
-                global_tran.position -= m_CameraTransform.position;
+                auto tc = TransformCache::GetTransform(id->ecs_id);
+                tc.position -= m_CameraTransform.position;
                 body.rc.size_x = sprite->size_x;
                 body.rc.size_y = sprite->size_y;
 
                 if (!m_SpriteGrid.Contains(id->ecs_id)) {
                         m_SpriteGrid.Insert(id->ecs_id, body,
-                                            global_tran.position,
-                                            global_tran.scale,
-                                            global_tran.rotation);
+                                            tc.position,
+                                            tc.scale,
+                                            tc.rotation);
                 } else {
                         m_SpriteGrid.Update(id->ecs_id, body,
-                                            global_tran.position,
-                                            global_tran.scale,
-                                            global_tran.rotation);
+                                            tc.position,
+                                            tc.scale,
+                                            tc.rotation);
                 }
         }
 }
@@ -489,6 +481,7 @@ Application::SetScene(Ref<Scene> scene)
         if (s_Instance->m_CurrentScene) {
                 Ref<Scene> old_scene = s_Instance->m_CurrentScene;
                 old_scene->Uninitialize();
+                TransformCache::Reset();
         }
 
         s_Instance->m_CurrentScene = scene;

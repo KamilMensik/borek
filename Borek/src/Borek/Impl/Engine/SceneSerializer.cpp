@@ -3,6 +3,7 @@
 #include "Include/Debug/Log.h"
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <string_view>
 
@@ -118,6 +119,48 @@ struct convert<glm::vec2> {
 };
 
 template <>
+struct convert<glm::u16vec2> {
+        static Node encode(const glm::u16vec2& in)
+        {
+                Node node;
+                node.push_back(in.x * (1.0f / 64.0f));
+                node.push_back(in.y * (1.0f / 64.0f));
+                return node;
+        }
+
+        static bool decode(const Node& node, glm::u16vec2& out)
+        {
+                if (!node.IsSequence() || node.size() != 2) return false;
+
+                out.x = node[0].as<float>() * 64.0f;
+                out.y = node[1].as<float>() * 64.0f;
+
+                return true;
+        }
+};
+
+template <>
+struct convert<glm::i16vec2> {
+        static Node encode(const glm::i16vec2& in)
+        {
+                Node node;
+                node.push_back(in.x * (1.0f / 64.0f));
+                node.push_back(in.y * (1.0f / 64.0f));
+                return node;
+        }
+
+        static bool decode(const Node& node, glm::i16vec2& out)
+        {
+                if (!node.IsSequence() || node.size() != 2) return false;
+
+                out.x = node[0].as<float>() * 64.0f;
+                out.y = node[1].as<float>() * 64.0f;
+
+                return true;
+        }
+};
+
+template <>
 struct convert<Borek::Color> {
         static Node encode(const Borek::Color& in)
         {
@@ -203,6 +246,20 @@ static Emitter& operator<<(Emitter& out, glm::vec2& in)
 {
         out << Flow;
         out << BeginSeq << in.r << in.g << EndSeq;
+        return out;
+}
+
+static Emitter& operator<<(Emitter& out, glm::u16vec2& in)
+{
+        out << Flow;
+        out << BeginSeq << (in.r * (1.0f / 64.0f)) << (in.g * (1.0f / 64.0f)) << EndSeq;
+        return out;
+}
+
+static Emitter& operator<<(Emitter& out, glm::i16vec2& in)
+{
+        out << Flow;
+        out << BeginSeq << (in.r * (1.0f / 64.0f)) << (in.g * (1.0f / 64.0f)) << EndSeq;
         return out;
 }
 
@@ -659,12 +716,12 @@ static void
 deserialize_transform(YAML::Node& data, Entity e, SceneSerializer& _)
 {
         auto& t = e.GetComponent<TransformComponent>();
-        if (t.position != glm::vec2(0) || t.rotation != 0 || t.scale != glm::vec2(1))
+        if (t.position != glm::vec2(0) || t.rotation != 0 || t.scale != glm::u16vec2(64))
                 return;
 
         auto tdata = data["Transform"];
         t.position = tdata["Position"].as<glm::vec2>();
-        t.scale = tdata["Scale"].as<glm::vec2>();
+        t.scale = tdata["Scale"].as<glm::u16vec2>();
         t.rotation = tdata["Rotation"].as<float>();
 }
 

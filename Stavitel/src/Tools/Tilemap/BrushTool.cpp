@@ -66,7 +66,7 @@ BrushTool::Tick()
         Asset<TilemapAsset> tmap = tc.tilemap;
         SpriteSheetAsset& spritesheet = tmap->sprite_sheet.Convert();
 
-        const glm::vec2 scale = m_CurrentEntity.GlobalTransform().scale;
+        const glm::vec2 scale = scale_tof(m_CurrentEntity.GlobalTransform().scale);
         const glm::vec2 tile_step(tc.step_x * scale.x, tc.step_y * scale.y);
         const glm::vec2 tile_size(spritesheet.step_x * scale.x, spritesheet.step_y * scale.y);
         const glm::vec2 pos = glm::round((Input::GetMouseWorldPos() - tile_step * 0.5f) / tile_step);

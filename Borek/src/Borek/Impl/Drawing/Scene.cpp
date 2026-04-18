@@ -1,7 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include <cstdint>
-
 #include "Include/Drawing/Scene.h"
 #include "Include/Base/Application.h"
 #include "Include/Base/Entity.h"
@@ -22,28 +20,9 @@
 namespace Borek {
 namespace Drawing {
 
-static const void
-load_transform(std::unordered_map<uint32_t, TransformComponent>& map, Entity e)
-{
-        if (auto it = map.find(e.GetId()); it != map.end())
-                return;
-
-        Entity parent = e.GetParent();
-        if (parent.IsNil()) {
-                map[e.GetId()] = e.Transform();
-                return;
-        }
-
-        load_transform(map, parent);
-        map[e.GetId()] = e.Transform();
-        map[e.GetId()] += map[parent.GetId()];
-}
-
 void
 Scene::Draw()
 {
-        std::unordered_map<uint32_t, TransformComponent> transform_map;
-        
         auto query_1 = Query<IDComponent, SpriteComponent, ZIndexComponent>();
         auto query_2 = Query<IDComponent, TilemapComponent, ZIndexComponent>();
         auto query_3 = Query<IDComponent, AnimatedSpriteComponent, ZIndexComponent>();
@@ -52,8 +31,7 @@ Scene::Draw()
 
         for (auto& [id, sprite, zindex] : query_1) {
                 Entity cur(id->ecs_id);
-                load_transform(transform_map, cur);
-                Quad::Draw(transform_map[id->ecs_id], *sprite, zindex->value);
+                Quad::Draw(cur.GlobalTransform(), *sprite, zindex->value);
         }
 
         for (auto& [id, tilemap, zindex] : query_2) {
@@ -61,8 +39,8 @@ Scene::Draw()
                         continue;
 
                 Entity cur(id->ecs_id);
-                load_transform(transform_map, cur);
-                const glm::vec2& scale = transform_map[cur.m_Id].scale;
+                auto& tran = cur.GlobalTransform();
+                const glm::vec2& scale = scale_tof(tran.scale);
 
                 SpriteSheetAsset& spritesheet = tilemap->tilemap->sprite_sheet.Convert();
 
@@ -80,9 +58,8 @@ Scene::Draw()
         }
 
         for (auto& [id, sprite, zindex] : query_3) {
-                Entity cur(id->ecs_id);
-                load_transform(transform_map, cur);
-                Quad::Draw(transform_map[id->ecs_id], *sprite, zindex->value);
+                auto& tran = Entity(id->ecs_id).GlobalTransform();
+                Quad::Draw(tran, *sprite, zindex->value);
                 sprite->Step(Application::GetTime());
         }
 
@@ -90,17 +67,15 @@ Scene::Draw()
                 if (!txt->font.IsValid())
                         continue;
 
-                Entity cur(id->ecs_id);
-                load_transform(transform_map, cur);
-                Font::Draw(transform_map[id->ecs_id], *txt, zindex->value);
+                auto& tran = Entity(id->ecs_id).GlobalTransform();
+                Font::Draw(tran, *txt, zindex->value);
         }
 
         for (auto& [id, particle, zindex] : query_5) {
                 if (!particle->enabled || particle->emmits_per_second == 0)
                         continue;
 
-                Entity cur(id->ecs_id);
-                load_transform(transform_map, cur);
+                auto& tran = Entity(id->ecs_id).GlobalTransform();
 
                 particle->delta_cache += Application::GetDelta();
                 particle->delta_cache *= particle->emmits_per_second;
@@ -110,7 +85,7 @@ Scene::Draw()
 
                 for (unsigned i = intergral; i > 0; i--) {
                         ParticleSystem::Emit(*particle,
-                                             transform_map[id->ecs_id].position,
+                                             tran.position,
                                              zindex->value);
                 }
 

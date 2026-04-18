@@ -12,7 +12,6 @@
 
 #include <Borek/Include/Base/Layer.h>
 
-#include "Panels/GizmoPanel.h"
 #include "Panels/Properties.h"
 #include "Panels/Scene.h"
 #include "Panels/AssetsPanel.h"
@@ -42,7 +41,6 @@ public:
 private:
         Panels::Properties m_PropertiesPanel;
         Panels::Scene m_ScenePanel;
-        Panels::GizmoPanel m_GizmoPanel;
         Panels::Assets m_AssetsPanel;
         Panels::Toolbar m_ToolbarPanel;
         Panels::ConsolePanel m_Console;

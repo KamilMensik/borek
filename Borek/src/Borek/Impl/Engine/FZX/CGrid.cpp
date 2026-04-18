@@ -208,7 +208,7 @@ CGrid::CGrid(float x, float y, float z, float w,
 
         this->cols_count = ceil_div(width, cell_size_x);
         this->rows_count = ceil_div(height, cell_size_y);
-        this->rc_count_vec = simd_create4i(cols_count, rows_count, cols_count, rows_count);
+        this->rc_count_vec = simd_create4i(cols_count - 1, rows_count - 1, cols_count - 1, rows_count - 1);
 
 
         const float inv_cell_size_x = 1.0f / cell_size_x;

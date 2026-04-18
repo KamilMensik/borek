@@ -33,7 +33,8 @@ static MRB_FUNC(Initialize)
         MRB_SET_IV(self, "@position",
                    mrb_class_new_instance(mrb, 3, args.data(), RBNDatatypes::vec2_class));
 
-        args = { self, MRB_NUM(tran.scale.x), MRB_NUM(tran.scale.y) };
+        const glm::vec2 scale = scale_tof(tran.scale);
+        args = { self, MRB_NUM(scale.x), MRB_NUM(scale.y) };
         MRB_SET_IV(self, "@scale",
                    mrb_class_new_instance(mrb, 3, args.data(), RBNDatatypes::vec2_class));
 

@@ -18,8 +18,6 @@ public:
         InitializeEnd(Entity e);
 
 private:
-        static TransformComponent s_GlobalTransform;
-
         static void
         InitializeFZXBody(Entity e);
 

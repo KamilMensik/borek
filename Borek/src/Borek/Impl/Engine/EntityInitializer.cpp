@@ -1,12 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Components/ValueComponent.h"
-#include "Include/Scripting/Ruby/Modules/Nodes/RBArea.h"
-#include "Include/Scripting/Ruby/Modules/Nodes/RBCamera.h"
-#include "Include/Scripting/Ruby/Modules/Nodes/RBParticleEmmiter.h"
-#include "Include/Scripting/Ruby/Modules/Nodes/RBText2D.h"
-#include "Include/Scripting/Ruby/Modules/Nodes/RBTilemap.h"
-#include "Include/Scripting/Ruby/Modules/Nodes/RBValue.h"
 #include <mrbcpp.h>
 #include <mruby/boxing_word.h>
 #include <mruby/value.h>
@@ -28,6 +21,13 @@
 #include "Include/Components/TilemapComponent.h"
 #include "Include/Engine/FZX/Body.h"
 #include "Include/Graphics/Camera.h"
+#include "Include/Components/ValueComponent.h"
+#include "Include/Scripting/Ruby/Modules/Nodes/RBArea.h"
+#include "Include/Scripting/Ruby/Modules/Nodes/RBCamera.h"
+#include "Include/Scripting/Ruby/Modules/Nodes/RBParticleEmmiter.h"
+#include "Include/Scripting/Ruby/Modules/Nodes/RBText2D.h"
+#include "Include/Scripting/Ruby/Modules/Nodes/RBTilemap.h"
+#include "Include/Scripting/Ruby/Modules/Nodes/RBValue.h"
 
 namespace Borek {
 
@@ -36,19 +36,13 @@ static std::vector<mrb_value> ruby_nodes;
 void
 EntityInitializer::InitializeEntity(Entity e)
 {
-        if (Entity parent = e.GetParent())
-                s_GlobalTransform = parent.GlobalTransform();
-
-        Application::GetScene()->GetTree().TraverseScene(e, InitializeBegin, InitializeEnd);
-
-        s_GlobalTransform = TransformComponent();
+        Application::GetScene()->GetTree().TraverseScene(
+                e, InitializeBegin, InitializeEnd);
 }
 
 void
 EntityInitializer::InitializeBegin(Entity e)
 {
-        s_GlobalTransform += e.GetComponent<TransformComponent>();
-
         switch (e.GetNodeType()) {
         case NodeType::Node:
         case NodeType::Camera:
@@ -81,7 +75,6 @@ void
 EntityInitializer::InitializeEnd(Entity e)
 {
         ruby_nodes.pop_back();
-        s_GlobalTransform -= e.GetComponent<TransformComponent>();
 }
 
 void
@@ -89,9 +82,10 @@ EntityInitializer::InitializeFZXBody(Entity e)
 {
         auto& body = e.GetComponent<BodyComponent>();
 
-        Application::GetScene()->m_PhysicsWorld.Add(e, body,
-                                                    s_GlobalTransform.position,
-                                                    s_GlobalTransform.scale);
+        auto& tc = e.GlobalTransform();
+
+        Application::GetScene()->m_PhysicsWorld.Add(
+                e, body, tc.position, scale_tof(tc.scale));
 }
 
 void
@@ -99,9 +93,9 @@ EntityInitializer::InitializeFZXArea(Entity e)
 {
         auto& area = e.GetComponent<AreaComponent>();
 
-        Application::GetScene()->m_PhysicsWorld.Add(e, area,
-                                                    s_GlobalTransform.position,
-                                                    s_GlobalTransform.scale);
+        auto& tc = e.GlobalTransform();
+        Application::GetScene()->m_PhysicsWorld.Add(
+                e, area, tc.position, scale_tof(tc.scale));
 }
 
 void
@@ -111,8 +105,9 @@ EntityInitializer::InitializeTilemap(Entity e)
         if (!tc.tilemap.IsValid())
                 return;
 
+        auto& transform = e.GlobalTransform();
         SpriteSheetAsset& spritesheet = tc.tilemap->sprite_sheet.Convert();
-        const glm::vec2& scale = s_GlobalTransform.scale;
+        const glm::vec2& scale = scale_tof(transform.scale);
         const glm::vec2 real_scale(spritesheet.step_x * scale.x,
                                    spritesheet.step_y * scale.y);
 
@@ -216,6 +211,4 @@ EntityInitializer::InitializeAnimatedSprite(Entity e)
         spr.current_frame = spr.anim->animation_by_name[spr.current_animation] + 1;
 }
 
-TransformComponent EntityInitializer::s_GlobalTransform = TransformComponent();
 }  // namespace Borek
-

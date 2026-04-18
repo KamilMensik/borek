@@ -62,8 +62,7 @@ Scene::Uninitialize()
         if (m_Initialized == false)
                 return;
 
-        m_SceneTree.TraverseScene(EntityUninitializer::UninitializeBegin,
-                                  EntityUninitializer::UninitializeEnd);
+        m_SceneTree.TraverseScene(EntityUninitializer::Uninitialize);
         m_Initialized = false;
 }
 

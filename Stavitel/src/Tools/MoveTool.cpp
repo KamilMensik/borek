@@ -3,7 +3,9 @@
 #include "Tools/MoveTool.h"
 #include "Commands/EntityCommands.h"
 #include "EditorSettings.h"
+#include "Include/Base/Application.h"
 #include "Include/Base/Colors.h"
+#include "Include/Base/TransformCache.h"
 #include "Include/Drawing/Quad.h"
 #include "Include/Engine/SceneTree.h"
 #include "Include/Engine/Utils/GeometryUtils.h"
@@ -17,9 +19,12 @@ namespace Borek {
 static inline bool
 inside_xy_axis(const glm::vec2& epos, const glm::vec2& mpos)
 {
+        const float zoom = Application::GetCamera().first->zoom;
         const M128 mpos_r = simd_create4f(mpos.x, mpos.y, mpos.x, mpos.y);
-        const M128 epos_r = simd_create4f(epos.x - 10, epos.y - 10, epos.x + 10,
-                                          epos.y + 10);
+        const M128 epos_r = simd_create4f(epos.x - 10 * zoom,
+                                          epos.y - 10 * zoom,
+                                          epos.x + 10 * zoom,
+                                          epos.y + 10 * zoom);
 
         return simd_rect_intersect4f(mpos_r, epos_r);
 }
@@ -27,9 +32,12 @@ inside_xy_axis(const glm::vec2& epos, const glm::vec2& mpos)
 static inline bool
 inside_x_axis(const glm::vec2& epos, const glm::vec2& mpos)
 {
+        const float zoom = Application::GetCamera().first->zoom;
         const M128 mpos_r = simd_create4f(mpos.x, mpos.y, mpos.x, mpos.y);
-        const M128 epos_r = simd_create4f(epos.x + 10, epos.y - 5, epos.x + 65,
-                                          epos.y + 5);
+        const M128 epos_r = simd_create4f(epos.x + zoom * 10,
+                                          epos.y - zoom * 5,
+                                          epos.x + zoom * 65,
+                                          epos.y + zoom * 5);
 
         return simd_rect_intersect4f(mpos_r, epos_r);
 }
@@ -37,9 +45,12 @@ inside_x_axis(const glm::vec2& epos, const glm::vec2& mpos)
 static inline bool
 inside_y_axis(const glm::vec2& epos, const glm::vec2& mpos)
 {
+        const float zoom = Application::GetCamera().first->zoom;
         const M128 mpos_r = simd_create4f(mpos.x, mpos.y, mpos.x, mpos.y);
-        const M128 epos_r = simd_create4f(epos.x - 5, epos.y + 10, epos.x + 5,
-                                          epos.y + 65);
+        const M128 epos_r = simd_create4f(epos.x - zoom * 5,
+                                          epos.y + zoom * 10,
+                                          epos.x + zoom * 5,
+                                          epos.y + zoom * 65);
 
         return simd_rect_intersect4f(mpos_r, epos_r);
 }
@@ -100,7 +111,9 @@ MoveTool::Tick()
         if (m_State == State::kDisabled || m_CurrentEntity.IsNil())
                 return false;
 
-        const auto ptran = m_CurrentEntity.GetParent().GlobalTransform();
+        const Entity parent = m_CurrentEntity.GetParent();
+        const auto ptran =
+                parent.IsNil() ? TransformComponent() : parent.GlobalTransform();
         auto& tran = m_CurrentEntity.Transform();
         const glm::vec2 gpos = Utils::Geometry::rotate_point(
                 ptran.position, tran.position, ptran.rotation);
@@ -109,19 +122,20 @@ MoveTool::Tick()
         const bool xyaxis = m_State == State::kXYAxis || inside_xy_axis(gpos, mpos);
         const bool xaxis = m_State == State::kXAxis || inside_x_axis(gpos, mpos);
         const bool yaxis = m_State == State::kYAxis || inside_y_axis(gpos, mpos);
+        const float zoom = Application::GetCamera().first->zoom;
 
         Drawing::Quad::Draw(
-                gpos - glm::vec2(10, 10), { 20, 20 },
+                gpos - glm::vec2(10, 10) * zoom, glm::vec2(20, 20) * zoom,
                 highlighted_color(Colors::WHITE, xyaxis),
                 ZIndexAssigner::GetTop());
 
         Drawing::Quad::Draw(
-                gpos + glm::vec2(10, -5), { 60, 10 },
+                gpos + glm::vec2(10, -5) * zoom, glm::vec2(60, 10) * zoom,
                 highlighted_color(Colors::RED, xaxis),
                 ZIndexAssigner::GetTop());
 
         Drawing::Quad::Draw(
-                gpos + glm::vec2(-5, 10), { 10, 60 },
+                gpos + glm::vec2(-5, 10) * zoom, glm::vec2(10, 60) * zoom,
                 highlighted_color(Colors::GREEN, yaxis),
                 ZIndexAssigner::GetTop());
 
@@ -146,6 +160,7 @@ MoveTool::Tick()
                                EditorSettings::grid_snap.second);
 
                 tran.position = glm::round(tran.position / snap) * snap;
+                TransformCache::Invalidate(m_CurrentEntity);
         }
 
         return xyaxis | xaxis | yaxis;

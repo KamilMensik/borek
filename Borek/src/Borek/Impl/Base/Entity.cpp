@@ -1,17 +1,17 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Debug/Log.h"
-#include "Include/Engine/Utils/GeometryUtils.h"
 #include <string_view>
 
 #include "Include/Base/Node.h"
 #include "Include/Base/Entity.h"
 #include "Include/Base/Scene.h"
 #include "Include/Base/Application.h"
+#include "Include/Base/TransformCache.h"
 #include "Include/Debug/Assert.h"
 #include "Include/Engine/FZX/Body.h"
 #include "Include/Engine/SceneTree.h"
 #include "Include/Events/ComponentEvents.h"
+#include "Include/Base/TransformCache.h"
 
 #include "Include/Components/Text2DComponent.h"
 #include "Include/Components/SpriteComponent.h"
@@ -21,7 +21,6 @@
 #include "Include/Components/TilemapComponent.h"
 #include "Include/Components/AnimatedSpriteComponent.h"
 #include "Include/Components/ParticleComponent.h"
-#include "Include/Components/ValueComponent.h"
 
 namespace Borek {
 
@@ -89,15 +88,7 @@ Entity::Transform()
 const TransformComponent
 Entity::GlobalTransform() const
 {
-        TransformComponent tc;
-
-        Entity e = *this;
-        while (!e.IsNil()) {
-                tc += e.Transform();
-                e = e.GetParent();
-        }
-
-        return tc;
+        return TransformCache::GetTransform(*this);
 }
 
 const char*
@@ -212,6 +203,8 @@ Entity::MoveAndCollide(float x, float y)
 
         auto res = Application::GetScene()->GetPhysicsWorld().MoveAndCollide(m_Id, body, x, y);
         Transform().position += res.second;
+
+        TransformCache::Invalidate(*this);
 
         return res;
 }

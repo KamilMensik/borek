@@ -1,8 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Base/Symbol.h"
-#include "Include/Debug/Log.h"
-#include "Include/Engine/Utils/GeometryUtils.h"
 #include "glm/ext/vector_float2.hpp"
 #include <mrbcpp.h>
 #include <mruby.h>
@@ -16,6 +13,10 @@
 #include "Include/Components/AnimatedSpriteComponent.h"
 #include "Include/Scripting/Ruby/RubyEngine.h"
 #include "Include/Scripting/Ruby/Modules/RBChangesExporter.h"
+#include "Include/Base/Symbol.h"
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Utils/GeometryUtils.h"
+#include "Include/Base/TransformCache.h"
 
 namespace Borek {
 namespace RBModules {
@@ -30,8 +31,11 @@ upload_transform_fn(mrb_state* mrb, mrb_value eid, mrb_value node, void* _)
 
         mrb_value transform = MRB_GET_IV(node, "@_transform");
         t.position = *MRB_ISTRUCT_VAL(MRB_GET_IV(transform, "@position"), glm::vec2);
-        t.scale = *MRB_ISTRUCT_VAL(MRB_GET_IV(transform, "@scale"), glm::vec2);
+        t.scale = scale_toi(*MRB_ISTRUCT_VAL(MRB_GET_IV(transform, "@scale"), glm::vec2));
         t.rotation = mrb_float(MRB_GET_IV(transform, "@rotation"));
+
+        TransformCache::Invalidate(e);
+
         return 0;
 }
 

@@ -131,7 +131,7 @@ Quad::Draw(const TransformComponent& transform, const SpriteComponent& sprite,
 
         const float tex_id = GetTextureIndex(get_tex_safe(sprite));
         const glm::vec2& pos = transform.position;
-        const glm::vec2& size = transform.scale * glm::vec2(sprite.size_x,
+        const glm::vec2& size = scale_tof(transform.scale) * glm::vec2(sprite.size_x,
                                                             sprite.size_y);
         const float rot = transform.rotation;
         const Color& color = sprite.color;
@@ -185,7 +185,7 @@ Quad::Draw(const TransformComponent& transform,
 
         const float tex_id = GetTextureIndex(get_tex_safe(sprite));
         const glm::vec2& pos = transform.position;
-        const glm::vec2& size = transform.scale * glm::vec2(sprite.size_x,
+        const glm::vec2& size = scale_tof(transform.scale) * glm::vec2(sprite.size_x,
                                                             sprite.size_y);
         const Color& color = sprite.color;
 

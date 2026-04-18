@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Base/Input.h"
+#include "Include/Base/TransformCache.h"
 #include "Include/Components/ParticleComponent.h"
 #include <cstdint>
 #include <string>
@@ -421,6 +422,68 @@ control(const char* label, glm::vec2& value, float reset_value = 0.0f,
         return control_end() && old != value;
 }
 
+template <size_t fixed_precision>
+static bool
+control(const char* label, glm::i16vec2& value, float reset_value = 0.0f,
+        float column_width = base_column_width)
+{
+        constexpr float fp_mul = 1 << fixed_precision;
+        constexpr float fp_mul_inv = 1.0f / fp_mul;
+
+        glm::i16vec2 old = value;
+        glm::vec2 res = glm::vec2(value) * fp_mul_inv;
+
+        control_begin(label, column_width);
+
+        ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+
+        if (button_red("X"))
+                value.x = reset_value;
+        same_line();
+        input("##X", res.x);
+
+        same_line();
+        if (button_green("Y"))
+                value.y = reset_value;
+        same_line();
+        input("##Y", res.y);
+
+        value = glm::i16vec2(res * fp_mul);
+
+        return control_end() && old != value;
+}
+
+template <size_t fixed_precision>
+static bool
+control(const char* label, glm::u16vec2& value, float reset_value = 0.0f,
+        float column_width = base_column_width)
+{
+        constexpr float fp_mul = 1 << fixed_precision;
+        constexpr float fp_mul_inv = 1.0f / fp_mul;
+
+        glm::u16vec2 old = value;
+        glm::vec2 res = glm::vec2(value) * fp_mul_inv;
+
+        control_begin(label, column_width);
+
+        ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
+
+        if (button_red("X"))
+                value.x = reset_value;
+        same_line();
+        input("##X", res.x);
+
+        same_line();
+        if (button_green("Y"))
+                value.y = reset_value;
+        same_line();
+        input("##Y", res.y);
+
+        value = glm::i16vec2(res * fp_mul);
+
+        return control_end() && old != value;
+}
+
 static bool
 control(const char* label, float& value, bool invert_result = false,
         float reset_value = 0.0f, float column_width = base_column_width)
@@ -776,11 +839,14 @@ void Properties::OnImguiRender()
                 bool modified = false;
                 auto transform = e.GetComponent<TransformComponent>();
                 modified |= control("Position", transform.position);
-                modified |= control("Scale", transform.scale, 1.0f);
+                modified |= control<6>("Scale", transform.scale, 1.0f);
+                modified |= control<6>("Pivot", transform.pivot, 1.0f);
                 modified |= control("Rotation", transform.rotation, true);
 
-                if (modified)
+                if (modified) {
                         SceneTabBar::SendCommand<cmd>(e, transform);
+                        TransformCache::Invalidate(e);
+                }
         }, false);
 
         DrawComponent<ScriptComponent>("Script", [](Entity){

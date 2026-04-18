@@ -6,29 +6,19 @@
 #include "Include/Components/SoundplayerComponent.h"
 #include "Include/Components/TilemapComponent.h"
 #include "Include/Engine/FZX/Body.h"
-#include "Include/Graphics/Camera.h"
-
 #include "Include/Engine/EntityUninitializer.h"
-#include "Include/Components/TransformComponent.h"
 
 namespace Borek {
 
 void
 EntityUninitializer::UninitializeEntity(Entity e)
 {
-        if (Entity parent = e.GetParent())
-                s_GlobalTransform = parent.GlobalTransform();
-
-        Application::GetScene()->GetTree().TraverseScene(e, UninitializeBegin, UninitializeEnd);
-
-        s_GlobalTransform = TransformComponent();
+        Application::GetScene()->GetTree().TraverseScene(e, Uninitialize);
 }
 
 void
-EntityUninitializer::UninitializeBegin(Entity e)
+EntityUninitializer::Uninitialize(Entity e)
 {
-        s_GlobalTransform += e.GetComponent<TransformComponent>();
-
         switch (e.GetNodeType()) {
         case NodeType::Node:
         case NodeType::Camera:
@@ -53,12 +43,6 @@ EntityUninitializer::UninitializeBegin(Entity e)
         }
 
         UninitializeRubyNode(e);
-}
-
-void
-EntityUninitializer::UninitializeEnd(Entity e)
-{
-        s_GlobalTransform -= e.GetComponent<TransformComponent>();
 }
 
 void
@@ -104,6 +88,5 @@ EntityUninitializer::UninitializeRubyNode(Entity e)
                           { e.GetRubyNode() });
 }
 
-TransformComponent EntityUninitializer::s_GlobalTransform = TransformComponent();
 }  // namespace Borek
 

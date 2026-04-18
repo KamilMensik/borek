@@ -185,14 +185,14 @@ public:
 
                 for (auto& [id, area] : Query<IDComponent, AreaComponent>()) {
                         auto tran = Entity(id->ecs_id).GlobalTransform();
-                        Drawing::Quad::Draw(tran.position, tran.scale * glm::vec2(area->rc.size_x, area->rc.size_y),
+                        Drawing::Quad::Draw(tran.position, scale_tof(tran.scale) * glm::vec2(area->rc.size_x, area->rc.size_y),
                                             Color(0, 255, 212, 80),
                                             ZIndexAssigner::GetTop());
                 }
 
                 for (auto& [id, body] : Query<IDComponent, BodyComponent>()) {
                         auto tran = Entity(id->ecs_id).GlobalTransform();
-                        Drawing::Quad::Draw(tran.position, tran.scale * glm::vec2(body->rc.size_x, body->rc.size_y),
+                        Drawing::Quad::Draw(tran.position, scale_tof(tran.scale) * glm::vec2(body->rc.size_x, body->rc.size_y),
                                             Color(0, 255, 255, 80),
                                             ZIndexAssigner::GetTop());
                 }

@@ -90,7 +90,7 @@ EditorInputLayer::OnMouseScrolled(MouseScrolledEvent& ev)
 
         m_EditorCamera.zoom = std::max(
                 m_EditorCamera.zoom - ev.GetAmountY() * m_EditorCamera.zoom / 10,
-                0.1f);
+                0.01f);
 }
 
 void

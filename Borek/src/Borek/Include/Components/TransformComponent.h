@@ -2,20 +2,43 @@
 
 #pragma once
 
+#include "Include/Engine/Utils/GeometryUtils.h"
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
 
 namespace Borek {
 
+inline glm::vec2 pivot_tof(const glm::i16vec2& vec)
+{
+        return glm::vec2(vec) * (1.0f / 64.0f);
+}
+
+inline glm::vec2 scale_tof(const glm::u16vec2& vec)
+{
+        return glm::vec2(vec) * (1.0f / 64.0f);
+}
+
+inline glm::i16vec2 pivot_toi(const glm::vec2& vec)
+{
+        return glm::i16vec2(vec * 64.0f);
+}
+
+inline glm::u16vec2 scale_toi(const glm::vec2& vec)
+{
+        return glm::u16vec2(vec * 64.0f);
+}
+
 struct TransformComponent {
         glm::vec2 position;
+        glm::i16vec2 pivot;
+        glm::u16vec2 scale;
         float rotation;
-        glm::vec2 scale;
 
-        TransformComponent(glm::vec2 pos = glm::vec2(0.0f),
-                           float rot = 0,
-                           glm::vec2 scale = glm::vec2(1.0f))
-                : position(pos), rotation(rot), scale(scale)
+        TransformComponent(const glm::vec2& pos = glm::vec2(0.0f),
+                           const glm::i16vec2& pivot = glm::i16vec2(0),
+                           const glm::u16vec2& scale = glm::u16vec2(64),
+                           float rot = 0.0f)
+                : position(pos), pivot(pivot), scale(scale), rotation(rot)
         {
         }
 
@@ -30,17 +53,12 @@ struct TransformComponent {
         void
         operator +=(const TransformComponent& other)
         {
-                position += other.position;
-                rotation += other.rotation;
-                scale *= other.scale;
-        }
+                glm::vec2 origin(other.position + pivot_tof(pivot));
+                position = Utils::Geometry::rotate_point(
+                        origin, other.position + position, other.rotation);
 
-        void
-        operator -=(const TransformComponent& other)
-        {
-                position -= other.position;
-                rotation -= other.rotation;
-                scale /= other.scale;
+                rotation += other.rotation;
+                scale = scale_toi(scale_tof(other.scale) * scale_tof(scale));
         }
 };
 

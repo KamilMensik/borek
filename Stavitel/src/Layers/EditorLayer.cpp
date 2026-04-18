@@ -10,7 +10,6 @@
 #include <filesystem>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <imguismo/ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Borek.h>
@@ -209,8 +208,6 @@ void EditorLayer::OnImGuiRender()
                 m_OldTime = new_time;
                 ImGui::Text("FPS: %f", res);
                 ImGui::SetCursorPos(cached_cursor_pos);
-
-                m_GizmoPanel.DrawGizmo();
 
                 if (viewport_size.x > 0 && viewport_size.y > 0 &&
                     (m_ViewportSize.x != viewport_size.x ||

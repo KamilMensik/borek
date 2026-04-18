@@ -12,14 +12,9 @@ public:
         UninitializeEntity(Entity e);
 
         static void
-        UninitializeBegin(Entity e);
-
-        static void
-        UninitializeEnd(Entity e);
+        Uninitialize(Entity e);
 
 private:
-        static TransformComponent s_GlobalTransform;
-
         static void
         UninitializeFZXBody(Entity e);
 
