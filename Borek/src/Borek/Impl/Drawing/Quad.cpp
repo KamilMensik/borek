@@ -111,7 +111,7 @@ Quad::Draw(const glm::vec2& pos, const glm::vec2& size, float rotation,
 
         float4 points_x;
         float4 points_y;
-        simd_rotate_rect(pos, size, rotation, points_x, points_y);
+        simd_rotate_rect(pos, size, pos, rotation, points_x, points_y);
 
         qdata.vertexes[0] = { glm::vec3(points_x[0], points_y[0], zindex), color, { 0.0f, 0.0f }, tex_id };
         qdata.vertexes[1] = { glm::vec3(points_x[1], points_y[1], zindex), color, { 1.0f, 0.0f }, tex_id };
@@ -131,8 +131,9 @@ Quad::Draw(const TransformComponent& transform, const SpriteComponent& sprite,
 
         const float tex_id = GetTextureIndex(get_tex_safe(sprite));
         const glm::vec2& pos = transform.position;
-        const glm::vec2& size = scale_tof(transform.scale) * glm::vec2(sprite.size_x,
+        const glm::vec2 size = scale_tof(transform.scale) * glm::vec2(sprite.size_x,
                                                             sprite.size_y);
+        const glm::vec2 pivot = pivot_tof(transform.pivot);
         const float rot = transform.rotation;
         const Color& color = sprite.color;
 
@@ -160,7 +161,7 @@ Quad::Draw(const TransformComponent& transform, const SpriteComponent& sprite,
 
         float4 points_x;
         float4 points_y;
-        simd_rotate_rect(pos, size, rot, points_x, points_y);
+        simd_rotate_rect(pos, size, pos + pivot, rot, points_x, points_y);
 
         for (unsigned i = 0; i < 4; i++) {
                 const glm::vec3 vpos = { points_x[i], points_y[i], zindex };
@@ -187,6 +188,8 @@ Quad::Draw(const TransformComponent& transform,
         const glm::vec2& pos = transform.position;
         const glm::vec2& size = scale_tof(transform.scale) * glm::vec2(sprite.size_x,
                                                             sprite.size_y);
+        const float rot = transform.rotation;
+        const glm::vec2 pivot = pivot_tof(transform.pivot);
         const Color& color = sprite.color;
 
         int tex_increment;
@@ -212,18 +215,18 @@ Quad::Draw(const TransformComponent& transform,
         }
 
         const glm::vec4 bounds = get_tex_cords_safe(sprite);
+        float4 points_x;
+        float4 points_y;
+        simd_rotate_rect(pos, size, pos + pivot, rot, points_x, points_y);
 
         for (unsigned i = 0; i < 4; i++) {
-                const glm::vec2 pos_increase = {
-                        (i == 1 || i == 2) ? size.x : 0,
-                        i >= 2 ? size.y : 0
-                };
+                const glm::vec3 vpos = { points_x[i], points_y[i], zindex };
                 const glm::vec2& bindex = tex_cords_i[tex_pos];
                 const glm::vec2 tcord(bindex.x ? bounds.z : bounds.x,
                                       bindex.y ? bounds.w : bounds.y);
 
-                qdata.vertexes[i] = { glm::vec3(pos + pos_increase, zindex),
-                                      color, tcord, tex_id };
+
+                qdata.vertexes[i] = { vpos, color, tcord, tex_id };
 
                 tex_pos = (tex_pos + tex_increment) & 3;
         }

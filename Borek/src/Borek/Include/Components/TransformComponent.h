@@ -51,15 +51,7 @@ struct TransformComponent {
         glm::mat4 GetTransformMat() const;
 
         void
-        operator +=(const TransformComponent& other)
-        {
-                glm::vec2 origin(other.position + pivot_tof(pivot));
-                position = Utils::Geometry::rotate_point(
-                        origin, other.position + position, other.rotation);
-
-                rotation += other.rotation;
-                scale = scale_toi(scale_tof(other.scale) * scale_tof(scale));
-        }
+        operator +=(const TransformComponent& other);
 };
 
 }  // namespace Borek

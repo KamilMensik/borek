@@ -1,9 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Debug/Log.h"
 #include <cstdint>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <string_view>
 
@@ -328,6 +326,7 @@ serialize_transform(YAML::Emitter& out, Entity e, SceneSerializer& _)
         out << YAML::Key << "Position" << YAML::Value << t.position;
         out << YAML::Key << "Scale" << YAML::Value << t.scale;
         out << YAML::Key << "Rotation" << YAML::Value << t.rotation;
+        out << YAML::Key << "Pivot" << YAML::Value << t.pivot;
 
         out << YAML::EndMap;
 }
@@ -716,10 +715,12 @@ static void
 deserialize_transform(YAML::Node& data, Entity e, SceneSerializer& _)
 {
         auto& t = e.GetComponent<TransformComponent>();
+        auto tdata = data["Transform"];
+        t.pivot = tdata["Pivot"].as<glm::i16vec2>();
+
         if (t.position != glm::vec2(0) || t.rotation != 0 || t.scale != glm::u16vec2(64))
                 return;
 
-        auto tdata = data["Transform"];
         t.position = tdata["Position"].as<glm::vec2>();
         t.scale = tdata["Scale"].as<glm::u16vec2>();
         t.rotation = tdata["Rotation"].as<float>();

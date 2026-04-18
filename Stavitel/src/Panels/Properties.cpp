@@ -488,7 +488,8 @@ static bool
 control(const char* label, float& value, bool invert_result = false,
         float reset_value = 0.0f, float column_width = base_column_width)
 {
-        float old = invert_result ? -value : value;
+        value = invert_result ? -value : value;
+        float old = value;
 
         control_begin(label, column_width);
 
@@ -498,7 +499,7 @@ control(const char* label, float& value, bool invert_result = false,
                 value = reset_value;
 
         bool modified = (old != value);
-        if (invert_result && modified)
+        if (invert_result)
                 value *= -1;
 
         return control_end() && modified;

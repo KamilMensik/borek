@@ -77,5 +77,6 @@ M128 simd_flip4f(M128 a);
 // Misc
 bool simd_rect_intersect4f(M128 a, M128 b);
 
-void simd_rotate_rect(const glm::vec2& pos, const glm::vec2& size, float degrees,
+void simd_rotate_rect(const glm::vec2& pos, const glm::vec2& size,
+                      const glm::vec2& origin, float degrees,
                       float4& xout, float4& yout);

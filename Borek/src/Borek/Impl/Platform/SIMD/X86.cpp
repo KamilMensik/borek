@@ -151,20 +151,26 @@ bool simd_rect_intersect4f(M128 a, M128 b)
 }
 
 void
-simd_rotate_rect(const glm::vec2& pos, const glm::vec2& size, float degrees,
+simd_rotate_rect(const glm::vec2& pos, const glm::vec2& size,
+                 const glm::vec2& origin, float degrees,
                  float4& xout, float4& yout)
 {
         const M128 s = simd_scalar4f(std::sin(glm::radians(degrees)));
         const M128 c = simd_scalar4f(std::cos(glm::radians(degrees)));
-        const M128 xvec = simd_create4f(0, size.x, size.x, 0);
-        const M128 yvec = simd_create4f(0, 0, size.y, size.y);
+        M128 xvec = simd_create4f(pos.x, pos.x + size.x, pos.x + size.x, pos.x);
+        M128 yvec = simd_create4f(pos.y, pos.y, pos.y + size.y, pos.y + size.y);
+        const M128 oxvec = simd_scalar4f(origin.x);
+        const M128 oyvec = simd_scalar4f(origin.y);
+
+        xvec = simd_sub4f(xvec, oxvec);
+        yvec = simd_sub4f(yvec, oyvec);
 
         xout = simd_dump4f(simd_add4f(
                 simd_sub4f(simd_mul4f(xvec, c), simd_mul4f(yvec, s)),
-                simd_scalar4f(pos.x)));
+                oxvec));
         yout = simd_dump4f(simd_add4f(
                 simd_add4f(simd_mul4f(xvec, s), simd_mul4f(yvec, c)),
-                simd_scalar4f(pos.y)));
+                oyvec));
 }
 
 M128 simd_flip4f(M128 a)
