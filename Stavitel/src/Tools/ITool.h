@@ -12,10 +12,10 @@ class ITool {
 public:
         virtual ~ITool() = default;
 
-        virtual void
+        virtual bool
         OnMousePressed(MouseButton button) = 0;
 
-        virtual void
+        virtual bool
         OnMouseReleased(MouseButton button) = 0;
 
         virtual bool

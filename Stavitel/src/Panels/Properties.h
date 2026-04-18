@@ -18,7 +18,7 @@ public:
         Properties();
         ~Properties();
         void OnImguiRender();
-        void OnChangeEntity(ChangeEntityEvent& e);
+        bool OnChangeEntity(ChangeEntityEvent& e);
 
         template <class T>
         void

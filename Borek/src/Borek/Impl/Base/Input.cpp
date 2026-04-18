@@ -11,12 +11,14 @@ namespace Borek {
 
 static std::unordered_map<KeyCode, uint64_t> input_pressed_at;
 
-static void on_key(KeyEvent& e)
+static bool
+on_key(KeyEvent& e)
 {
         if (!e.IsPressed() || e.IsRepeated())
-                return;
+                return false;
 
         input_pressed_at[e.GetKeycode()] = Application::GetTick();
+        return true;
 }
 
 void

@@ -2,15 +2,17 @@
 
 #pragma once
 
-#include "Include/Base/Node.h"
-#include "Include/Base/Scene.h"
-#include "Include/Debug/Log.h"
+#include <Borek/Include/Base/Node.h>
+#include <Borek/Include/Base/Scene.h>
+#include <Borek/Include/Base/TransformCache.h>
+#include <Borek/Include/Components/TransformComponent.h>
 #include <Borek/Include/Base/Symbol.h>
 #include <Borek/Include/Base/Entity.h>
 
 #include <ECS/ArchetypeExport.h>
 
 #include "Commands/ICommand.h"
+#include <concepts>
 
 namespace Borek {
 
@@ -90,7 +92,7 @@ private:
         void* m_Data;
 };
 
-template <class T>
+template <class T> requires (!std::derived_from<T, TransformComponent>)
 class ModifyEntityComponentCommand : public ICommand {
 public:
         ModifyEntityComponentCommand(Entity e, T& new_value)
@@ -118,6 +120,37 @@ public:
 private:
         T m_OldValue;
         T m_NewValue;
+        Symbol m_PathToEntity;
+};
+
+class ModifyEntityTransformCommand : public ICommand {
+public:
+        ModifyEntityTransformCommand(Entity e, TransformComponent& new_value)
+        {
+                m_OldValue = e.GetComponent<TransformComponent>();
+                m_NewValue = new_value;
+                m_PathToEntity = e.GetAbsolutePath();
+        }
+
+        void
+        Undo() override
+        {
+                Entity e = Entity::FindFromAbsolutePath(m_PathToEntity.Str());
+                e.GetComponent<TransformComponent>() = m_OldValue;
+                TransformCache::Invalidate(e);
+        }
+
+        void
+        Redo() override
+        {
+                Entity e = Entity::FindFromAbsolutePath(m_PathToEntity.Str());
+                e.GetComponent<TransformComponent>() = m_NewValue;
+                TransformCache::Invalidate(e);
+        }
+
+private:
+        TransformComponent m_OldValue;
+        TransformComponent m_NewValue;
         Symbol m_PathToEntity;
 };
 

@@ -29,13 +29,13 @@ private:
         std::array<EVHandle, 4> m_EventHandles;
         bool m_IsDragging = false;
 
-        void
+        bool
         OnMouseMoved(MouseMovedEvent& e);
 
-        void
+        bool
         OnMouseButton(MouseButtonEvent& e);
 
-        void
+        bool
         OnMouseScrolled(MouseScrolledEvent& e);
 };
 

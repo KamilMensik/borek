@@ -1,11 +1,5 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Commands/EntityCommands.h"
-#include "Include/Components/PrefabComponent.h"
-#include "Include/Engine/SceneSerializer.h"
-#include "Include/Events/EntityEvents.h"
-#include "Misc/FileExplorer/FileExplorer.h"
-#include "Popups/ChangeNodeTypePopup.h"
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
@@ -17,6 +11,8 @@
 #include <Borek/Include/Components/TagComponent.h>
 #include <Borek/Include/Components/RubyScriptComponent.h>
 #include <Borek/Include/Drawing/DrawingGlobals.h>
+#include <Borek/Include/Components/PrefabComponent.h>
+#include <Borek/Include/Engine/SceneSerializer.h>
 
 #include "Scene.h"
 #include "Popups/AddEntityPopup.h"
@@ -24,6 +20,9 @@
 #include "Popups/AddScriptPopup.h"
 #include "Misc/SceneTreeExplorer.h"
 #include "Panels/PanelEvents.h"
+#include "Commands/EntityCommands.h"
+#include "Misc/FileExplorer/FileExplorer.h"
+#include "Popups/ChangeNodeTypePopup.h"
 
 namespace Borek
 {
@@ -136,10 +135,11 @@ void Scene::SendOnSelectionChangeEvent()
         Application::SendEvent<ScenePanelSelectedEvent>(m_SelectedEntity);
 }
 
-void
+bool
 Scene::OnChangeEntity(ChangeEntityEvent& e)
 {
         m_SelectedEntity = e.GetEntity();
+        return true;
 }
 
 

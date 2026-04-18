@@ -6,13 +6,14 @@
 #include "Include/Base/Application.h"
 #include "Include/Base/Colors.h"
 #include "Include/Base/TransformCache.h"
+#include "Include/Debug/Log.h"
 #include "Include/Drawing/Quad.h"
-#include "Include/Engine/SceneTree.h"
 #include "Include/Engine/Utils/GeometryUtils.h"
 #include "Include/Engine/ZIndexAssigner.h"
 #include "Include/Platform/SIMD.h"
 #include "Misc/SceneTabBar.h"
 #include "glm/common.hpp"
+#include "magic_enum/magic_enum.hpp"
 
 namespace Borek {
 
@@ -66,11 +67,13 @@ highlighted_color(const Color& color, bool precondition)
         return res;
 }
 
-void
+bool
 MoveTool::OnMousePressed(MouseButton button)
 {
         if (m_State == State::kDisabled || m_CurrentEntity.IsNil() || !IsInsideViewport())
-                return;
+                return false;
+        if (button != MouseButton::BUTTON_LEFT)
+                return false;
 
         const glm::vec2 epos = m_CurrentEntity.GlobalTransform().position;
         const glm::vec2 mpos = Input::GetMouseWorldPos();
@@ -88,21 +91,28 @@ MoveTool::OnMousePressed(MouseButton button)
         } else {
                 m_State = State::kNothing;
         }
+
+        return true;
 }
 
-void
+bool
 MoveTool::OnMouseReleased(MouseButton button)
 {
         if (m_State == State::kDisabled || m_CurrentEntity.IsNil())
-                return;
+                return false;
 
         if (m_State == State::kNothing)
-                return;
+                return false;
+
+        if (button != MouseButton::BUTTON_LEFT)
+                return false;
 
         m_State = State::kNothing;
         TransformComponent tc = m_CurrentEntity.Transform();
         m_CurrentEntity.Transform() = m_OldTransform;
-        SceneTabBar::SendCommand<ModifyEntityComponentCommand<TransformComponent>>(m_CurrentEntity, tc);
+        SceneTabBar::SendCommand<ModifyEntityTransformCommand>(m_CurrentEntity, tc);
+
+        return true;
 }
 
 bool

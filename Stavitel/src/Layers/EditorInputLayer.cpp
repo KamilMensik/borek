@@ -8,11 +8,11 @@
 
 namespace Borek {
 
-static void
+static bool
 on_ctrl(KeyEvent& e)
 {
         if (Application::IsPlaying())
-                return;
+                return false;
 
         if (e.IsPressed() && !e.IsRepeated()) {
                 switch (e.GetKeycode()) {
@@ -35,16 +35,20 @@ on_ctrl(KeyEvent& e)
                                 .Type(NotificationType_Success));
                         break;
                 default:
-                        return;
+                        return false;
                 }
         }
+
+        return true;
 }
 
-static void
+static bool
 on_key(KeyEvent& e)
 {
         if (Input::IsKeyPressed(KeyCode::LEFT_CONTROL))
-                on_ctrl(e);
+                return on_ctrl(e);
+
+        return false;
 }
 
 void EditorInputLayer::OnAttach()
@@ -82,52 +86,42 @@ EditorInputLayer::GetCamera()
         return m_EditorCamera;
 }
 
-void
+bool
 EditorInputLayer::OnMouseScrolled(MouseScrolledEvent& ev)
 {
         if (Application::IsPlaying())
-                return;
+                return false;
 
         m_EditorCamera.zoom = std::max(
                 m_EditorCamera.zoom - ev.GetAmountY() * m_EditorCamera.zoom / 10,
                 0.01f);
+
+        return true;
 }
 
-void
+bool
 EditorInputLayer::OnMouseButton(MouseButtonEvent& e)
 {
         if (e.IsPressed()) {
                 glm::vec2 mouse_pos_r = Input::GetMousePosRelative();
                 if (std::abs(mouse_pos_r.x) > 1.0f ||
                         std::abs(mouse_pos_r.y) > 1.0f)
-                        return;
+                        return false;
 
                 if (e.GetButton() == MouseButton::BUTTON_RIGHT) {
                         m_IsDragging = true;
                         m_MouseOffset = m_CameraTransform.position;
-                }
-
-                if (e.GetButton() == MouseButton::BUTTON_LEFT) {
-
-                        //FZX::SmallList<uint32_t> res;
-                        //glm::vec2 pos = Input::GetMouseWorldPos();
-                        //m_SpriteGrid.GetCollisions(pos, UINT32_MAX, &res);
-
-                        //uint32_t last_id = UINT32_MAX;
-                        //for (uint32_t val : res) {
-                        //        last_id = val;
-                        //}
-
-                        //m_EditorLayer->SetSelectedEntity(Entity(last_id));
                 }
         } else {
                 if (e.GetButton() == MouseButton::BUTTON_RIGHT) {
                         m_IsDragging = false;
                 }
         }
+
+        return true;
 }
 
-void
+bool
 EditorInputLayer::OnMouseMoved(MouseMovedEvent& ev)
 {
         if (!Application::IsPlaying() && m_IsDragging) {
@@ -137,6 +131,8 @@ EditorInputLayer::OnMouseMoved(MouseMovedEvent& ev)
         } else {
                 m_MouseS = ev.GetPos();
         }
+
+        return true;
 }
 
 }  // namespace Borek

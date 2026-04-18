@@ -82,28 +82,34 @@ Toolbar::OnImguiRender()
         ImGui::EndTabBar();
 }
 
-void
+bool
 Toolbar::OnChangeEntity(ChangeEntityEvent& ev)
 {
         for (auto& tool : m_Tools) {
                 tool->SetEntity(ev.GetEntity());
         }
+
+        return true;
 }
 
-void
+bool
 Toolbar::OnMouseButton(MouseButtonEvent& ev)
 {
+        bool handled = false;
+
         if (ev.IsPressed()) {
                 for (auto& tool : m_Tools) {
-                        tool->OnMousePressed(ev.GetButton());
+                        handled |= tool->OnMousePressed(ev.GetButton());
                 }
 
-                return;
+                return handled;
         }
 
         for (auto& tool : m_Tools) {
-                tool->OnMouseReleased(ev.GetButton());
+                handled |= tool->OnMouseReleased(ev.GetButton());
         }
+
+        return handled;
 }
 
 }  // namespace Panels

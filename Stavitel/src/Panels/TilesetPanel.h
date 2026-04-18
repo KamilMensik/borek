@@ -26,13 +26,13 @@ public:
         void
         OnImGuiRender();
 
-        void
+        bool
         OnChangeEntity(ChangeEntityEvent& e);
 
-        void
+        bool
         OnMouseButton(MouseButtonEvent& ev);
 
-        void
+        bool
         OnKey(KeyEvent& e);
 
 private:

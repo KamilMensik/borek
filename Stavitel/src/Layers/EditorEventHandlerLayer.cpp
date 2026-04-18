@@ -12,40 +12,46 @@
 
 namespace Borek {
 
-static void
+static bool
 on_scene_panel_selected(ScenePanelSelectedEvent& e)
 {
         Application::SendEventImmediate<ChangeEntityEvent>(e.GetEntity());
+        return true;
 }
 
-static void
+static bool
 on_destroy_entity(DestroyEntityEvent& e)
 {
         Application::SendEventImmediate<ChangeEntityEvent>(Entity());
+        return true;
 }
 
-static void
+static bool
 on_scene_changed(SceneChangedEvent& e)
 {
         Application::SendEventImmediate<ChangeEntityEvent>(Entity());
+        return true;
 }
 
-static void
+static bool
 on_add_component(AddComponentEvent& e)
 {
         e.GetEntity().AddComponent(e.GetId());
+        return true;
 }
 
-static void
+static bool
 on_remove_component(RemoveComponentEvent& e)
 {
         e.GetEntity().RemoveComponent(e.GetId());
+        return true;
 }
 
-static void
+static bool
 on_editor_command(EditorCommandEvent& e)
 {
         SceneTabBar::GetCommandHandler().AddCommand(std::move(e.GetCommand()));
+        return true;
 }
 
 void

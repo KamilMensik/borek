@@ -14,31 +14,32 @@
 
 namespace Borek {
 
-void
+bool
 BrushTool::OnMousePressed(MouseButton button)
 {
         if (!(m_Active && !m_CurrentEntity.IsNil() && m_SelectedCell != UINT32_MAX))
-                return;
+                return false;
 
         switch (button) {
         case MouseButton::BUTTON_LEFT:
         case MouseButton::BUTTON_RIGHT:
                 break;
         default:
-                return;
+                return false;
         }
 
         if (!IsInsideViewport())
-                return;
+                return false;
 
         m_State = button == MouseButton::BUTTON_LEFT ? State::kDrawing : State::kErasing;
+        return true;
 }
 
-void
+bool
 BrushTool::OnMouseReleased(MouseButton button)
 {
         if (!(m_Active && !m_CurrentEntity.IsNil() && m_SelectedCell != UINT32_MAX))
-                return;
+                return false;
 
         switch (button) {
         case MouseButton::BUTTON_LEFT:
@@ -50,8 +51,10 @@ BrushTool::OnMouseReleased(MouseButton button)
                         m_State = State::kNothing;
                 break;
         default:
-                break;
+                return false;
         }
+
+        return true;
 }
 
 bool

@@ -17,7 +17,7 @@ public:
         void OnImguiRender();
         void SendOnSelectionChangeEvent();
         inline Entity GetSelectedEntity() { return m_SelectedEntity; }
-        void OnChangeEntity(ChangeEntityEvent& e);
+        bool OnChangeEntity(ChangeEntityEvent& e);
 
 private:
         std::string m_Search;

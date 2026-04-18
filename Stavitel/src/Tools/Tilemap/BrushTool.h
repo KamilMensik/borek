@@ -12,10 +12,10 @@ namespace Borek {
 
 class BrushTool : public ITilemapTool {
 public:
-        void
+        bool
         OnMousePressed(MouseButton button) override;
 
-        void
+        bool
         OnMouseReleased(MouseButton button) override;
 
         bool

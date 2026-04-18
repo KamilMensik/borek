@@ -12,7 +12,7 @@ public:                                                                 \
         Notify();                                                       \
                                                                         \
         static EVHandle                                                 \
-        AddListener(const std::function<void(_cls&)> callback);         \
+        AddListener(const std::function<bool(_cls&)> callback);         \
                                                                         \
         static void                                                     \
         RemoveListener(EVHandle handle);                                \
@@ -24,7 +24,7 @@ public:                                                                 \
         Release(EVHandle handle);                                       \
                                                                         \
 private:                                                                \
-        static std::vector<std::function<void(_cls&)>> s_Listeners;     \
+        static std::vector<std::function<bool(_cls&)>> s_Listeners;     \
         static std::vector<std::pair<uint32_t, uint32_t>> s_StableHandles;\
         static uint32_t s_FirstEmptySpace;                              \
         static EVHandle s_BlockingListener;                             \
@@ -34,11 +34,17 @@ private:                                                                \
         {                                                               \
                 if (s_BlockingListener != UINT32_MAX) {                 \
                         auto& sh = s_StableHandles[s_BlockingListener]; \
-                        s_Listeners[sh.first](*this);                   \
-                        return;                                         \
-               }                                                        \
+                        if (s_Listeners[sh.first](*this))               \
+                                return;                                 \
+                }                                                       \
                                                                         \
                 for (auto& listener : s_Listeners) {                    \
+                        if (s_BlockingListener != UINT32_MAX) {         \
+                                auto& sh = s_StableHandles[s_BlockingListener]; \
+                                auto blc = &s_Listeners[sh.first];      \
+                                if (&listener == blc) continue;         \
+                        }                                               \
+                                                                        \
                         listener(*this);                                \
                 }                                                       \
                                                                         \
@@ -46,7 +52,7 @@ private:                                                                \
         }                                                               \
                                                                         \
                                                                         \
-        EVHandle _cls::AddListener(const std::function<void(_cls&)> cb) \
+        EVHandle _cls::AddListener(const std::function<bool(_cls&)> cb) \
         {                                                               \
                 EVHandle handle;                                        \
                 if (s_FirstEmptySpace != UINT32_MAX) {                  \
@@ -93,7 +99,7 @@ private:                                                                \
                 s_BlockingListener = UINT32_MAX;                        \
         }                                                               \
                                                                         \
-        std::vector<std::function<void(_cls&)>> _cls::s_Listeners;      \
+        std::vector<std::function<bool(_cls&)>> _cls::s_Listeners;      \
         std::vector<std::pair<uint32_t, uint32_t>> _cls::s_StableHandles;\
         uint32_t _cls::s_FirstEmptySpace = UINT32_MAX;                  \
         uint32_t _cls::s_BlockingListener = UINT32_MAX;

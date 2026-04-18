@@ -834,7 +834,7 @@ void Properties::OnImguiRender()
         }
 
         DrawComponent<TransformComponent>("Transform", [](Entity e){
-                using cmd = ModifyEntityComponentCommand<TransformComponent>;
+                using cmd = ModifyEntityTransformCommand;
 
                 bool modified = false;
                 auto transform = e.GetComponent<TransformComponent>();
@@ -1035,10 +1035,12 @@ void Properties::OnImguiRender()
         ImGui::End();
 }
 
-void Properties::OnChangeEntity(ChangeEntityEvent& e)
+bool Properties::OnChangeEntity(ChangeEntityEvent& e)
 {
         m_Entity = e.GetEntity();
         s_TagInsert = "";
+
+        return true;
 }
 
 Symbol Properties::s_TagInsert;

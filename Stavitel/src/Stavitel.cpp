@@ -215,7 +215,7 @@ public:
                 return EditorState::game_state == GameState::kPlaying;
         }
 
-        void
+        bool
         SwitchProject(SwitchProjectEvent& e)
         {
                 m_ProjectPath = e.GetPath();
@@ -249,6 +249,8 @@ public:
                                 m_Layers.Pop(m_ProjectLayer);
                         }
                 }
+
+                return true;
         }
 
         void LoadProject() override
@@ -294,12 +296,12 @@ public:
                 return true;
         }
 
-        void
+        bool
         OnMouseButton(MouseButtonEvent& e)
         {
                 glm::vec2 mpos_rel = glm::abs(Input::GetMousePosRelative());
                 if (mpos_rel.x > 1.0f || mpos_rel.y >= 1.0f)
-                        return;
+                        return false;
 
                 if (!IsPlaying() && e.IsPressed() && e.GetButton() == MouseButton::BUTTON_LEFT) {
                         FZX::SmallList<uint32_t> res;
@@ -307,7 +309,7 @@ public:
                         m_SpriteGrid.GetCollisions(pos, UINT32_MAX, &res);
 
                         if (res.size() == 0)
-                                return;
+                                return false;
 
                         float zindex = std::numeric_limits<float>::min();
                         Entity top;
@@ -329,11 +331,14 @@ public:
 
                         Application::SendEvent<ChangeEntityEvent>(top);
                 }
+
+                return true;
         }
 
-        void OnWindowResize(WindowResizeEvent& e)
+        bool OnWindowResize(WindowResizeEvent& e)
         {
                 m_EditorInputLayer->GetCamera().OnWindowResized(e);
+                return true;
         }
 
         EditorLayer* m_EditorLayer = nullptr;

@@ -13,10 +13,10 @@ namespace Borek {
 
 class MoveTool : public IToolbarTool{
 public:
-        void
+        bool
         OnMousePressed(MouseButton button) override;
 
-        void
+        bool
         OnMouseReleased(MouseButton button) override;
 
         bool

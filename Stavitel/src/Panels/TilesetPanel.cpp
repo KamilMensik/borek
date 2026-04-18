@@ -124,7 +124,7 @@ Tileset::OnImGuiRender()
         ImGui::End();
 }
 
-void
+bool
 Tileset::OnChangeEntity(ChangeEntityEvent& e)
 {
         if (e.GetEntity().GetNodeType() != NodeType::Tilemap)
@@ -136,17 +136,19 @@ Tileset::OnChangeEntity(ChangeEntityEvent& e)
         for (auto tool : m_Tools) {
                 tool->SetData(payload);
         }
+
+        return true;
 }
 
-void
+bool
 Tileset::OnMouseButton(MouseButtonEvent& ev)
 {
         if (m_SelectedEntity.IsNil())
-                return;
+                return false;
 
         auto& tc = m_SelectedEntity.GetComponent<TilemapComponent>();
         if (!tc.tilemap.IsValid())
-                return;
+                return false;
 
         if (ev.IsPressed()) {
                 for (ITilemapTool* tool : m_Tools) {
@@ -157,14 +159,16 @@ Tileset::OnMouseButton(MouseButtonEvent& ev)
                         tool->OnMouseReleased(ev.GetButton());
                 }
         }
+
+        return true;
 }
 
-void
+bool
 Tileset::OnKey(KeyEvent& e)
 {
 
         if (e.IsRepeated() || !e.IsPressed())
-                return;
+                return false;
 
         switch(e.GetKeycode()) {
         case KeyCode::B:
@@ -176,9 +180,12 @@ Tileset::OnKey(KeyEvent& e)
                         tool->Deactivate();
 
                 m_SelectedToolIndex = UINT32_MAX;
+                break;
         default:
                 break;
         }
+
+        return true;
 }
 
 }  // namespace Panels
