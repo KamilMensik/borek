@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -244,7 +245,7 @@ Import::TextureImport()
 void
 Import::SpriteSheetImport()
 {
-        SpriteSheetAsset& ssa = RCAST<SpriteSheetAsset&>(*m_SelectedAsset);
+        SpriteSheetAsset& ssa = *RCAST<SpriteSheetAsset*>(m_SelectedAsset.get());
         std::string relative_path = Utils::Path::ToRelative(m_SelectedAssetPath);
 
         ImGui::Text("SpriteSheet");

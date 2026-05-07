@@ -28,6 +28,12 @@ public:
         void
         HandleCommands();
 
+        bool
+        IsSerializingPrefab();
+
+        void
+        SetSerializingPrefab(bool val);
+
 private:
         struct InitMsgConnection {
                 std::string path;
@@ -42,6 +48,7 @@ private:
         using CommandVec = std::vector<Command>;
         Ref<Scene> m_Scene;
         CommandVec m_Commands;
+        bool m_SerializingPrefab;
 };
 
 }  // namespace Borek

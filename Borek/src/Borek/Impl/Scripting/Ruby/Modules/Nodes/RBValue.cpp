@@ -1,5 +1,10 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Assets/Asset.h"
+#include "Include/Scripting/Ruby/Modules/RBAsset.h"
+#include "Include/Scripting/Ruby/Modules/RBDatatypes.h"
+#include "mruby/variable.h"
 #include <cstdint>
 #include <unordered_map>
 
@@ -38,15 +43,48 @@ ToRbValue(mrb_state* mrb, const Value& val)
                 return mrb_float_value(mrb, val.number);
         case ValueType_Int:
                 return mrb_int_value(mrb, val.integer);
-        default:
+        case ValueType_Color: {
+                mrb_value args[4] = {
+                        MRB_NUM(val.color.r), MRB_NUM(val.color.g),      
+                        MRB_NUM(val.color.b), MRB_NUM(val.color.a),      
+                };
+                return mrb_class_new_instance(mrb, 4, args, RBDatatypes::ivec4_class);
+        } case ValueType_Node:
+                return { Entity(val.node.entity_id).GetRubyNode() };
+        case ValueType_Asset: {
+                if (val.asset.asset_id == UINT32_MAX)
+                        return MRB_NIL;
+
+                AssetManager::Increment(val.asset.asset_id);
+                mrb_value aid = MRB_NUM(val.asset.asset_id);
+                switch (AssetManager::GetAssetType(val.asset.asset_id)) {
+                case AssetType_Tex:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::tex_class);
+                case AssetType_Script:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::script_class);
+                case AssetType_SpriteSheet:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::spritesheet_class);
+                case AssetType_Tilemap:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::tilemap_class);
+                case AssetType_Sound:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::sound_class);
+                case AssetType_Animation:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::animation_class);
+                case AssetType_Scene:
+                        return mrb_class_new_instance(mrb, 1, &aid, RBAsset::scene_class);
+                }
+        } default:
                 return MRB_NIL;
         }
 }
 
 static MRB_FUNC(Get)
 {
-        mrb_value res = mrb_hash_get(mrb, MRB_GET_IV(self, "_@vals"),
-                                     mrb_symbol_value(mrb_get_mid(mrb)));
+        mrb_value node = MRB_FUNCALL(self, "node");
+        mrb_value vals = MRB_GET_IV(node, "@_vals");
+        if (mrb_nil_p(vals)) return MRB_NIL;
+
+        mrb_value res = mrb_hash_get(mrb, vals, mrb_symbol_value(mrb_get_mid(mrb)));
 
         if (mrb_nil_p(res)) {
                 mrb_raise(mrb, E_NOMETHOD_ERROR, "");
@@ -64,7 +102,8 @@ static MRB_FUNC(Set)
                 return MRB_NIL;
         }
 
-        mrb_value hash = MRB_GET_IV(self, "_@vals");
+        mrb_value node = MRB_FUNCALL(self, "node");
+        mrb_value hash = MRB_GET_IV(node, "@_vals");
         mrb_value key = mrb_symbol_value(it->second);
 
         if (!mrb_hash_key_p(mrb, hash, key)) {
@@ -87,8 +126,11 @@ RBValue::InitAccessors(mrb_value self)
         Entity e(mrb_fixnum(MRB_GET_IV(self, "@entity_id")));
         auto& vc = e.GetComponent<ValueComponent>();
         mrb_value hash = mrb_hash_new(mrb);
-        MRB_SET_IV(self, "_@vals", hash);
+        if (mrb->exc) {
+                mrb_print_error(mrb);
+        }
 
+        MRB_SET_IV(self, "@_vals", hash);
 
         for (auto& value : vc) {
                 Symbol getter_sym = value.name;

@@ -22,6 +22,16 @@ enum ValueType_ {
         ValueType_Asset,
 };
 
+struct NodeValue {
+        Symbol path;
+        uint32_t entity_id;
+};
+
+struct AssetValue {
+        Symbol path;
+        uint32_t asset_id;
+};
+
 struct Value {
         Symbol name;
         ValueType_ type;
@@ -31,8 +41,8 @@ struct Value {
                 int64_t integer;
                 double number;
                 Color color;
-                struct { Symbol path; uint32_t entity_id; } node;
-                struct { Symbol path; uint32_t asset_id; } asset;
+                NodeValue node;
+                AssetValue asset;
         };
 
         Value();

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 #include <string_view>
+#include <variant>
+#include <utility>
 
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/emitter.h>
@@ -226,49 +228,49 @@ struct convert<Borek::MsgConnection> {
         }
 };
 
-static Emitter& operator<<(Emitter& out, glm::vec3& in)
+static Emitter& operator<<(Emitter& out, const glm::vec3& in)
 {
         out << Flow;
         out << BeginSeq << in.x << in.y << in.z << EndSeq;
         return out;
 }
 
-static Emitter& operator<<(Emitter& out, glm::vec4& in)
+static Emitter& operator<<(Emitter& out, const glm::vec4& in)
 {
         out << Flow;
         out << BeginSeq << in.r << in.g << in.b << in.a << EndSeq;
         return out;
 }
 
-static Emitter& operator<<(Emitter& out, glm::vec2& in)
+static Emitter& operator<<(Emitter& out, const glm::vec2& in)
 {
         out << Flow;
         out << BeginSeq << in.r << in.g << EndSeq;
         return out;
 }
 
-static Emitter& operator<<(Emitter& out, glm::u16vec2& in)
+static Emitter& operator<<(Emitter& out, const Borek::Color& in)
+{
+        out << Flow;
+        out << BeginSeq << int(in.r) << int(in.g) << int(in.b) << int(in.a) << EndSeq;
+        return out;
+}
+
+static Emitter& operator<<(Emitter& out, const glm::u16vec2& in)
 {
         out << Flow;
         out << BeginSeq << (in.r * (1.0f / 64.0f)) << (in.g * (1.0f / 64.0f)) << EndSeq;
         return out;
 }
 
-static Emitter& operator<<(Emitter& out, glm::i16vec2& in)
+static Emitter& operator<<(Emitter& out, const glm::i16vec2& in)
 {
         out << Flow;
         out << BeginSeq << (in.r * (1.0f / 64.0f)) << (in.g * (1.0f / 64.0f)) << EndSeq;
         return out;
 }
 
-static Emitter& operator<<(Emitter& out, Borek::Color& in)
-{
-        out << Flow;
-        out << BeginSeq << (int)in.r << (int)in.g << (int)in.b << (int)in.a << EndSeq;
-        return out;
-}
-
-static Emitter& operator<<(Emitter& out, Borek::Symbol& in)
+static Emitter& operator<<(Emitter& out, const Borek::Symbol& in)
 {
         out << Flow;
         out << in.Str();
@@ -599,6 +601,18 @@ serialize_values(YAML::Emitter& out, Entity e, SceneSerializer& _)
                         out << "Number" << YAML::Key << "Val" << YAML::Value;
                         out << val.number;
                         break;
+                case ValueType_Color:
+                        out << "Color" << YAML::Key << "Val" << YAML::Value;
+                        out << val.color;
+                        break;
+                case ValueType_Node:
+                        out << "Node" << YAML::Key << "Val" << YAML::Value;
+                        out << val.node.path;
+                        break;
+                case ValueType_Asset:
+                        out << "Asset" << YAML::Key << "Val" << YAML::Value;
+                        out << val.asset.path;
+                        break;
                 }
 
                 out << YAML::EndMap;
@@ -903,15 +917,14 @@ deserialize_animated_sprite(YAML::Node& data, Entity e, SceneSerializer& _)
 static void
 deserialize_prefab(YAML::Node& data, Entity e, SceneSerializer& _)
 {
-        if (auto pfd = data["Prefab"]) {
-                auto& pf = e.AddComponent<PrefabComponent>()
-                            .GetComponent<PrefabComponent>();
+        auto pfd = data["Prefab"];
+        auto& pf = e.AddComponent<PrefabComponent>()
+                    .GetComponent<PrefabComponent>();
 
-                if (pfd["ScenePath"])
-                        pf.scene = AssetManager::Get<SceneAsset>(pfd["ScenePath"].as<std::string>());
+        if (pfd["ScenePath"])
+                pf.scene = AssetManager::Get<SceneAsset>(pfd["ScenePath"].as<std::string>());
 
-                pf.Update(e);
-        }
+        pf.Update(e);
 }
 
 static void
@@ -926,9 +939,8 @@ deserialize_tags(YAML::Node& data, Entity e, SceneSerializer& _)
         }
 }
 
-
 static void
-deserialize_values(YAML::Node& data, Entity e, SceneSerializer& _)
+deserialize_values(YAML::Node& data, Entity e, SceneSerializer& ss)
 {
         if (auto valsd = data["Values"]) {
                 if (!e.HasComponent<ValueComponent>())
@@ -938,7 +950,9 @@ deserialize_values(YAML::Node& data, Entity e, SceneSerializer& _)
 
                 for (auto val : valsd) {
                         Symbol name = val["Name"].as<std::string_view>();
-                        if (vals.contains(Value(name, ValueType_Bool)))
+                        if (ss.IsSerializingPrefab() && vals.contains(Value(name, ValueType_Bool)))
+                                continue;
+                        else if (!ss.IsSerializingPrefab() && !vals.contains(Value(name, ValueType_Bool)))
                                 continue;
 
                         switch (Hash(val["Type"].as<std::string>())) {
@@ -954,10 +968,23 @@ deserialize_values(YAML::Node& data, Entity e, SceneSerializer& _)
                         case Hash("Int"):
                                 vals.Add(name, val["Val"].as<int64_t>());
                                 break;
+                        case Hash("Color"):
+                                vals.Add(name, ValueType_Color);
+                                vals.Get(name)->color = val["Val"].as<Color>();
+                                break;
+                        case Hash("Node"):
+                                vals.Add(name, ValueType_Node);
+                                vals.Get(name)->node.path = val["Val"].as<Symbol>();
+                                break;
+                        case Hash("Asset"):
+                                vals.Add(name, ValueType_Asset);
+                                vals.Get(name)->asset.path = val["Val"].as<Symbol>();
+                                break;
                         }
                 }
         }
 }
+
 static void
 deserialize_particle_emmiter(YAML::Node& data, Entity e, SceneSerializer& _)
 {
@@ -1005,7 +1032,9 @@ deserialize_entity(YAML::Node ynode, Scene& scene, SceneSerializer& ss,
 
         auto components = ynode["Components"];
         if (components["Prefab"]) {
+                ss.SetSerializingPrefab(true);
                 deserialize_prefab(components, e, ss);
+                ss.SetSerializingPrefab(false);
         } else {
                 for (auto& fn : deserialize_functions) {
                         fn(components, e, ss);
@@ -1055,9 +1084,22 @@ SceneSerializer::HandleCommands()
         };
 
         for (auto& cmd : m_Commands) {
-                cmd.value.visit(cmd_visitor);
+                std::visit(cmd_visitor, cmd.value);
         }
 }
+
+bool
+SceneSerializer::IsSerializingPrefab()
+{
+        return m_SerializingPrefab;
+}
+
+void
+SceneSerializer::SetSerializingPrefab(bool val)
+{
+        m_SerializingPrefab = val;
+}
+
 
 void
 SceneSerializer::AddMsgConnectionCommand(std::string_view path,

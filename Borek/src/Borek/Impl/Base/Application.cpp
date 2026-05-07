@@ -5,6 +5,7 @@
 #include "Include/Engine/FZX/LTDGrid/SmallList.h"
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 
@@ -592,7 +593,15 @@ void
 Application::LoadProject()
 {
         m_ProjectPath = std::filesystem::current_path();
-        Project::Deserialize(std::filesystem::path(m_ProjectPath) / "project.bproj");
+        std::filesystem::path ppath(m_ProjectPath);
+        ppath /= "project.bproj";
+
+        if (!std::filesystem::exists(ppath)) {
+                std::cout << "Could not find project file. Exitting.";
+                exit(1);
+        }
+
+        Project::Deserialize(ppath);
         ChangeScene(Utils::Path::FromRelative(Project::Instance().start_scene_path));
         LoadScripts();
 }

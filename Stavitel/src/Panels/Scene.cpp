@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Misc/FontAwesome.h"
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
@@ -55,13 +56,12 @@ void Scene::OnImguiRender()
         if (!m_SelectedEntity.IsNil()) {
                 ImGui::SameLine();
                 if (m_SelectedEntity.HasComponent<RubyScriptComponent>()) {
-                        if (ImGui::Button("x")) {
+                        if (ImGui::Button(ICON_FA_FILE_EXCEL)) {
                                 m_SelectedEntity.RemoveComponent<RubyScriptComponent>();
                         }
                 } else {
-                        if (ImGui::Button("O")) {
+                        if (ImGui::Button(ICON_FA_FILE_CODE)) {
                                 m_SelectedEntity.AddComponent<RubyScriptComponent>();
-                                Application::OpenPopup(new Popups::AddScriptPopup(m_SelectedEntity));
                         }
                 }
         }

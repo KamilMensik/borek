@@ -38,7 +38,6 @@ MsgConnectionPopup::Tick()
                 .Selected(m_SelectedEntity)
                 .Search(m_Search)
                 .OnClick([this](Entity e){
-                        BOREK_ENGINE_INFO("Selecting entity: {}", e.GetId());
                         m_SelectedEntity = e;
                 })
                 .Draw(0.8f);
@@ -50,7 +49,6 @@ MsgConnectionPopup::Tick()
         ImGui::Separator();
 
         if (ImGui::Button("Finish")) {
-                BOREK_ENGINE_INFO("Selected Entity: {}", m_SelectedEntity.GetId());
                 mrb_state* mrb = Application::GetRubyEngine().GetRubyVM();
                 m_Connection->entity_id = m_SelectedEntity;
                 m_Connection->rbsym = mrb_intern_cstr(mrb, m_FunctionName.c_str());

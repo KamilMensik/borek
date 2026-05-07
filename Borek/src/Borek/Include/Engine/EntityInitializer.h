@@ -35,6 +35,9 @@ private:
 
         static void
         InitializeAnimatedSprite(Entity e);
+
+        static void
+        InitializeValues(Entity e);
 };
 
 }  // namespace Borek

@@ -285,7 +285,7 @@ SceneTreeExplorer::DrawTree()
                         }
                 }
 
-                if (ImGui::IsItemClicked())
+                if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
                         m_OnClickCallback(e);
 
                 if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
@@ -297,14 +297,12 @@ SceneTreeExplorer::DrawTree()
                         ImGui::EndPopup();
                 }
 
-                if (m_AllowReorder && e.HasParent()) {
-                        if (ImGui::BeginDragDropSource()) {
-                                node_payload = e;
-                                ImGui::SetDragDropPayload("Node", &node_payload,
-                                                          sizeof(Entity*));
-                                ImGui::Text("%s", e.GetName());
-                                ImGui::EndDragDropSource();
-                        }
+                if (ImGui::BeginDragDropSource()) {
+                        node_payload = e;
+                        ImGui::SetDragDropPayload("Node", &node_payload,
+                                                  sizeof(Entity*));
+                        ImGui::Text("%s", e.GetName());
+                        ImGui::EndDragDropSource();
                 }
 
                 ImGui::SameLine();

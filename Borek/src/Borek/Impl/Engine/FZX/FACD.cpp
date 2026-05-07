@@ -1,6 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Engine/FZX/FACD.h"
+#include "Include/Base/Entity.h"
 #include "Include/Debug/Log.h"
 #include "Include/Engine/FZX/Body.h"
 #include "Include/Engine/Utils/GeometryUtils.h"

@@ -29,6 +29,9 @@ private:
 
         static void
         UninitializeRubyNode(Entity e);
+
+        static void
+        UninitializeValues(Entity e);
 };
 
 }  // namespace Borek

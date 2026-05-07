@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 #include <utility>
+#include <array>
 
 #include "Include/Core.h"
 

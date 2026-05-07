@@ -59,6 +59,9 @@ public:
         static Asset<T>
         Get(std::string_view path);
 
+        static uint32_t
+        GetRaw(std::string_view path);
+
         static void
         Refresh(std::string_view path, Uniq<IAsset> asset);
 

@@ -1,6 +1,15 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
 #include "Include/Core.h"
+#include "Include/Engine/Assets/AnimationAsset.h"
+#include "Include/Engine/Assets/SceneAsset.h"
+#include "Include/Engine/Assets/ScriptAsset.h"
+#include "Include/Engine/Assets/SoundAsset.h"
+#include "Include/Engine/Assets/SpriteSheetAsset.h"
+#include "Include/Engine/Assets/TexAsset.h"
+#include "Include/Engine/Assets/TilemapAsset.h"
+#include "Include/Engine/Utils/Settings.h"
+#include "Include/Engine/Utils/StringHelpers.h"
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -11,6 +20,72 @@
 #include "Include/Engine/Assets/IAsset.h"
 
 namespace Borek {
+
+uint32_t
+AssetManager::GetRaw(std::string_view path)
+{
+        if (path.empty())
+                return UINT32_MAX;
+
+        if (auto res = s_AssetByPath.find(path); res != s_AssetByPath.end()) {
+                Increment(res->second);
+                return res->second;
+        }
+
+        std::filesystem::path absolute = Utils::Path::FromRelative(path);
+        if (!std::filesystem::exists(absolute))
+                ResourceAssetifier::AssetifyFolder(absolute.parent_path());
+
+        if (!std::filesystem::exists(absolute))
+                return UINT32_MAX;
+
+        uint32_t slot;
+        if (s_FirstFreeSlot != UINT32_MAX) {
+                slot = s_FirstFreeSlot;
+                s_FirstFreeSlot = s_AssetTypes[s_FirstFreeSlot];
+
+                s_AssetPaths[slot] = path;
+                s_AssetReferences[slot] = 0;
+        } else {
+                slot = s_Assets.size();
+                s_Assets.emplace_back(nullptr);
+                s_AssetPaths.emplace_back(path);
+                s_AssetReferences.emplace_back(0);
+                s_AssetTypes.emplace_back(0);
+        }
+
+        s_AssetByPath[std::string(path)] = slot;
+        BOREK_ENGINE_INFO("Extension: {}", absolute.extension().string());
+        switch (HashP(absolute.extension())) {
+        case Hash(".tex"):
+                s_Assets[slot] = NewUniq<TexAsset>();
+                break;
+        case Hash(".scr"):
+                s_Assets[slot] = NewUniq<ScriptAsset>();
+                break;
+        case Hash(".sst"):
+                s_Assets[slot] = NewUniq<SpriteSheetAsset>();
+                break;
+        case Hash(".tmap"):
+                s_Assets[slot] = NewUniq<TilemapAsset>();
+                break;
+        case Hash(".snd"):
+                s_Assets[slot] = NewUniq<SoundAsset>();
+                break;
+        case Hash(".anim"):
+                s_Assets[slot] = NewUniq<AnimationAsset>();
+                break;
+        case Hash(".scn"):
+                s_Assets[slot] = NewUniq<SceneAsset>();
+                break;
+        default:
+                BOREK_ENGINE_ASSERT(false, "Should not happen!");
+        }
+        s_Assets[slot]->Deserialize(absolute);
+        s_AssetTypes[slot] = s_Assets[slot]->GetType();
+        Increment(slot);
+        return slot;
+}
 
 void
 AssetManager::Refresh(std::string_view path, Uniq<IAsset> asset)

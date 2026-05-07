@@ -50,7 +50,7 @@ ChangeNodeTypePopup::Tick()
 
         ImGui::Separator();
 
-        if (ImGui::Button("Create")) {
+        if (ImGui::Button("Update")) {
                 SceneTabBar::SendCommand<ChangeEntityNodeTypeCommand>(
                         m_EntityId, SCAST<NodeType>(m_SelectedItem));
                 is_open = false;

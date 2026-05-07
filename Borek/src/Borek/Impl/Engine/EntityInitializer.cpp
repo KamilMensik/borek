@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
+#include "Include/Engine/Assets/Asset.h"
 #include <mrbcpp.h>
 #include <mruby/boxing_word.h>
 #include <mruby/value.h>
@@ -68,6 +70,10 @@ EntityInitializer::InitializeBegin(Entity e)
                 break;
         }
         
+        if (e.HasComponent<ValueComponent>()) {
+                InitializeValues(e);
+        }
+
         InitializeRubyNode(e);
 }
 
@@ -184,8 +190,9 @@ EntityInitializer::InitializeRubyNode(Entity e)
 
         mrb_value node = mrb_class_new_instance(mrb, 1, &eid, cls);
         mrb_gc_register(mrb, node);
-        if (e.HasComponent<ValueComponent>())
+        if (e.HasComponent<ValueComponent>()) {
                 RBModules::RBValue::InitAccessors(node);
+        }
 
         if (e.HasComponent<RubyScriptComponent>()) {
                 auto& rsc = e.GetComponent<RubyScriptComponent>();
@@ -209,6 +216,25 @@ EntityInitializer::InitializeAnimatedSprite(Entity e)
         auto& spr = e.GetComponent<AnimatedSpriteComponent>();
         spr.flags.SetFlags(AnimatedSpriteComponentFlags_Playing, true);
         spr.current_frame = spr.anim->animation_by_name[spr.current_animation] + 1;
+}
+
+void
+EntityInitializer::InitializeValues(Entity e)
+{
+        auto& values = e.GetComponent<ValueComponent>();
+        
+        for (auto& val : values) {
+                switch (val.type) {
+                case ValueType_Asset:
+                        val.asset.asset_id = AssetManager::GetRaw(val.asset.path.Str());
+                        break;
+                case ValueType_Node:
+                        val.node.entity_id = e.FindEntityByPath(val.node.path.Str());
+                        break;
+                default:
+                        break;
+                }
+        }
 }
 
 }  // namespace Borek

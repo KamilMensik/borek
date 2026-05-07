@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include <algorithm>
 #include "Include/Engine/Alloc.h"
 
 namespace Borek {

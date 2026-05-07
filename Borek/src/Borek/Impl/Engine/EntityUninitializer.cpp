@@ -5,6 +5,8 @@
 #include "Include/Components/FZXComponents.h"
 #include "Include/Components/SoundplayerComponent.h"
 #include "Include/Components/TilemapComponent.h"
+#include "Include/Components/ValueComponent.h"
+#include "Include/Engine/Assets/Asset.h"
 #include "Include/Engine/FZX/Body.h"
 #include "Include/Engine/EntityUninitializer.h"
 
@@ -43,6 +45,9 @@ EntityUninitializer::Uninitialize(Entity e)
         }
 
         UninitializeRubyNode(e);
+        if (e.HasComponent<ValueComponent>()) {
+                UninitializeValues(e);
+        }
 }
 
 void
@@ -86,6 +91,26 @@ EntityUninitializer::UninitializeRubyNode(Entity e)
 {
         mrb_gc_unregister(Application::GetRubyEngine().GetRubyVM(),
                           { e.GetRubyNode() });
+}
+
+void
+EntityUninitializer::UninitializeValues(Entity e)
+{
+        auto& values = e.GetComponent<ValueComponent>();
+        
+        for (auto& val : values) {
+                switch (val.type) {
+                case ValueType_Asset:
+                        if (val.asset.asset_id == UINT32_MAX)
+                                return;
+
+                        AssetManager::Decrement(val.asset.asset_id);
+                        break;
+                default:
+                        break;
+                }
+        }
+
 }
 
 }  // namespace Borek

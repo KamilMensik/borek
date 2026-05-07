@@ -32,7 +32,8 @@ SceneAsset::Serialize(const std::filesystem::path &path)
                 << "    Transform:\n"
                 << "      Position: [0, 0]\n"
                 << "      Scale: [1, 1]\n"
-                << "      Rotation: 0\n";
+                << "      Rotation: 0\n"
+                << "      Pivot: [0, 0]\n";
 }
 
 void

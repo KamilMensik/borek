@@ -226,10 +226,12 @@ Entity::InitializeNode(NodeType type)
         case NodeType::StaticBody:
                 AddComponent<BodyComponent>();
                 GetComponent<BodyComponent>().body_type = FZX::BodyType::Static;
+                GetComponent<BodyComponent>().collider_type = FZX::ColliderType::Rectangle;
                 break;
         case NodeType::DynamicBody:
                 AddComponent<BodyComponent>();
                 GetComponent<BodyComponent>().body_type = FZX::BodyType::Dynamic;
+                GetComponent<BodyComponent>().collider_type = FZX::ColliderType::Rectangle;
                 break;
         case NodeType::Camera:
                 AddComponent<CameraComponent>();

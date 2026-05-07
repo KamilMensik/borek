@@ -23,6 +23,7 @@ generate_project(const std::filesystem::path& path)
 
         out << YAML::BeginMap;
         out << YAML::Key << "last_scene_opened_path" << YAML::Value << "";
+        out << YAML::Key << "start_scene_path" << YAML::Value << "";
         out << YAML::EndMap;
 
         std::ofstream fout(path / "project.bproj");

@@ -54,7 +54,7 @@ void
 AnimationPanel::DrawSpritesheetInput()
 {
         Asset<SpriteSheetAsset> sst = m_Asset->sprite_sheet;
-        ImGui::Text("%s", sst.IsValid() ? sst.GetPath().c_str() : "");
+        ImGui::Text("spritesheet: %s", sst.IsValid() ? sst.GetPath().c_str() : "");
         ImGui::SameLine();
         if (ImGui::Button("Open##spritesheet")) {
                 FileExplorer::Open("Open Spritesheet", FileExplorerType_OpenFile,
@@ -201,7 +201,7 @@ AnimationPanel::DrawAnimation()
         }
 
         ImGui::SameLine();
-        if (ImGui::BeginListBox("##ssa", ImVec2(avail.x * (1 / 3.0f), avail.y))) {
+        if (ImGui::BeginChild("##ssa", ImVec2(avail.x * (1 / 3.0f), avail.y), ImGuiChildFlags_ResizeX, ImGuiWindowFlags_HorizontalScrollbar)) {
                 for (int row = rows - 1; row >= 0; row--) {
                         for (int col = 0; col < cols; col++) {
                                 const uint64_t tile_id = col + row * cols;
@@ -225,7 +225,7 @@ AnimationPanel::DrawAnimation()
                         }
                 }
 
-                ImGui::EndListBox();
+                ImGui::EndChild();
         }
 
         if (m_IsPlayingAnim) {

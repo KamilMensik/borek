@@ -92,6 +92,11 @@ EditorInputLayer::OnMouseScrolled(MouseScrolledEvent& ev)
         if (Application::IsPlaying())
                 return false;
 
+        glm::vec2 mouse_pos_r = Input::GetMousePosRelative();
+        if (std::abs(mouse_pos_r.x) > 1.0f ||
+                std::abs(mouse_pos_r.y) > 1.0f)
+                return false;
+
         m_EditorCamera.zoom = std::max(
                 m_EditorCamera.zoom - ev.GetAmountY() * m_EditorCamera.zoom / 10,
                 0.01f);

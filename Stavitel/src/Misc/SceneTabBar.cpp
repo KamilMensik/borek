@@ -1,7 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
-#include "Include/Debug/Log.h"
 #include <algorithm>
+#include <ranges>
 
 #include <cstdint>
 #include <format>
@@ -17,7 +17,6 @@
 #include "Misc/FontAwesome.h"
 #include "Commands/CommandHandler.h"
 #include "Misc/FileExplorer/FileExplorer.h"
-#include <iostream>
 
 namespace Borek {
 

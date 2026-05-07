@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include <mruby.h>
 #include <mruby/string.h>
 #include <mruby/variable.h>
@@ -114,7 +115,8 @@ void Scriptable::Init(RubyEngine& engine)
                 .define_method("on_update", OnUpdate)
                 .define_method("on_destroy", OnDestroy)
                 .define_method("on_event", OnEvent)
-                .define_method("load", Load, FuncArgs().Required(1))
+                .define_method("asset", Load, FuncArgs().Required(1))
+                .define_class_method("asset", Load, FuncArgs().Required(1))
                 .define_class_method("export", Export, FuncArgs().Required(2));
 }
 

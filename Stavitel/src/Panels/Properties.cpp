@@ -128,12 +128,12 @@ multi_items(int count)
 }
 
 static inline bool
-button(const char* label)
+button(const char* label, float size = 3.0f)
 {
         ImGuiIO& io = ImGui::GetIO();
         auto bold_font = io.Fonts->Fonts[0];
         float line_height = GImGui->FontSize + GImGui->Style.FramePadding.y * 2;
-        ImVec2 button_size = { line_height + 3.0f, line_height + 1.0f };
+        ImVec2 button_size = { line_height + size, line_height + 1.0f };
 
         ImGui::PushFont(bold_font);
 
@@ -160,14 +160,14 @@ button_red(const char* label)
 }
 
 static bool
-button_green(const char* label)
+button_green(const char* label, float size = 3.0f)
 {
 
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{94.0f / 256, 139.0f / 256, 38.0f / 256, 1.0f});
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{119.0f / 256, 165.0f / 256, 40.0f / 256, 1.0f});
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{164.0f / 256, 208.0f / 256, 105.0f / 256, 1.0f});
 
-        bool res = button(label);
+        bool res = button(label, size);
         ImGui::PopStyleColor(3);
 
         return res;
@@ -355,6 +355,76 @@ input(const char* label, MsgConnection& val, Entity from, uint32_t index)
         val.rbsym = UINT32_MAX;
         val.entity_id = UINT32_MAX;
         control_modified = true;
+}
+
+static void
+input(const char* label, NodeValue& val, Entity from)
+{
+        ImGui::PushID(label);
+        if (val.path.IsNil())
+                ImGui::Text("Nil");
+        else
+                ImGui::Text("%s", val.path.Str().c_str());
+
+
+        ImGui::SameLine();
+        if (val.path.IsNil()) {
+                ImGui::Button(ICON_FA_LINK);
+                if (ImGui::BeginDragDropTarget()) {
+                        if (auto payload = ImGui::AcceptDragDropPayload("Node")) {
+                                Entity ent = *RCAST<Entity*>(payload->Data);
+                                val.path = from.PathTo(ent);
+                                control_modified = true;
+                        }
+                        ImGui::EndDragDropTarget();
+                }
+
+                ImGui::PopID();
+
+                return;
+        }
+
+        if (ImGui::Button(ICON_FA_LINK_SLASH)) {
+                val.path = Symbol();
+                control_modified = true;
+        }
+
+        ImGui::PopID();
+}
+
+static void
+input(const char* label, AssetValue& val)
+{
+        ImGui::PushID(label);
+        if (val.path.IsNil())
+                ImGui::Text("Nil");
+        else
+                ImGui::Text("%s", val.path.Str().c_str());
+
+
+        ImGui::SameLine();
+        if (val.path.IsNil()) {
+                ImGui::Button(ICON_FA_LINK);
+                if (ImGui::BeginDragDropTarget()) {
+                        if (auto payload = ImGui::AcceptDragDropPayload("FILE_EXPL_ITEM")) {
+                                const char* pdata = SCAST<char*>(payload->Data);
+                                val.path = Utils::Path::ToRelative(pdata).string();
+                                control_modified = true;
+                        }
+                        ImGui::EndDragDropTarget();
+                }
+
+                ImGui::PopID();
+
+                return;
+        }
+
+        if (ImGui::Button(ICON_FA_LINK_SLASH)) {
+                val.path = Symbol();
+                control_modified = true;
+        }
+
+        ImGui::PopID();
 }
 
 static void
@@ -777,12 +847,10 @@ control(const char* label, ValueComponent& vc, Symbol& val_name, Symbol& val_typ
                         ImGui::PopItemWidth();
                         break;
                 case ValueType_Node:
-                        bool test;
-                        input("bool", test);
+                        input("bool", val.node, e);
                         break;
                 case ValueType_Asset:
-                        bool test2;
-                        input("bool", test2);
+                        input("bool", val.asset);
                         break;
                 }
 
@@ -830,8 +898,18 @@ void Properties::OnImguiRender()
         }, false);
         if (!(m_Entity.HasComponent<PrefabComponent>() ||
               m_Entity.HasComponent<ValueComponent>())) {
-                if (button_green("Add Values"))
-                        m_Entity.AddComponent<ValueComponent>();
+                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{4, 4});
+                ImGui::Separator();
+                bool is_open = ImGui::TreeNodeEx(VPCAST(ECS::GetId<ValueComponent>()), tflags, "%s",
+                                                 "Values");
+                ImGui::PopStyleVar();
+
+                if (is_open) {
+                        if (button_green("Add Values", 100.0f))
+                                m_Entity.AddComponent<ValueComponent>();
+
+                        ImGui::TreePop();
+                }
         }
 
         DrawComponent<TransformComponent>("Transform", [](Entity e){
@@ -988,7 +1066,7 @@ void Properties::OnImguiRender()
         DrawComponent<AnimatedSpriteComponent>("AnimatedSprite", [](Entity e){
                 using cmd = ModifyEntityComponentCommand<AnimatedSpriteComponent>;
 
-                auto spr = e.GetComponent<AnimatedSpriteComponent>();  
+                auto& spr = e.GetComponent<AnimatedSpriteComponent>();  
                 bool modified = false;
 
                 modified |= control("Animation", spr.anim);

@@ -24,11 +24,11 @@ ProjectSettingsPopup::Tick()
 {
         Popup::Tick();
         bool is_open = true;
-        ImGui::Begin("Editor Settings", &is_open);
+        ImGui::Begin("Project Settings", &is_open);
 
         auto p = Project::InstanceM();
 
-        ImGui::Text("%s", p->start_scene_path.c_str());
+        ImGui::Text("start_scene: %s", p->start_scene_path.c_str());
         ImGui::SameLine();
         if (ImGui::Button(ICON_FA_FOLDER)) {
                 FileExplorer::Open("Select Start Scene",
