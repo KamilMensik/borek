@@ -3,6 +3,7 @@
 #include <fstream>
 #include <regex>
 #include <unordered_map>
+#include <sstream>
 
 #include "Include/Graphics/ShaderPreprocessor.h"
 #include "Include/Debug/Assert.h"

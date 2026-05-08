@@ -269,13 +269,7 @@ Import::SpriteSheetImport()
                 return;
         }
 
-        if (SpriteSheetImportSettings(ssa)) {
-                m_SelectedAsset->Serialize(m_SelectedAssetPath);
-                AssetManager::Refresh(relative_path, std::move(m_SelectedAsset));
-                m_SelectedAsset = NewUniq<SpriteSheetAsset>();
-                m_SelectedAsset->LoadFrom(m_SelectedAssetPath);
-        }
-
+        bool modified = SpriteSheetImportSettings(ssa);
 
         const uint32_t rows = ssa.GetRows();
         const uint32_t cols = ssa.GetCols();
@@ -293,6 +287,13 @@ Import::SpriteSheetImport()
                 }
 
                 ImGui::EndListBox();
+        }
+
+        if (modified) {
+                m_SelectedAsset->Serialize(m_SelectedAssetPath);
+                AssetManager::Refresh(relative_path, std::move(m_SelectedAsset));
+                m_SelectedAsset = NewUniq<SpriteSheetAsset>();
+                m_SelectedAsset->LoadFrom(m_SelectedAssetPath);
         }
 }
 
