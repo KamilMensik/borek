@@ -1,0 +1,24 @@
+GEM
+  specs:
+    language_server-protocol (3.17.0.5)
+    logger (1.7.0)
+    prism (1.9.0)
+    rbs (3.10.3)
+      logger
+      tsort
+    ruby-lsp (0.26.7)
+      language_server-protocol (~> 3.17.0)
+      prism (>= 1.2, < 2.0)
+      rbs (>= 3, < 5)
+    tsort (0.2.0)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  rbs
+  ruby-lsp
+
+BUNDLED WITH
+   2.7.2

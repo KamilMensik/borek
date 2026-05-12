@@ -3,6 +3,7 @@
 #include "Include/Components/AnimatedSpriteComponent.h"
 #include "Include/Components/ZIndexComponent.h"
 #include "Include/Engine/FZX/LTDGrid/SmallList.h"
+#include "mrbcpp.h"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -57,6 +58,7 @@
 
 namespace Borek {
 Application* Application::s_Instance = nullptr;
+std::string Application::s_ExecutableName = "";
 
 namespace fs = std::filesystem;
 
@@ -73,7 +75,7 @@ load_scripts_from_dir(const fs::path& path)
                         const std::string rel_path = Utils::Path::ToRelative(file.path());
                         auto ass = AssetManager::Get<ScriptAsset>(rel_path);
                         loaded_scripts_map[ass.GetId()] = ass;
-                } else if (file.is_directory()) {
+                } else if (file.is_directory() && file.path().stem() != "build") {
                         load_scripts_from_dir(file.path());
                 }
         }
@@ -96,7 +98,11 @@ Application::Application(const std::string& name)
         Input::Init();
         m_RubyEngine = NewUniq<RubyEngine>();
 
-        m_Window.reset(new Window(1920, 1080, name));
+        if (name == "Borek!") {
+                m_Window.reset(new Window(1920, 1080, GetExecutableName()));
+        } else {
+                m_Window.reset(new Window(1920, 1080, name));
+        }
         Drawing::BatchRenderer::Init();
         m_ImGuiLayer = new ImGuiLayer();
         PushOverlay(m_ImGuiLayer);
@@ -254,8 +260,11 @@ void
 Application::RunEntityScripts(double delta)
 {
         for (auto [id, script] : Query<IDComponent, RubyScriptComponent>()) {
-                if (!script->ruby_instance) {
-                        script->Initialize(Entity(id->ecs_id));
+                if (!script->initialized) {
+                        mrb_funcall(m_RubyEngine->GetRubyVM(),
+                                    { script->ruby_instance },
+                                    "on_create", 0);
+                        script->initialized = true;
                 }
 
                 script->OnUpdate(delta);
@@ -581,6 +590,18 @@ void
 Application::RestartScene()
 {
         ChangeScene(s_Instance->m_CurrentScene->GetPath());
+}
+
+void
+Application::SetExecutableName(std::string_view str)
+{
+        s_ExecutableName = std::filesystem::path(str).stem();
+}
+
+const std::string&
+Application::GetExecutableName()
+{
+        return s_ExecutableName;
 }
 
 void

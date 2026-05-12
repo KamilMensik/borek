@@ -1,0 +1,436 @@
+Scene: scene1.scnf
+Root:
+  Name: Root
+  Type: Node
+  Components:
+    ID:
+      Value: 15188037310768614150
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+  Children:
+    - Name: Camera
+      Type: Camera
+      Components:
+        ID:
+          Value: 8090290909691377319
+        Transform:
+          Position: [0, 16]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Prefab:
+          ScenePath: /home/kamil/.Borek/Mario/scenes/prefabs/camera.scn
+    - Name: FlagTop
+      Type: Sprite
+      Components:
+        ID:
+          Value: 6497752735242084777
+        Transform:
+          Position: [2600, 56]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Values: [{Name: destination, Type: Asset, Val: scenes/scene2.scn}]
+        Prefab:
+          ScenePath: /home/kamil/.Borek/Mario/scenes/prefabs/flag.scn
+    - Name: Flag
+      Type: Tilemap
+      Components:
+        ID:
+          Value: 10723462476017913975
+        Transform:
+          Position: [0, 0]
+          Scale: [0.5, 0.5]
+          Rotation: 0
+          Pivot: [0, 0]
+        Tilemap:
+          StepX: 32
+          StepY: 32
+          TilemapPath: tilemaps/flag.tmap
+          Tiles: [{Row: -4, Col: 163, Index: 0}, {Row: -3, Col: 163, Index: 0}, {Row: -2, Col: 163, Index: 0}, {Row: -1, Col: 163, Index: 0}, {Row: 0, Col: 163, Index: 0}, {Row: 1, Col: 163, Index: 0}, {Row: 2, Col: 163, Index: 0}, {Row: 3, Col: 163, Index: 0}, {Row: 4, Col: 163, Index: 1}]
+    - Name: Castle
+      Type: Sprite
+      Components:
+        ID:
+          Value: 13728908053579507093
+        Transform:
+          Position: [2656, -64]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Sprite:
+          Color: [255, 255, 255, 255]
+          SizeX: 128
+          SizeY: 128
+          AssetPath: textures/Castle.tex
+    - Name: Map
+      Type: Tilemap
+      Components:
+        ID:
+          Value: 7383440102610471413
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Tilemap:
+          StepX: 16
+          StepY: 16
+          TilemapPath: tilemaps/tilemap.tmap
+          Tiles: [{Row: -6, Col: -10, Index: 56}, {Row: -6, Col: -9, Index: 56}, {Row: -6, Col: -8, Index: 56}, {Row: -6, Col: -7, Index: 56}, {Row: -6, Col: -6, Index: 56}, {Row: -6, Col: -5, Index: 56}, {Row: -6, Col: -4, Index: 56}, {Row: -6, Col: -3, Index: 56}, {Row: -6, Col: -2, Index: 56}, {Row: -6, Col: -1, Index: 56}, {Row: -6, Col: 0, Index: 56}, {Row: -6, Col: 1, Index: 56}, {Row: -6, Col: 2, Index: 56}, {Row: -6, Col: 3, Index: 56}, {Row: -6, Col: 4, Index: 56}, {Row: -6, Col: 5, Index: 56}, {Row: -6, Col: 6, Index: 56}, {Row: -6, Col: 7, Index: 56}, {Row: -6, Col: 8, Index: 56}, {Row: -6, Col: 9, Index: 56}, {Row: -6, Col: 10, Index: 56}, {Row: -6, Col: 11, Index: 56}, {Row: -6, Col: 12, Index: 56}, {Row: -6, Col: 13, Index: 56}, {Row: -6, Col: 14, Index: 56}, {Row: -6, Col: 15, Index: 56}, {Row: -6, Col: 16, Index: 56}, {Row: -6, Col: 17, Index: 56}, {Row: -6, Col: 18, Index: 56}, {Row: -6, Col: 19, Index: 56}, {Row: -6, Col: 20, Index: 56}, {Row: -6, Col: 21, Index: 56}, {Row: -6, Col: 22, Index: 56}, {Row: -6, Col: 23, Index: 56}, {Row: -6, Col: 24, Index: 56}, {Row: -6, Col: 25, Index: 56}, {Row: -6, Col: 26, Index: 56}, {Row: -6, Col: 27, Index: 56}, {Row: -6, Col: 28, Index: 56}, {Row: -6, Col: 29, Index: 56}, {Row: -6, Col: 30, Index: 56}, {Row: -6, Col: 31, Index: 56}, {Row: -6, Col: 32, Index: 56}, {Row: -6, Col: 33, Index: 56}, {Row: -6, Col: 34, Index: 56}, {Row: -6, Col: 35, Index: 56}, {Row: -6, Col: 36, Index: 56}, {Row: -6, Col: 37, Index: 56}, {Row: -6, Col: 38, Index: 56}, {Row: -6, Col: 39, Index: 56}, {Row: -6, Col: 40, Index: 56}, {Row: -6, Col: 41, Index: 56}, {Row: -6, Col: 42, Index: 56}, {Row: -6, Col: 43, Index: 56}, {Row: -6, Col: 44, Index: 56}, {Row: -6, Col: 45, Index: 56}, {Row: -6, Col: 46, Index: 56}, {Row: -6, Col: 47, Index: 56}, {Row: -6, Col: 48, Index: 56}, {Row: -6, Col: 49, Index: 56}, {Row: -6, Col: 50, Index: 56}, {Row: -6, Col: 51, Index: 56}, {Row: -6, Col: 52, Index: 56}, {Row: -6, Col: 53, Index: 56}, {Row: -6, Col: 54, Index: 56}, {Row: -6, Col: 55, Index: 56}, {Row: -6, Col: 56, Index: 56}, {Row: -6, Col: 62, Index: 56}, {Row: -6, Col: 63, Index: 56}, {Row: -6, Col: 64, Index: 56}, {Row: -6, Col: 65, Index: 56}, {Row: -6, Col: 66, Index: 56}, {Row: -6, Col: 67, Index: 56}, {Row: -6, Col: 68, Index: 56}, {Row: -6, Col: 69, Index: 56}, {Row: -6, Col: 70, Index: 56}, {Row: -6, Col: 71, Index: 56}, {Row: -6, Col: 72, Index: 56}, {Row: -6, Col: 73, Index: 56}, {Row: -6, Col: 74, Index: 56}, {Row: -6, Col: 75, Index: 56}, {Row: -6, Col: 76, Index: 56}, {Row: -6, Col: 77, Index: 56}, {Row: -6, Col: 78, Index: 56}, {Row: -6, Col: 79, Index: 56}, {Row: -6, Col: 80, Index: 56}, {Row: -6, Col: 81, Index: 56}, {Row: -6, Col: 82, Index: 56}, {Row: -6, Col: 83, Index: 56}, {Row: -6, Col: 84, Index: 56}, {Row: -6, Col: 85, Index: 56}, {Row: -6, Col: 86, Index: 56}, {Row: -6, Col: 87, Index: 56}, {Row: -6, Col: 88, Index: 56}, {Row: -6, Col: 89, Index: 56}, {Row: -6, Col: 90, Index: 56}, {Row: -6, Col: 91, Index: 56}, {Row: -6, Col: 92, Index: 56}, {Row: -6, Col: 93, Index: 56}, {Row: -6, Col: 94, Index: 56}, {Row: -6, Col: 95, Index: 56}, {Row: -6, Col: 96, Index: 56}, {Row: -6, Col: 97, Index: 56}, {Row: -6, Col: 98, Index: 56}, {Row: -6, Col: 99, Index: 56}, {Row: -6, Col: 100, Index: 56}, {Row: -6, Col: 101, Index: 56}, {Row: -6, Col: 102, Index: 56}, {Row: -6, Col: 103, Index: 56}, {Row: -6, Col: 104, Index: 56}, {Row: -6, Col: 105, Index: 56}, {Row: -6, Col: 106, Index: 56}, {Row: -6, Col: 107, Index: 56}, {Row: -6, Col: 108, Index: 56}, {Row: -6, Col: 109, Index: 56}, {Row: -6, Col: 110, Index: 56}, {Row: -6, Col: 111, Index: 56}, {Row: -6, Col: 112, Index: 56}, {Row: -6, Col: 113, Index: 56}, {Row: -6, Col: 114, Index: 56}, {Row: -6, Col: 115, Index: 56}, {Row: -6, Col: 116, Index: 56}, {Row: -6, Col: 119, Index: 56}, {Row: -6, Col: 120, Index: 56}, {Row: -6, Col: 121, Index: 56}, {Row: -6, Col: 122, Index: 56}, {Row: -6, Col: 123, Index: 56}, {Row: -6, Col: 124, Index: 56}, {Row: -6, Col: 125, Index: 56}, {Row: -6, Col: 126, Index: 56}, {Row: -6, Col: 127, Index: 56}, {Row: -6, Col: 128, Index: 56}, {Row: -6, Col: 129, Index: 56}, {Row: -6, Col: 130, Index: 56}, {Row: -6, Col: 131, Index: 56}, {Row: -6, Col: 132, Index: 56}, {Row: -6, Col: 133, Index: 56}, {Row: -6, Col: 134, Index: 56}, {Row: -6, Col: 135, Index: 56}, {Row: -6, Col: 136, Index: 56}, {Row: -6, Col: 137, Index: 56}, {Row: -6, Col: 138, Index: 56}, {Row: -6, Col: 139, Index: 56}, {Row: -6, Col: 140, Index: 56}, {Row: -6, Col: 141, Index: 56}, {Row: -6, Col: 142, Index: 56}, {Row: -6, Col: 143, Index: 56}, {Row: -6, Col: 144, Index: 56}, {Row: -6, Col: 145, Index: 56}, {Row: -6, Col: 146, Index: 56}, {Row: -6, Col: 147, Index: 56}, {Row: -6, Col: 148, Index: 56}, {Row: -6, Col: 149, Index: 56}, {Row: -6, Col: 150, Index: 56}, {Row: -6, Col: 151, Index: 56}, {Row: -6, Col: 152, Index: 56}, {Row: -6, Col: 153, Index: 56}, {Row: -6, Col: 154, Index: 56}, {Row: -6, Col: 155, Index: 56}, {Row: -6, Col: 156, Index: 56}, {Row: -6, Col: 157, Index: 56}, {Row: -6, Col: 158, Index: 56}, {Row: -6, Col: 159, Index: 56}, {Row: -6, Col: 160, Index: 56}, {Row: -6, Col: 161, Index: 56}, {Row: -6, Col: 162, Index: 56}, {Row: -6, Col: 163, Index: 56}, {Row: -6, Col: 164, Index: 56}, {Row: -6, Col: 165, Index: 56}, {Row: -6, Col: 166, Index: 56}, {Row: -6, Col: 167, Index: 56}, {Row: -6, Col: 168, Index: 56}, {Row: -6, Col: 169, Index: 56}, {Row: -6, Col: 170, Index: 56}, {Row: -6, Col: 171, Index: 56}, {Row: -6, Col: 172, Index: 56}, {Row: -6, Col: 173, Index: 56}, {Row: -6, Col: 174, Index: 56}, {Row: -6, Col: 175, Index: 56}, {Row: -5, Col: -10, Index: 56}, {Row: -5, Col: -9, Index: 56}, {Row: -5, Col: -8, Index: 56}, {Row: -5, Col: -7, Index: 56}, {Row: -5, Col: -6, Index: 56}, {Row: -5, Col: -5, Index: 56}, {Row: -5, Col: -4, Index: 56}, {Row: -5, Col: -3, Index: 56}, {Row: -5, Col: -2, Index: 56}, {Row: -5, Col: -1, Index: 56}, {Row: -5, Col: 0, Index: 56}, {Row: -5, Col: 1, Index: 56}, {Row: -5, Col: 2, Index: 56}, {Row: -5, Col: 3, Index: 56}, {Row: -5, Col: 4, Index: 56}, {Row: -5, Col: 5, Index: 56}, {Row: -5, Col: 6, Index: 56}, {Row: -5, Col: 7, Index: 56}, {Row: -5, Col: 8, Index: 56}, {Row: -5, Col: 9, Index: 56}, {Row: -5, Col: 10, Index: 56}, {Row: -5, Col: 11, Index: 56}, {Row: -5, Col: 12, Index: 56}, {Row: -5, Col: 13, Index: 56}, {Row: -5, Col: 14, Index: 56}, {Row: -5, Col: 15, Index: 56}, {Row: -5, Col: 16, Index: 56}, {Row: -5, Col: 17, Index: 56}, {Row: -5, Col: 18, Index: 56}, {Row: -5, Col: 19, Index: 56}, {Row: -5, Col: 20, Index: 56}, {Row: -5, Col: 21, Index: 56}, {Row: -5, Col: 22, Index: 56}, {Row: -5, Col: 23, Index: 56}, {Row: -5, Col: 24, Index: 56}, {Row: -5, Col: 25, Index: 56}, {Row: -5, Col: 26, Index: 56}, {Row: -5, Col: 27, Index: 56}, {Row: -5, Col: 28, Index: 56}, {Row: -5, Col: 29, Index: 56}, {Row: -5, Col: 30, Index: 56}, {Row: -5, Col: 31, Index: 56}, {Row: -5, Col: 32, Index: 56}, {Row: -5, Col: 33, Index: 56}, {Row: -5, Col: 34, Index: 56}, {Row: -5, Col: 35, Index: 56}, {Row: -5, Col: 36, Index: 56}, {Row: -5, Col: 37, Index: 56}, {Row: -5, Col: 38, Index: 56}, {Row: -5, Col: 39, Index: 56}, {Row: -5, Col: 40, Index: 56}, {Row: -5, Col: 41, Index: 56}, {Row: -5, Col: 42, Index: 56}, {Row: -5, Col: 43, Index: 56}, {Row: -5, Col: 44, Index: 56}, {Row: -5, Col: 45, Index: 56}, {Row: -5, Col: 46, Index: 56}, {Row: -5, Col: 47, Index: 56}, {Row: -5, Col: 48, Index: 56}, {Row: -5, Col: 49, Index: 56}, {Row: -5, Col: 50, Index: 56}, {Row: -5, Col: 51, Index: 56}, {Row: -5, Col: 52, Index: 56}, {Row: -5, Col: 53, Index: 56}, {Row: -5, Col: 54, Index: 56}, {Row: -5, Col: 55, Index: 56}, {Row: -5, Col: 56, Index: 56}, {Row: -5, Col: 62, Index: 56}, {Row: -5, Col: 63, Index: 56}, {Row: -5, Col: 64, Index: 56}, {Row: -5, Col: 65, Index: 56}, {Row: -5, Col: 66, Index: 56}, {Row: -5, Col: 67, Index: 56}, {Row: -5, Col: 68, Index: 56}, {Row: -5, Col: 69, Index: 56}, {Row: -5, Col: 70, Index: 56}, {Row: -5, Col: 71, Index: 56}, {Row: -5, Col: 72, Index: 56}, {Row: -5, Col: 73, Index: 56}, {Row: -5, Col: 74, Index: 56}, {Row: -5, Col: 75, Index: 56}, {Row: -5, Col: 76, Index: 56}, {Row: -5, Col: 77, Index: 56}, {Row: -5, Col: 78, Index: 56}, {Row: -5, Col: 79, Index: 56}, {Row: -5, Col: 80, Index: 56}, {Row: -5, Col: 81, Index: 56}, {Row: -5, Col: 82, Index: 56}, {Row: -5, Col: 83, Index: 56}, {Row: -5, Col: 84, Index: 56}, {Row: -5, Col: 85, Index: 56}, {Row: -5, Col: 86, Index: 56}, {Row: -5, Col: 87, Index: 56}, {Row: -5, Col: 88, Index: 56}, {Row: -5, Col: 89, Index: 56}, {Row: -5, Col: 90, Index: 56}, {Row: -5, Col: 91, Index: 56}, {Row: -5, Col: 92, Index: 56}, {Row: -5, Col: 93, Index: 56}, {Row: -5, Col: 94, Index: 56}, {Row: -5, Col: 95, Index: 56}, {Row: -5, Col: 96, Index: 56}, {Row: -5, Col: 97, Index: 56}, {Row: -5, Col: 98, Index: 56}, {Row: -5, Col: 99, Index: 56}, {Row: -5, Col: 100, Index: 56}, {Row: -5, Col: 101, Index: 56}, {Row: -5, Col: 102, Index: 56}, {Row: -5, Col: 103, Index: 56}, {Row: -5, Col: 104, Index: 56}, {Row: -5, Col: 105, Index: 56}, {Row: -5, Col: 106, Index: 56}, {Row: -5, Col: 107, Index: 56}, {Row: -5, Col: 108, Index: 56}, {Row: -5, Col: 109, Index: 56}, {Row: -5, Col: 110, Index: 56}, {Row: -5, Col: 111, Index: 56}, {Row: -5, Col: 112, Index: 56}, {Row: -5, Col: 113, Index: 56}, {Row: -5, Col: 114, Index: 56}, {Row: -5, Col: 115, Index: 56}, {Row: -5, Col: 116, Index: 56}, {Row: -5, Col: 119, Index: 56}, {Row: -5, Col: 120, Index: 56}, {Row: -5, Col: 121, Index: 56}, {Row: -5, Col: 122, Index: 56}, {Row: -5, Col: 123, Index: 56}, {Row: -5, Col: 124, Index: 56}, {Row: -5, Col: 125, Index: 56}, {Row: -5, Col: 126, Index: 56}, {Row: -5, Col: 127, Index: 56}, {Row: -5, Col: 128, Index: 56}, {Row: -5, Col: 129, Index: 56}, {Row: -5, Col: 130, Index: 56}, {Row: -5, Col: 131, Index: 56}, {Row: -5, Col: 132, Index: 56}, {Row: -5, Col: 133, Index: 56}, {Row: -5, Col: 134, Index: 56}, {Row: -5, Col: 135, Index: 56}, {Row: -5, Col: 136, Index: 56}, {Row: -5, Col: 137, Index: 56}, {Row: -5, Col: 138, Index: 56}, {Row: -5, Col: 139, Index: 56}, {Row: -5, Col: 140, Index: 56}, {Row: -5, Col: 141, Index: 56}, {Row: -5, Col: 142, Index: 56}, {Row: -5, Col: 143, Index: 56}, {Row: -5, Col: 144, Index: 56}, {Row: -5, Col: 145, Index: 56}, {Row: -5, Col: 146, Index: 56}, {Row: -5, Col: 147, Index: 56}, {Row: -5, Col: 148, Index: 56}, {Row: -5, Col: 149, Index: 56}, {Row: -5, Col: 150, Index: 56}, {Row: -5, Col: 151, Index: 56}, {Row: -5, Col: 152, Index: 56}, {Row: -5, Col: 153, Index: 56}, {Row: -5, Col: 154, Index: 56}, {Row: -5, Col: 155, Index: 56}, {Row: -5, Col: 156, Index: 56}, {Row: -5, Col: 157, Index: 56}, {Row: -5, Col: 158, Index: 56}, {Row: -5, Col: 159, Index: 56}, {Row: -5, Col: 160, Index: 56}, {Row: -5, Col: 161, Index: 56}, {Row: -5, Col: 162, Index: 56}, {Row: -5, Col: 163, Index: 56}, {Row: -5, Col: 164, Index: 56}, {Row: -5, Col: 165, Index: 56}, {Row: -5, Col: 166, Index: 56}, {Row: -5, Col: 167, Index: 56}, {Row: -5, Col: 168, Index: 56}, {Row: -5, Col: 169, Index: 56}, {Row: -5, Col: 170, Index: 56}, {Row: -5, Col: 171, Index: 56}, {Row: -5, Col: 172, Index: 56}, {Row: -5, Col: 173, Index: 56}, {Row: -5, Col: 174, Index: 56}, {Row: -5, Col: 175, Index: 56}, {Row: -4, Col: 30, Index: 54}, {Row: -4, Col: 31, Index: 55}, {Row: -4, Col: 36, Index: 54}, {Row: -4, Col: 37, Index: 55}, {Row: -4, Col: 42, Index: 54}, {Row: -4, Col: 43, Index: 55}, {Row: -4, Col: 68, Index: 11}, {Row: -4, Col: 69, Index: 12}, {Row: -4, Col: 70, Index: 13}, {Row: -4, Col: 71, Index: 14}, {Row: -4, Col: 72, Index: 15}, {Row: -4, Col: 97, Index: 57}, {Row: -4, Col: 98, Index: 57}, {Row: -4, Col: 99, Index: 57}, {Row: -4, Col: 100, Index: 57}, {Row: -4, Col: 103, Index: 57}, {Row: -4, Col: 104, Index: 57}, {Row: -4, Col: 105, Index: 57}, {Row: -4, Col: 106, Index: 57}, {Row: -4, Col: 107, Index: 11}, {Row: -4, Col: 108, Index: 12}, {Row: -4, Col: 109, Index: 13}, {Row: -4, Col: 110, Index: 14}, {Row: -4, Col: 111, Index: 15}, {Row: -4, Col: 112, Index: 57}, {Row: -4, Col: 113, Index: 57}, {Row: -4, Col: 114, Index: 57}, {Row: -4, Col: 115, Index: 57}, {Row: -4, Col: 116, Index: 57}, {Row: -4, Col: 119, Index: 57}, {Row: -4, Col: 120, Index: 57}, {Row: -4, Col: 121, Index: 57}, {Row: -4, Col: 122, Index: 57}, {Row: -4, Col: 123, Index: 10}, {Row: -4, Col: 124, Index: 20}, {Row: -4, Col: 125, Index: 14}, {Row: -4, Col: 126, Index: 22}, {Row: -4, Col: 127, Index: 54}, {Row: -4, Col: 128, Index: 55}, {Row: -4, Col: 145, Index: 54}, {Row: -4, Col: 146, Index: 55}, {Row: -4, Col: 147, Index: 57}, {Row: -4, Col: 148, Index: 57}, {Row: -4, Col: 149, Index: 57}, {Row: -4, Col: 150, Index: 57}, {Row: -4, Col: 151, Index: 57}, {Row: -4, Col: 152, Index: 57}, {Row: -4, Col: 153, Index: 57}, {Row: -4, Col: 154, Index: 57}, {Row: -4, Col: 155, Index: 57}, {Row: -3, Col: 30, Index: 62}, {Row: -3, Col: 31, Index: 63}, {Row: -3, Col: 36, Index: 54}, {Row: -3, Col: 37, Index: 55}, {Row: -3, Col: 42, Index: 54}, {Row: -3, Col: 43, Index: 55}, {Row: -3, Col: 69, Index: 20}, {Row: -3, Col: 70, Index: 21}, {Row: -3, Col: 71, Index: 22}, {Row: -3, Col: 98, Index: 57}, {Row: -3, Col: 99, Index: 57}, {Row: -3, Col: 100, Index: 57}, {Row: -3, Col: 103, Index: 57}, {Row: -3, Col: 104, Index: 57}, {Row: -3, Col: 105, Index: 57}, {Row: -3, Col: 108, Index: 20}, {Row: -3, Col: 109, Index: 21}, {Row: -3, Col: 110, Index: 22}, {Row: -3, Col: 113, Index: 57}, {Row: -3, Col: 114, Index: 57}, {Row: -3, Col: 115, Index: 57}, {Row: -3, Col: 116, Index: 57}, {Row: -3, Col: 119, Index: 57}, {Row: -3, Col: 120, Index: 57}, {Row: -3, Col: 121, Index: 57}, {Row: -3, Col: 125, Index: 29}, {Row: -3, Col: 127, Index: 62}, {Row: -3, Col: 128, Index: 63}, {Row: -3, Col: 145, Index: 62}, {Row: -3, Col: 146, Index: 63}, {Row: -3, Col: 148, Index: 57}, {Row: -3, Col: 149, Index: 57}, {Row: -3, Col: 150, Index: 57}, {Row: -3, Col: 151, Index: 57}, {Row: -3, Col: 152, Index: 57}, {Row: -3, Col: 153, Index: 57}, {Row: -3, Col: 154, Index: 57}, {Row: -3, Col: 155, Index: 57}, {Row: -2, Col: 36, Index: 62}, {Row: -2, Col: 37, Index: 63}, {Row: -2, Col: 42, Index: 54}, {Row: -2, Col: 43, Index: 55}, {Row: -2, Col: 70, Index: 29}, {Row: -2, Col: 99, Index: 57}, {Row: -2, Col: 100, Index: 57}, {Row: -2, Col: 103, Index: 57}, {Row: -2, Col: 104, Index: 57}, {Row: -2, Col: 109, Index: 29}, {Row: -2, Col: 114, Index: 57}, {Row: -2, Col: 115, Index: 57}, {Row: -2, Col: 116, Index: 57}, {Row: -2, Col: 119, Index: 57}, {Row: -2, Col: 120, Index: 57}, {Row: -2, Col: 149, Index: 57}, {Row: -2, Col: 150, Index: 57}, {Row: -2, Col: 151, Index: 57}, {Row: -2, Col: 152, Index: 57}, {Row: -2, Col: 153, Index: 57}, {Row: -2, Col: 154, Index: 57}, {Row: -2, Col: 155, Index: 57}, {Row: -1, Col: 0, Index: 58}, {Row: -1, Col: 11, Index: 60}, {Row: -1, Col: 14, Index: 59}, {Row: -1, Col: 15, Index: 60}, {Row: -1, Col: 16, Index: 59}, {Row: -1, Col: 17, Index: 60}, {Row: -1, Col: 18, Index: 59}, {Row: -1, Col: 42, Index: 62}, {Row: -1, Col: 43, Index: 63}, {Row: -1, Col: 48, Index: 59}, {Row: -1, Col: 49, Index: 59}, {Row: -1, Col: 50, Index: 59}, {Row: -1, Col: 67, Index: 59}, {Row: -1, Col: 73, Index: 59}, {Row: -1, Col: 74, Index: 59}, {Row: -1, Col: 81, Index: 59}, {Row: -1, Col: 93, Index: 59}, {Row: -1, Col: 94, Index: 59}, {Row: -1, Col: 100, Index: 57}, {Row: -1, Col: 103, Index: 57}, {Row: -1, Col: 115, Index: 57}, {Row: -1, Col: 116, Index: 57}, {Row: -1, Col: 119, Index: 57}, {Row: -1, Col: 132, Index: 59}, {Row: -1, Col: 133, Index: 59}, {Row: -1, Col: 134, Index: 60}, {Row: -1, Col: 135, Index: 59}, {Row: -1, Col: 150, Index: 57}, {Row: -1, Col: 151, Index: 57}, {Row: -1, Col: 152, Index: 57}, {Row: -1, Col: 153, Index: 57}, {Row: -1, Col: 154, Index: 57}, {Row: -1, Col: 155, Index: 57}, {Row: 0, Col: 151, Index: 57}, {Row: 0, Col: 152, Index: 57}, {Row: 0, Col: 153, Index: 57}, {Row: 0, Col: 154, Index: 57}, {Row: 0, Col: 155, Index: 57}, {Row: 1, Col: 152, Index: 57}, {Row: 1, Col: 153, Index: 57}, {Row: 1, Col: 154, Index: 57}, {Row: 1, Col: 155, Index: 57}, {Row: 2, Col: 16, Index: 60}, {Row: 2, Col: 51, Index: 59}, {Row: 2, Col: 52, Index: 59}, {Row: 2, Col: 53, Index: 59}, {Row: 2, Col: 54, Index: 59}, {Row: 2, Col: 55, Index: 59}, {Row: 2, Col: 56, Index: 59}, {Row: 2, Col: 57, Index: 59}, {Row: 2, Col: 58, Index: 59}, {Row: 2, Col: 59, Index: 59}, {Row: 2, Col: 64, Index: 59}, {Row: 2, Col: 65, Index: 59}, {Row: 2, Col: 66, Index: 59}, {Row: 2, Col: 67, Index: 60}, {Row: 2, Col: 153, Index: 57}, {Row: 2, Col: 154, Index: 57}, {Row: 2, Col: 155, Index: 57}, {Row: 3, Col: 84, Index: 59}, {Row: 3, Col: 85, Index: 59}, {Row: 3, Col: 86, Index: 59}, {Row: 3, Col: 92, Index: 59}, {Row: 3, Col: 93, Index: 60}, {Row: 3, Col: 94, Index: 60}, {Row: 3, Col: 95, Index: 59}, {Row: 3, Col: 154, Index: 57}, {Row: 3, Col: 155, Index: 57}]
+        Tags: [map]
+    - Name: Coins
+      Type: Node
+      Components:
+        ID:
+          Value: 433681159631083406
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+      Children:
+        - Name: coin
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [272, 16]
+              Scale: [1, 1]
+              Rotation: -0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 1
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [240, 16]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 2
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [488, -24]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 4
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [680, 8]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 8
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [920, 64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 5
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [784, 16]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 9
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [1048, 64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 7
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [880, 64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 3
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [584, -8]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 6
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [840, 64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 10
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [936, -32]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 11
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [944, -24]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 12
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [952, -32]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 13
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [928, -40]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+        - Name: coin 14
+          Type: Area
+          Components:
+            ID:
+              Value: 14281280242460908577
+            Transform:
+              Position: [960, -40]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/coin.scn
+    - Name: Enemies
+      Type: Node
+      Components:
+        ID:
+          Value: 6913708539881188754
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+      Children:
+        - Name: goomba
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [288, -64]
+              Scale: [1, 1]
+              Rotation: -0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 7
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [2304, -64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 5
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [1520, 64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 1
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [240, -64]
+              Scale: [1, 1]
+              Rotation: -0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 2
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [560, -64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 3
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [176, -64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 4
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [656, -64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 6
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [944, 48]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+        - Name: goomba 8
+          Type: DynamicBody
+          Components:
+            ID:
+              Value: 3353044009475321545
+            Transform:
+              Position: [1776, -64]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [8, 8]
+            Script:
+              ScriptPath: scripts/enemy.scr
+            Values: [{Name: alive, Type: Bool, Val: true}]
+            Prefab:
+              ScenePath: /home/kamil/.Borek/Mario/scenes/goomba.scn
+    - Name: Player
+      Type: DynamicBody
+      Components:
+        ID:
+          Value: 11139615674105023604
+        Transform:
+          Position: [-160, -63.999004]
+          Scale: [1, 1]
+          Rotation: -0
+          Pivot: [0, 0]
+        Script:
+          ScriptPath: scripts/test.scr
+        Values: [{Name: test, Type: Bool, Val: true}]
+        Prefab:
+          ScenePath: scenes/test.scn

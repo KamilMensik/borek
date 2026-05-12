@@ -76,6 +76,7 @@ create_collider_poly(const CGrid::Element& el)
                 res.val.poly.verts[1] = { points.z, points.y };
                 res.val.poly.verts[2] = { points.z, points.w };
                 res.val.poly.verts[3] = { points.x, points.w };
+                c2MakePoly(&res.val.poly);
                 return res;
         }
         
@@ -163,8 +164,6 @@ collides(const CGrid::Element& a, const CGrid::Element& b)
 static void
 move(Collider& col, const glm::vec2& amount)
 {
-        //BOREK_ENGINE_WARN("Moving collider. by: [{}, {}], Before: {}",
-        //                  amount.x, amount.y, std::string(col));
         switch (col.type) {
         case C2_TYPE_POLY:
                 for (int i = 0; i < col.val.poly.count; i++) {
@@ -181,7 +180,6 @@ move(Collider& col, const glm::vec2& amount)
         default:
                 return;
         }
-        //BOREK_ENGINE_WARN("Moving collider. After: {}", std::string(col));
 }
 
 CGrid::CGridNode::CGridNode(uint32_t element_id, uint32_t next)
@@ -386,22 +384,35 @@ CGrid::Remove(uint32_t entity_id)
 void
 CGrid::RemoveTilemapNode(uint32_t entity_id, uint32_t element_id)
 {
-        Element& el = elements[element_id];
-        const int4 gpc = GetPositionInGrid(el.aabb);
-        entity_element_map.erase(entity_id);
+        uint32_t prev_el_id = UINT32_MAX;
+        uint32_t el_id = entity_element_map[entity_id];
+        while (el_id != element_id) {
+                if (el_id == UINT32_MAX) return;
 
+                prev_el_id = el_id;
+                el_id = elements[el_id].tilemap_data.next;
+        }
+
+        Element& el = elements[el_id];
+        const int4 gpc = GetPositionInGrid(el.aabb);
         for (int grid_y = gpc.y; grid_y <= gpc.w; grid_y++) {
                 for (int grid_x = gpc.x; grid_x <= gpc.z; grid_x++) {
                         DeleteCellNode(GetCellIndex(grid_x, grid_y), element_id);
                 }
         }
 
-        uint32_t next_id = el.tilemap_data.next;
-        Element& next = elements[next_id];
-        el.tilemap_data.row = next.tilemap_data.row;
-        el.tilemap_data.col = next.tilemap_data.col;
-        el.tilemap_data.next = next.tilemap_data.next;
-        elements.erase(next_id);
+        if (prev_el_id == UINT32_MAX) {
+                if (el.tilemap_data.next == UINT32_MAX)
+                        entity_element_map.erase(entity_id);
+                else
+                        entity_element_map[entity_id] = el.tilemap_data.next;
+
+                elements.erase(el_id);
+                return;
+        }
+
+        elements[prev_el_id].tilemap_data.next = el.tilemap_data.next;
+        elements.erase(el_id);
 }
 
 // Get collisions between a rectangle and other colliders
@@ -617,8 +628,6 @@ CGrid::MoveAndCollide(const Element& el, float dx, float dy, uint32_t& flags)
         }
 
         glm::vec2 res_vec(dx, dy);
-        //BOREK_ENGINE_INFO("vec: [{}, {}], normal: [{}, {}], res_vec: [{}, {}]",
-        //                  dx, dy, res.normal.x, res.normal.y, res_vec.x, res_vec.y);
         return { res, {dx, dy} };
 }
 
@@ -696,6 +705,20 @@ CGrid::DeleteCellNode(uint32_t cell_id, uint32_t element_id)
         }
 
         nodes.erase(node_id);
+}
+
+inline void
+CGrid::UpdateCellNode(uint32_t cell_id, uint32_t prev_el_id, uint32_t new_el_id)
+{
+        uint32_t node_id = cells[cell_id];
+
+        while (nodes[node_id].element_id != prev_el_id) {
+                if (node_id == UINT32_MAX) return;
+
+                node_id = nodes[node_id].next;
+        }
+
+        nodes[node_id] = new_el_id;
 }
 
 } // namespace FZX

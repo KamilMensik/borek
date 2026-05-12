@@ -1,0 +1,55 @@
+Scene: scene2.scnf
+Root:
+  Name: Scene2
+  Type: Node
+  Components:
+    ID:
+      Value: 6849717003324977773
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+  Children:
+    - Name: Camera
+      Type: Camera
+      Components:
+        ID:
+          Value: 8090290909691377319
+        Transform:
+          Position: [0, 16]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Prefab:
+          ScenePath: /home/kamil/.Borek/Mario/scenes/prefabs/camera.scn
+    - Name: Map
+      Type: Tilemap
+      Components:
+        ID:
+          Value: 13029047509410358841
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Tilemap:
+          StepX: 16
+          StepY: 16
+          TilemapPath: tilemaps/tilemap.tmap
+          Tiles: [{Row: -6, Col: -7, Index: 56}, {Row: -6, Col: -6, Index: 56}, {Row: -6, Col: -5, Index: 56}, {Row: -6, Col: -4, Index: 56}, {Row: -5, Col: -10, Index: 56}, {Row: -5, Col: -8, Index: 57}, {Row: -4, Col: -2, Index: 57}]
+    - Name: test
+      Type: DynamicBody
+      Components:
+        ID:
+          Value: 11139615674105023604
+        Transform:
+          Position: [-160, 64]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Script:
+          ScriptPath: scripts/test.scr
+        Values: [{Name: test, Type: Number, Val: 32}, {Name: jmebo, Type: Int, Val: 1}, {Name: test2, Type: Int, Val: 3}]
+        Prefab:
+          ScenePath: /home/kamil/.Borek/Mario/scenes/test.scn

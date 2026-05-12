@@ -1,0 +1,56 @@
+Scene: goomba.scnf
+Root:
+  Name: Goomba
+  Type: DynamicBody
+  Components:
+    ID:
+      Value: 3353044009475321545
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: -0
+      Pivot: [8, 8]
+    Script:
+      ScriptPath: scripts/enemy.scr
+    Values: [{Name: alive, Type: Bool, Val: true}]
+    RigidBody2D:
+      ColliderType: Rectangle
+      CollisionMask: 65535
+      SizeX: 16
+      SizeY: 16
+      Rotation: 0
+    Tags: [enemy]
+  Children:
+    - Name: DeathSound
+      Type: SoundPlayer
+      Components:
+        ID:
+          Value: 10621671439740898771
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        SoundPlayer:
+          Flags: 0
+          OnFinished:
+            TargetPath: ./..
+            Callback: on_death_sound_end
+          SoundPath: sounds/goomba_death_sound.snd
+    - Name: Sprite
+      Type: AnimatedSprite
+      Components:
+        ID:
+          Value: 6088319437950945922
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        AnimatedSprite:
+          Color: [255, 255, 255, 255]
+          SizeX: 16
+          SizeY: 16
+          Flags: 12
+          CurrentAnimation: moving
+          AnimPath: Animations/goomba.anim

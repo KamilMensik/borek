@@ -6,7 +6,7 @@
 #include "Include/Base/Project.h"
 #include "Misc/Notifications/Notifications.h"
 #include "Misc/SceneTabBar.h"
-#include "Popups/ProjectSettingsPopup.h"
+#include "Popups/ExportPopup.h"
 #include <filesystem>
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -149,10 +149,8 @@ void EditorLayer::OnImGuiRender()
                         ImGui::EndMenu();
                 }
 
-                if (ImGui::BeginMenu("Project")) {
-                        if (ImGui::MenuItem("Project Settings")) {
-                                Application::OpenPopup(new Popups::ProjectSettingsPopup());
-                        }
+                if (ImGui::BeginMenu("Export")) {
+                        Application::OpenPopup(new Popups::ExportPopup());
                         ImGui::EndMenu();
                 }
 

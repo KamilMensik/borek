@@ -1,0 +1,52 @@
+Scene: paddle.scnf
+Root:
+  Name: Player
+  Type: Area
+  Components:
+    ID:
+      Value: 4253998974589052395
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+    Script:
+      ScriptPath: scripts/paddle.scr
+    Area:
+      ColliderType: Rectangle
+      CollisionMask: 65535
+      SizeX: 64
+      SizeY: 8
+      Rotation: 0
+  Children:
+    - Name: Collider
+      Type: StaticBody
+      Components:
+        ID:
+          Value: 8803590565694821385
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        RigidBody2D:
+          ColliderType: Rectangle
+          CollisionMask: 65535
+          SizeX: 64
+          SizeY: 8
+          Rotation: 0
+    - Name: Entity 0
+      Type: Sprite
+      Components:
+        ID:
+          Value: 7602426478741564672
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Sprite:
+          Color: [255, 255, 255, 255]
+          SizeX: 64
+          SizeY: 8
+          AssetPath: textures/paddle.tex

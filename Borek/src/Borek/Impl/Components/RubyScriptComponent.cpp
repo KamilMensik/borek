@@ -21,9 +21,6 @@ void RubyScriptComponent::Initialize(Entity e)
                 return;
 
         mrb_state* mrb = Application::GetRubyEngine().GetRubyVM();
-        if (!s_RubyEntityClass)
-                s_RubyEntityClass = mrb_class_get_under(mrb, Application::GetRubyEngine().GetBorekModule(), "Entity");
-
         mrb_value entity_id = mrb_fixnum_value(e.GetId());
         mrb_value instance = mrb_class_new_instance(mrb, 0, nullptr, RCAST<RClass*>(script.Convert().ruby_class));
         if (mrb->exc)
@@ -31,7 +28,6 @@ void RubyScriptComponent::Initialize(Entity e)
 
         mrb_gc_register(mrb, instance);
         MRB_SET_IV(instance, "@entity_id", entity_id);
-        MRB_FUNCALL(instance, "on_create");
 
         if (mrb->exc)
                 throw RubyException(":(");
@@ -66,7 +62,5 @@ void RubyScriptComponent::OnDestroy()
         if (mrb->exc)
                 throw RubyException(":(");
 }
-
-RClass* RubyScriptComponent::s_RubyEntityClass = nullptr;
 
 }  // namespace Borek

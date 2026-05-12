@@ -7,9 +7,9 @@
 namespace Borek {
 namespace Popups {
 
-class ProjectSettingsPopup : public Popup {
+class ExportPopup : public Popup {
 public:
-        ProjectSettingsPopup() = default;
+        ExportPopup() = default;
 
         bool Tick() override;
 };

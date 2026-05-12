@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "glm/ext/quaternion_geometric.hpp"
 #include <format>
 
 #include <mruby.h>
@@ -200,6 +201,18 @@ static MRB_FUNC(Vec2ToS)
         return mrb_str_new_cstr(mrb, str.c_str());
 }
 
+static MRB_FUNC(Vec2Normalize)
+{
+        auto* data = MRB_ISTRUCT_VAL(self, glm::vec2);
+        mrb_value res = mrb_class_new_instance(
+                mrb, 0, nullptr, RBDatatypes::vec2_class);
+
+        auto res_data = MRB_ISTRUCT_VAL(res, glm::vec2);                      
+        *res_data = glm::normalize(*data);
+
+        return res;
+}
+
 static MRB_FUNC(Vec3FromItems)
 {
         mrb_value* values;
@@ -234,6 +247,18 @@ static MRB_FUNC(Vec3ToS)
         std::string str = std::format("Vec3[{}, {}, {}]", data->x, data->y,
                                       data->z);
         return mrb_str_new_cstr(mrb, str.c_str());
+}
+
+static MRB_FUNC(Vec3Normalize)
+{
+        auto* data = MRB_ISTRUCT_VAL(self, glm::vec3);
+        mrb_value res = mrb_class_new_instance(
+                mrb, 0, nullptr, RBDatatypes::vec3_class);
+
+        auto res_data = MRB_ISTRUCT_VAL(res, glm::vec3);
+        *res_data = glm::normalize(*data);
+
+        return res;
 }
 
 static MRB_FUNC(Vec4FromItems)
@@ -271,6 +296,18 @@ static MRB_FUNC(Vec4ToS)
         std::string str = std::format("Vec4[{}, {}, {}, {}]", data->x, data->y,
                                       data->z, data->w);
         return mrb_str_new_cstr(mrb, str.c_str());
+}
+
+static MRB_FUNC(Vec4Normalize)
+{
+        auto* data = MRB_ISTRUCT_VAL(self, glm::vec4);
+        mrb_value res = mrb_class_new_instance(
+                mrb, 0, nullptr, RBDatatypes::vec4_class);
+
+        auto res_data = MRB_ISTRUCT_VAL(res, glm::vec4);
+        *res_data = glm::normalize(*data);
+
+        return res;
 }
 
 VEC_ARITHMETIC_OPERATIONS(Vec2, vec2)
@@ -538,6 +575,7 @@ void RBDatatypes::Init(RubyEngine& engine)
                 .define_method("-", Vec2Sub, FuncArgs().Required(1))
                 .define_method("*", Vec2Mul, FuncArgs().Required(1))
                 .define_method("/", Vec2Div, FuncArgs().Required(1))
+                .define_method("normalize", Vec2Normalize)
                 .define_method("to_s", Vec2ToS);
 
         vec3_class = vm.define_class("Vec3", MRB_TT_ISTRUCT)
@@ -559,6 +597,7 @@ void RBDatatypes::Init(RubyEngine& engine)
                 .define_method("-", Vec3Sub, FuncArgs().Required(1))
                 .define_method("*", Vec3Mul, FuncArgs().Required(1))
                 .define_method("/", Vec3Div, FuncArgs().Required(1))
+                .define_method("normalize", Vec3Normalize)
                 .define_method("to_s", Vec3ToS);
 
         vec4_class = vm.define_class("Vec4", MRB_TT_ISTRUCT)
@@ -584,6 +623,7 @@ void RBDatatypes::Init(RubyEngine& engine)
                 .define_method("-", Vec4Sub, FuncArgs().Required(1))
                 .define_method("*", Vec4Mul, FuncArgs().Required(1))
                 .define_method("/", Vec4Div, FuncArgs().Required(1))
+                .define_method("normalize", Vec4Normalize)
                 .define_method("to_s", Vec4ToS);
 
         ivec_class = vm.define_class("IVec")

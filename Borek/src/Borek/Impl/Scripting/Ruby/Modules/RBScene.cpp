@@ -25,16 +25,9 @@ namespace RBModules {
 
 using namespace mrbcpp;
 
-static MRB_FUNC(FindChild) {
-        std::string name = mrb_string_cstr(mrb, MRB_ARG1);
-        Entity child = Application::GetScene()->GetTree().EntityFindChild(name);
-
-        if (!child.IsNil()) {
-                mrb_value val = MRB_NUM(child.GetId());
-                return mrb_class_new_instance(mrb, 1, &val, Application::GetRubyEngine().GetBorekModule().get_class("Entity"));
-        } else {
-                return MRB_NIL;
-        }
+static MRB_FUNC(Root)
+{
+        return { Application::GetScene()->GetTree().GetRootEntity().GetRubyNode() };
 }
 
 static MRB_FUNC(Change) {
@@ -57,8 +50,7 @@ void Scene::Init(RubyEngine& engine)
         Module& borek = engine.GetBorekModule();
 
         borek.define_class("Scene")
-                .define_class_method("find_child", FindChild,
-                                     FuncArgs().Required(1))
+                .define_class_method("root", Root)
                 .define_class_method("change", Change, FuncArgs().Required(1))
                 .define_class_method("restart", Restart);
 }

@@ -29,23 +29,28 @@ TilemapComponent::Set(uint32_t entity_id, int16_t col, int16_t row, uint16_t ite
 
         items[{row, col}] = item;
 
-        if (!(Application::IsPlaying() && tilemap->tile_coliders[item].Exists()))
-                return;
-        if (tilemap->tile_coliders[old_item].Exists())
+        if (!Application::IsPlaying())
                 return;
 
-        glm::vec2 scale = Entity(entity_id).GlobalTransform().scale;
-        const glm::vec2 real_scale(tilemap->sprite_sheet->step_x * scale.x,
-                                   tilemap->sprite_sheet->step_y * scale.y);
+        if (tilemap->tile_coliders[item].Exists() && !tilemap->tile_coliders[old_item].Exists()) {
+                glm::vec2 scale = Entity(entity_id).GlobalTransform().scale;
+                const glm::vec2 real_scale(tilemap->sprite_sheet->step_x * scale.x,
+                                           tilemap->sprite_sheet->step_y * scale.y);
 
-        const glm::vec2 real_pos(row * step_x * scale.x, col * step_y * scale.y);
-        FZX::Body body;
-        body.tc.row = row;
-        body.tc.col = col;
+                const glm::vec2 real_pos(row * step_x * scale.x, col * step_y * scale.y);
+                FZX::Body body;
+                body.tc.row = row;
+                body.tc.col = col;
 
-        auto& fzxw = Application::GetScene()->m_PhysicsWorld;
-        const uint32_t cid = fzxw.Add(entity_id, body, real_pos, real_scale);
-        existing_colliders[{row, col}] = cid;
+                auto& fzxw = Application::GetScene()->m_PhysicsWorld;
+                const uint32_t cid = fzxw.Add(entity_id, body, real_pos, real_scale);
+                existing_colliders[{row, col}] = cid;
+        } else if (!tilemap->tile_coliders[item].Exists() && tilemap->tile_coliders[old_item].Exists()) {
+                auto& fzxw = Application::GetScene()->m_PhysicsWorld;
+                uint32_t ec_id = existing_colliders[{row, col}];
+                fzxw.RemoveTilemapNode(entity_id, ec_id);
+                existing_colliders.erase({row, col});
+        }
 }
 
 void
@@ -62,7 +67,9 @@ TilemapComponent::Delete(uint32_t entity_id, int16_t col, int16_t row)
                 return;
 
         auto& fzxw = Application::GetScene()->m_PhysicsWorld;
-        fzxw.RemoveTilemapNode(entity_id, existing_colliders[{row, col}]);
+        uint32_t ec_id = existing_colliders[{row, col}];
+        fzxw.RemoveTilemapNode(entity_id, ec_id);
+        existing_colliders.erase({row, col});
 }
 
 }  // namespace Borek

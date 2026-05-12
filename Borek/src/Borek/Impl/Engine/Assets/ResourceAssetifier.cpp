@@ -102,7 +102,7 @@ create_glyph(const msdf_atlas::GlyphGeometry& glyph)
 void
 ResourceAssetifier::AssetifyFolder(const fs::path& path)
 {
-        if (path == "")
+        if (path == "" || path.stem() == "build")
                 return;
 
         for (auto& file : fs::directory_iterator(path)) {
@@ -125,7 +125,7 @@ ResourceAssetifier::AssetifyFile(const fs::path& path)
         case Hash(".rb"):
                 return AssetifyScript(path);
         case Hash(".mp3"):
-        case Hash(".waw"):
+        case Hash(".wav"):
         case Hash(".flac"):
                 return AssetifySound(path);
         case Hash(".ttf"):

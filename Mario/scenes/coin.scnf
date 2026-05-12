@@ -1,0 +1,35 @@
+Scene: coin.scnf
+Root:
+  Name: Coin
+  Type: Area
+  Components:
+    ID:
+      Value: 14281280242460908577
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+    Area:
+      ColliderType: Rectangle
+      CollisionMask: 65535
+      SizeX: 16
+      SizeY: 16
+      Rotation: 0
+    Tags: [coin]
+  Children:
+    - Name: Sprite
+      Type: Sprite
+      Components:
+        ID:
+          Value: 13315188528320526446
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Sprite:
+          Color: [255, 255, 255, 255]
+          SizeX: 16
+          SizeY: 16
+          AssetPath: textures/coin.tex

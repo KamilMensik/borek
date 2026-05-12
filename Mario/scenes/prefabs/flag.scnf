@@ -1,0 +1,36 @@
+Scene: flag.scnf
+Root:
+  Name: FlagTop
+  Type: Sprite
+  Components:
+    ID:
+      Value: 6497752735242084777
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+    Values: [{Name: destination, Type: Asset, Val: ""}]
+    Sprite:
+      Color: [255, 255, 255, 255]
+      SizeX: 16
+      SizeY: 16
+      AssetPath: textures/flag_top.tex
+  Children:
+    - Name: Collider
+      Type: Area
+      Components:
+        ID:
+          Value: 18208942360655117687
+        Transform:
+          Position: [14, -520]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Area:
+          ColliderType: Rectangle
+          CollisionMask: 65535
+          SizeX: 2
+          SizeY: 1080
+          Rotation: 0
+        Tags: [end]

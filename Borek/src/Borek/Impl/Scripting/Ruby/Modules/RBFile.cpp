@@ -67,6 +67,14 @@ static MRB_FUNC(Open)
         return mrb_obj_value(mrb_data_object_alloc(mrb, RBFile::file_class, file, &file_data_type));
 }
 
+static MRB_FUNC(Close)
+{
+        File* f = RCAST<File*>(DATA_PTR(self));
+        f->~File();
+        DATA_PTR(self) = nullptr;
+        return MRB_NIL;
+}
+
 static MRB_FUNC(ForEach)
 {
         mrb_value params[3] = { MRB_NIL, mrb_str_new_static(mrb, "r", 1), MRB_NIL };
@@ -240,7 +248,6 @@ RBFile::Init(class RubyEngine& engine)
 {
         auto& vm = engine.GetRubyVM();
 
-        File f;
         file_class = vm.define_class("BFile", MRB_TT_DATA)
                 .define_class_method("open", Open, FuncArgs().Required(1).Optional(1))
                 .define_class_method("foreach", ForEach, FuncArgs().Required(1).Block())
@@ -261,6 +268,7 @@ RBFile::Init(class RubyEngine& engine)
                 .define_method("each", EachLine, FuncArgs().Block())
                 .define_method("each_line", EachLine, FuncArgs().Block())
                 .define_method("write", Write, FuncArgs().Required(1))
+                .define_method("close", Close)
                 .define_method("<<", Write, FuncArgs().Required(1));
 }
 

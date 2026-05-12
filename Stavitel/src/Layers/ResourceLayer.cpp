@@ -46,7 +46,7 @@ on_resource_renamed(ResourceRenamedEvent& ev)
                 if (fs::exists(og_asset))
                         break;
 
-                og_asset.replace_extension("waw");
+                og_asset.replace_extension("wav");
                 if (fs::exists(og_asset))
                         break;
 

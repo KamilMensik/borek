@@ -17,8 +17,7 @@ struct RubyScriptComponent {
 
         uint64_t ruby_instance = 0;
         Asset<ScriptAsset> script;
-
-        static class RClass* s_RubyEntityClass;
+        bool initialized = false;
 };
 
 }  // namespace Borek

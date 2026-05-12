@@ -1,5 +1,6 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
 #include <cstdint>
 #include <fstream>
 #include <string>
@@ -950,10 +951,14 @@ deserialize_values(YAML::Node& data, Entity e, SceneSerializer& ss)
 
                 for (auto val : valsd) {
                         Symbol name = val["Name"].as<std::string_view>();
-                        if (ss.IsSerializingPrefab() && vals.contains(Value(name, ValueType_Bool)))
+                        if (ss.IsSerializingPrefab() && vals.contains(Value(name, ValueType_Bool))) {
+                                BOREK_LOG_ERROR("Dropped {}", name.Str());
                                 continue;
-                        else if (!ss.IsSerializingPrefab() && !vals.contains(Value(name, ValueType_Bool)))
+                        }
+                        else if (e.HasComponent<PrefabComponent>() && !ss.IsSerializingPrefab() && !vals.contains(Value(name, ValueType_Bool))) {
+                                BOREK_LOG_WARN("Dropped {}", name.Str());
                                 continue;
+                        }
 
                         switch (Hash(val["Type"].as<std::string>())) {
                         case Hash("Bool"):
@@ -1032,9 +1037,7 @@ deserialize_entity(YAML::Node ynode, Scene& scene, SceneSerializer& ss,
 
         auto components = ynode["Components"];
         if (components["Prefab"]) {
-                ss.SetSerializingPrefab(true);
                 deserialize_prefab(components, e, ss);
-                ss.SetSerializingPrefab(false);
         } else {
                 for (auto& fn : deserialize_functions) {
                         fn(components, e, ss);
@@ -1064,6 +1067,7 @@ SceneSerializer::Deserialize(const std::filesystem::path& path, Entity e)
 
         std::string scene_name = data["Scene"].as<std::string>();
 
+        SetSerializingPrefab(!e.IsNil());
         Entity res = deserialize_entity(data["Root"], *m_Scene, *this, e);
         if (e.IsNil()) {
                 m_Scene->SetPath(path);

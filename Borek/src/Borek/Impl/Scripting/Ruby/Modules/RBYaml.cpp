@@ -1,5 +1,7 @@
 // Copyright 2024-2025 <kamilekmensik@gmail.com>
 
+#include "Include/Debug/Log.h"
+#include "yaml-cpp/exceptions.h"
 #include <cmath>
 #include <sstream>
 
@@ -74,15 +76,20 @@ static MRB_FUNC(Initialize)
         
         YAML::Node* node;
 
-        if (mrb_string_p(arg)) {
-                node = RCAST<YAML::Node*>(Alloc::Allocate<8>());
-                new(node) YAML::Node(YAML::LoadFile(Utils::Path::FromRelative(mrb_string_cstr(mrb, arg))));
-        } else if (mrb_data_p(arg) && mrb_class_ptr(arg) == RBFile::file_class) {
-                node = RCAST<YAML::Node*>(Alloc::Allocate<8>());
-                File* f = RCAST<File*>(DATA_PTR(arg));
-                *node = YAML::Load(f->Get());
-        } else {
-                mrb_raise(mrb, E_ARGUMENT_ERROR, "argument must be either path or file");
+        try {
+                if (mrb_string_p(arg)) {
+                        node = RCAST<YAML::Node*>(Alloc::Allocate<8>());
+                        new(node) YAML::Node(YAML::Load(mrb_string_cstr(mrb, arg)));
+                } else if (mrb_data_p(arg) && mrb_class(mrb, arg) == RBFile::file_class) {
+                        node = RCAST<YAML::Node*>(Alloc::Allocate<8>());
+                        File* f = RCAST<File*>(DATA_PTR(arg));
+                        new(node) YAML::Node(YAML::Load(f->Get()));
+                } else {
+                        mrb_raise(mrb, E_ARGUMENT_ERROR, "argument must be either yaml string or file");
+                        return MRB_NIL;
+                }
+        } catch (YAML::Exception e) {
+                mrb_raise(mrb, E_RUNTIME_ERROR, e.msg.c_str());
                 return MRB_NIL;
         }
 

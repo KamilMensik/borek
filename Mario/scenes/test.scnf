@@ -1,0 +1,117 @@
+Scene: test.scnf
+Root:
+  Name: Player
+  Type: DynamicBody
+  Components:
+    ID:
+      Value: 11139615674105023604
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+    Script:
+      ScriptPath: scripts/test.scr
+    Values: [{Name: test, Type: Bool, Val: true}]
+    RigidBody2D:
+      ColliderType: Rectangle
+      CollisionMask: 65535
+      SizeX: 16
+      SizeY: 16
+      Rotation: 0
+  Children:
+    - Name: BGM
+      Type: SoundPlayer
+      Components:
+        ID:
+          Value: 18204021122649733645
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        SoundPlayer:
+          Flags: 2
+          SoundPath: sounds/bgm.snd
+    - Name: SprintParticles
+      Type: ParticleEmmiter
+      Components:
+        ID:
+          Value: 12754970568243288413
+        Transform:
+          Position: [8, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        ParticleEmmiter:
+          SizeVariation: 0
+          VelocityVariation: [64, 64]
+          Velocity: [0, 4.5e-44]
+          FromColor: [223, 196, 196, 255]
+          ToColor: [151, 150, 150, 255]
+          ToSize: 4
+          FromSize: 2
+          Lifetime: 0.3
+          EmmitsPerSecond: 8
+          Enabled: false
+    - Name: Entity 1
+      Type: Area
+      Components:
+        ID:
+          Value: 69577512948850563
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Area:
+          ColliderType: Rectangle
+          CollisionMask: 65535
+          SizeX: 16
+          SizeY: 16
+          Rotation: 0
+          OnAreaEntered:
+            TargetPath: ./..
+            Callback: on_area_entered
+          OnAreaExited:
+            TargetPath: ./..
+            Callback: on_area_exited
+          OnBodyEntered:
+            TargetPath: ./..
+            Callback: on_body_entered
+          OnBodyExited:
+            TargetPath: ./..
+            Callback: on_body_exited
+    - Name: Sprite
+      Type: AnimatedSprite
+      Components:
+        ID:
+          Value: 15964040016789878929
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        AnimatedSprite:
+          Color: [255, 255, 255, 255]
+          SizeX: 16
+          SizeY: 16
+          Flags: 8
+          CurrentAnimation: idle
+          AnimPath: Animations/test.anim
+    - Name: JumpSound
+      Type: SoundPlayer
+      Components:
+        ID:
+          Value: 15038252322477911090
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        SoundPlayer:
+          Flags: 0
+          OnFinished:
+            TargetPath: ./..
+            Callback: on_sound_finished
+          SoundPath: sounds/jump.snd

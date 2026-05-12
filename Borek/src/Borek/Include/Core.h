@@ -16,6 +16,7 @@
 #define BOREK_APPLICATION(_application_class)   \
 int main(int argc, char** argv)                 \
 {                                               \
+        Borek::Application::SetExecutableName(argv[0]);\
         auto app = new _application_class();    \
         app->Run();                             \
         delete app;                             \

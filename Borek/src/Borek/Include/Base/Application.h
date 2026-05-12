@@ -4,6 +4,7 @@
 
 #include "Include/Engine/Exceptions/RubyException.h"
 #include <concepts>
+#include <string_view>
 #include <utility>
 
 #include "Include/Base/Scene.h"
@@ -70,12 +71,17 @@ public:
         GetTick();
         static void
         RestartScene();
+        static void
+        SetExecutableName(std::string_view str);
+        static const std::string&
+        GetExecutableName();
 
         void Run();
 
 protected:
         static Application* s_Instance;
         static std::function<void(const std::string&)> s_LogFunc;
+        static std::string s_ExecutableName;
 
         Uniq<AbstractWindow> m_Window;
         LayerStack m_Layers;

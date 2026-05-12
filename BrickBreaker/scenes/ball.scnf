@@ -1,0 +1,55 @@
+Scene: ball.scnf
+Root:
+  Name: Ball
+  Type: DynamicBody
+  Components:
+    ID:
+      Value: 17462312404312378377
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+    Script:
+      ScriptPath: scripts/ball.scr
+    RigidBody2D:
+      ColliderType: Rectangle
+      CollisionMask: 65535
+      SizeX: 8
+      SizeY: 8
+      Rotation: 0
+  Children:
+    - Name: Area
+      Type: Area
+      Components:
+        ID:
+          Value: 11279024061485030871
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Area:
+          ColliderType: Rectangle
+          CollisionMask: 65535
+          SizeX: 8
+          SizeY: 8
+          Rotation: 0
+          OnAreaEntered:
+            TargetPath: ./..
+            Callback: on_area_entered
+    - Name: Sprite
+      Type: Sprite
+      Components:
+        ID:
+          Value: 4373386794788208041
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Sprite:
+          Color: [255, 255, 255, 255]
+          SizeX: 8
+          SizeY: 8
+          AssetPath: textures/ball.tex

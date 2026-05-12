@@ -1,0 +1,46 @@
+Scene: camera.scnf
+Root:
+  Name: Camera
+  Type: Camera
+  Components:
+    ID:
+      Value: 8090290909691377319
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: -0
+      Pivot: [0, 0]
+    Camera:
+      IsActive: true
+      Width: 256
+      Height: 224
+  Children:
+    - Name: Background
+      Type: Sprite
+      Components:
+        ID:
+          Value: 12901368938278422003
+        Transform:
+          Position: [-128, -112]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Sprite:
+          Color: [92, 148, 252, 255]
+          SizeX: 256
+          SizeY: 224
+    - Name: Text
+      Type: Text
+      Components:
+        ID:
+          Value: 9399061191509610273
+        Transform:
+          Position: [-112, 96]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Text2D:
+          Size: 12
+          Value: "Coins: 0"
+          Color: [255, 255, 255, 255]
+          FontPath: Fonts/Segoe UI Bold.fnt

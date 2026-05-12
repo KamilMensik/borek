@@ -399,7 +399,7 @@ FileExplorer::Draw()
 void
 FileExplorer::DrawFolderView(const fs::path& path, const fs::path& parent_path)
 {
-        if (!fs::exists(path)) return;
+        if (!fs::exists(path) || path.stem() == "build") return;
         const bool is_directory = fs::is_directory(path);
         const bool is_regular_file = fs::is_regular_file(path);
 
@@ -476,6 +476,8 @@ FileExplorer::DrawDetailView()
         }
 
         for (auto& file : std::filesystem::directory_iterator(m_CurrentFolder)) {
+                if (file.path().stem() == "build") continue;
+
                 std::pair<bool, bool> res = FileButton(file, size);
                 if (res.first)
                         ImGui::NextColumn();
@@ -512,6 +514,8 @@ FileExplorer::DrawSearchViewHelper(float size, const std::filesystem::path& path
         bool item_hovered = false;
 
         for (auto& file : std::filesystem::directory_iterator(path)) {
+                if (file.path().stem() == "build") continue;
+
                 if (strcasestr(file.path().filename().c_str(), m_Search.c_str())) {
                         std::pair<bool, bool> res = FileButton(file, size);
                         if (res.first)

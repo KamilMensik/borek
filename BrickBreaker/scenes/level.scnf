@@ -1,0 +1,203 @@
+Scene: level.scnf
+Root:
+  Name: Level
+  Type: Node
+  Components:
+    ID:
+      Value: 9502813459105274942
+    Transform:
+      Position: [0, 0]
+      Scale: [1, 1]
+      Rotation: 0
+      Pivot: [0, 0]
+  Children:
+    - Name: BGM
+      Type: SoundPlayer
+      Components:
+        ID:
+          Value: 9990173293947508731
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        SoundPlayer:
+          Flags: 2
+          SoundPath: sounds/bgm.snd
+    - Name: GameLoseArea
+      Type: Area
+      Components:
+        ID:
+          Value: 17200618730501842385
+        Transform:
+          Position: [0, -20]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Area:
+          ColliderType: Rectangle
+          CollisionMask: 65535
+          SizeX: 256
+          SizeY: 8
+          Rotation: 0
+    - Name: GameBounds
+      Type: Node
+      Components:
+        ID:
+          Value: 13026222830351218390
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+      Children:
+        - Name: Collider 2
+          Type: StaticBody
+          Components:
+            ID:
+              Value: 2032711626037330906
+            Transform:
+              Position: [0, 176]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            RigidBody2D:
+              ColliderType: Rectangle
+              CollisionMask: 65535
+              SizeX: 256
+              SizeY: 8
+              Rotation: 0
+        - Name: Collider 1
+          Type: StaticBody
+          Components:
+            ID:
+              Value: 7668823871156085620
+            Transform:
+              Position: [256, -20]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            RigidBody2D:
+              ColliderType: Rectangle
+              CollisionMask: 65535
+              SizeX: 8
+              SizeY: 204
+              Rotation: 0
+        - Name: Collider
+          Type: StaticBody
+          Components:
+            ID:
+              Value: 14514195332025662883
+            Transform:
+              Position: [-8, -20]
+              Scale: [1, 1]
+              Rotation: 0
+              Pivot: [0, 0]
+            RigidBody2D:
+              ColliderType: Rectangle
+              CollisionMask: 65535
+              SizeX: 8
+              SizeY: 204
+              Rotation: 0
+    - Name: Camera
+      Type: Camera
+      Components:
+        ID:
+          Value: 4261088526587625314
+        Transform:
+          Position: [128, 86]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Camera:
+          IsActive: true
+          Width: 256
+          Height: 180
+    - Name: Background
+      Type: Sprite
+      Components:
+        ID:
+          Value: 1429683763860632814
+        Transform:
+          Position: [0, -4]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Sprite:
+          Color: [131, 139, 216, 255]
+          SizeX: 256
+          SizeY: 180
+    - Name: Bricks
+      Type: Tilemap
+      Components:
+        ID:
+          Value: 4840210757668969822
+        Transform:
+          Position: [0, 0]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Tilemap:
+          StepX: 16
+          StepY: 8
+          TilemapPath: tilemaps/tilemap.tmap
+          Tiles: [{Row: 9, Col: 1, Index: 3}, {Row: 9, Col: 2, Index: 0}, {Row: 9, Col: 3, Index: 1}, {Row: 9, Col: 4, Index: 6}, {Row: 9, Col: 5, Index: 7}, {Row: 9, Col: 6, Index: 4}, {Row: 9, Col: 7, Index: 5}, {Row: 9, Col: 8, Index: 2}, {Row: 9, Col: 9, Index: 3}, {Row: 9, Col: 10, Index: 0}, {Row: 9, Col: 11, Index: 1}, {Row: 9, Col: 12, Index: 6}, {Row: 9, Col: 13, Index: 7}, {Row: 9, Col: 14, Index: 4}, {Row: 10, Col: 1, Index: 0}, {Row: 10, Col: 2, Index: 1}, {Row: 10, Col: 3, Index: 6}, {Row: 10, Col: 4, Index: 7}, {Row: 10, Col: 5, Index: 4}, {Row: 10, Col: 6, Index: 5}, {Row: 10, Col: 7, Index: 2}, {Row: 10, Col: 8, Index: 3}, {Row: 10, Col: 9, Index: 0}, {Row: 10, Col: 10, Index: 1}, {Row: 10, Col: 11, Index: 6}, {Row: 10, Col: 12, Index: 7}, {Row: 10, Col: 13, Index: 4}, {Row: 10, Col: 14, Index: 5}, {Row: 11, Col: 1, Index: 1}, {Row: 11, Col: 2, Index: 6}, {Row: 11, Col: 3, Index: 7}, {Row: 11, Col: 4, Index: 4}, {Row: 11, Col: 5, Index: 5}, {Row: 11, Col: 6, Index: 2}, {Row: 11, Col: 7, Index: 3}, {Row: 11, Col: 8, Index: 0}, {Row: 11, Col: 9, Index: 1}, {Row: 11, Col: 10, Index: 6}, {Row: 11, Col: 11, Index: 7}, {Row: 11, Col: 12, Index: 4}, {Row: 11, Col: 13, Index: 5}, {Row: 11, Col: 14, Index: 2}, {Row: 12, Col: 1, Index: 6}, {Row: 12, Col: 2, Index: 7}, {Row: 12, Col: 3, Index: 4}, {Row: 12, Col: 4, Index: 5}, {Row: 12, Col: 5, Index: 2}, {Row: 12, Col: 6, Index: 3}, {Row: 12, Col: 7, Index: 0}, {Row: 12, Col: 8, Index: 1}, {Row: 12, Col: 9, Index: 6}, {Row: 12, Col: 10, Index: 7}, {Row: 12, Col: 11, Index: 4}, {Row: 12, Col: 12, Index: 5}, {Row: 12, Col: 13, Index: 2}, {Row: 12, Col: 14, Index: 3}, {Row: 13, Col: 1, Index: 7}, {Row: 13, Col: 2, Index: 4}, {Row: 13, Col: 3, Index: 5}, {Row: 13, Col: 4, Index: 2}, {Row: 13, Col: 5, Index: 3}, {Row: 13, Col: 6, Index: 0}, {Row: 13, Col: 7, Index: 1}, {Row: 13, Col: 8, Index: 6}, {Row: 13, Col: 9, Index: 7}, {Row: 13, Col: 10, Index: 4}, {Row: 13, Col: 11, Index: 5}, {Row: 13, Col: 12, Index: 2}, {Row: 13, Col: 13, Index: 3}, {Row: 13, Col: 14, Index: 0}, {Row: 14, Col: 1, Index: 4}, {Row: 14, Col: 2, Index: 5}, {Row: 14, Col: 3, Index: 2}, {Row: 14, Col: 4, Index: 3}, {Row: 14, Col: 5, Index: 0}, {Row: 14, Col: 6, Index: 1}, {Row: 14, Col: 7, Index: 6}, {Row: 14, Col: 8, Index: 7}, {Row: 14, Col: 9, Index: 4}, {Row: 14, Col: 10, Index: 5}, {Row: 14, Col: 11, Index: 2}, {Row: 14, Col: 12, Index: 3}, {Row: 14, Col: 13, Index: 0}, {Row: 14, Col: 14, Index: 1}, {Row: 15, Col: 1, Index: 5}, {Row: 15, Col: 2, Index: 2}, {Row: 15, Col: 3, Index: 3}, {Row: 15, Col: 4, Index: 0}, {Row: 15, Col: 5, Index: 1}, {Row: 15, Col: 6, Index: 6}, {Row: 15, Col: 7, Index: 7}, {Row: 15, Col: 8, Index: 4}, {Row: 15, Col: 9, Index: 5}, {Row: 15, Col: 10, Index: 2}, {Row: 15, Col: 11, Index: 3}, {Row: 15, Col: 12, Index: 0}, {Row: 15, Col: 13, Index: 1}, {Row: 15, Col: 14, Index: 6}, {Row: 16, Col: 1, Index: 2}, {Row: 16, Col: 2, Index: 3}, {Row: 16, Col: 3, Index: 0}, {Row: 16, Col: 4, Index: 1}, {Row: 16, Col: 5, Index: 6}, {Row: 16, Col: 6, Index: 7}, {Row: 16, Col: 7, Index: 4}, {Row: 16, Col: 8, Index: 5}, {Row: 16, Col: 9, Index: 2}, {Row: 16, Col: 10, Index: 3}, {Row: 16, Col: 11, Index: 0}, {Row: 16, Col: 12, Index: 1}, {Row: 16, Col: 13, Index: 6}, {Row: 16, Col: 14, Index: 7}, {Row: 17, Col: 1, Index: 3}, {Row: 17, Col: 2, Index: 0}, {Row: 17, Col: 3, Index: 1}, {Row: 17, Col: 4, Index: 6}, {Row: 17, Col: 5, Index: 7}, {Row: 17, Col: 6, Index: 4}, {Row: 17, Col: 7, Index: 5}, {Row: 17, Col: 8, Index: 2}, {Row: 17, Col: 9, Index: 3}, {Row: 17, Col: 10, Index: 0}, {Row: 17, Col: 11, Index: 1}, {Row: 17, Col: 12, Index: 6}, {Row: 17, Col: 13, Index: 7}, {Row: 17, Col: 14, Index: 4}, {Row: 18, Col: 1, Index: 0}, {Row: 18, Col: 2, Index: 1}, {Row: 18, Col: 3, Index: 6}, {Row: 18, Col: 4, Index: 7}, {Row: 18, Col: 5, Index: 4}, {Row: 18, Col: 6, Index: 5}, {Row: 18, Col: 7, Index: 2}, {Row: 18, Col: 8, Index: 3}, {Row: 18, Col: 9, Index: 0}, {Row: 18, Col: 10, Index: 1}, {Row: 18, Col: 11, Index: 6}, {Row: 18, Col: 12, Index: 7}, {Row: 18, Col: 13, Index: 4}, {Row: 18, Col: 14, Index: 5}, {Row: 19, Col: 1, Index: 1}, {Row: 19, Col: 2, Index: 6}, {Row: 19, Col: 3, Index: 7}, {Row: 19, Col: 4, Index: 4}, {Row: 19, Col: 5, Index: 5}, {Row: 19, Col: 6, Index: 2}, {Row: 19, Col: 7, Index: 3}, {Row: 19, Col: 8, Index: 0}, {Row: 19, Col: 9, Index: 1}, {Row: 19, Col: 10, Index: 6}, {Row: 19, Col: 11, Index: 7}, {Row: 19, Col: 12, Index: 4}, {Row: 19, Col: 13, Index: 5}, {Row: 19, Col: 14, Index: 2}, {Row: 20, Col: 1, Index: 6}, {Row: 20, Col: 2, Index: 7}, {Row: 20, Col: 3, Index: 4}, {Row: 20, Col: 4, Index: 5}, {Row: 20, Col: 5, Index: 2}, {Row: 20, Col: 6, Index: 3}, {Row: 20, Col: 7, Index: 0}, {Row: 20, Col: 8, Index: 1}, {Row: 20, Col: 9, Index: 6}, {Row: 20, Col: 10, Index: 7}, {Row: 20, Col: 11, Index: 4}, {Row: 20, Col: 12, Index: 5}, {Row: 20, Col: 13, Index: 2}, {Row: 20, Col: 14, Index: 3}]
+        Tags: [bricks]
+    - Name: Paddle
+      Type: Area
+      Components:
+        ID:
+          Value: 4253998974589052395
+        Transform:
+          Position: [96, -4]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Script:
+          ScriptPath: scripts/paddle.scr
+        Prefab:
+          ScenePath: /home/kamil/bakalarka/borek/BrickBreaker/scenes/paddle.scn
+    - Name: Ball
+      Type: DynamicBody
+      Components:
+        ID:
+          Value: 17462312404312378377
+        Transform:
+          Position: [120, 35]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Script:
+          ScriptPath: scripts/ball.scr
+        Prefab:
+          ScenePath: /home/kamil/bakalarka/borek/BrickBreaker/scenes/ball.scn
+    - Name: HighScore
+      Type: Text
+      Components:
+        ID:
+          Value: 2067894597482879190
+        Transform:
+          Position: [174, 168]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Text2D:
+          Size: 12
+          Value: "HighScore: 122"
+          Color: [255, 255, 255, 255]
+          FontPath: fonts/font.fnt
+    - Name: Score
+      Type: Text
+      Components:
+        ID:
+          Value: 14556211116308206830
+        Transform:
+          Position: [0, 168]
+          Scale: [1, 1]
+          Rotation: 0
+          Pivot: [0, 0]
+        Text2D:
+          Size: 12
+          Value: "Score: 0"
+          Color: [255, 255, 255, 255]
+          FontPath: fonts/font.fnt

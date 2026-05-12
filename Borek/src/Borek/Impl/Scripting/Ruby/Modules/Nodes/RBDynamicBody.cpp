@@ -73,6 +73,9 @@ NODE_MODULE_METHOD(IsOnFloor);
 static mrb_value
 new_cdata(mrb_state* mrb, const FZX::Collision& col)
 {
+        if (!col)
+                return MRB_NIL;
+
         mrb_value cdata = mrb_class_new_instance(
                 mrb, 0, nullptr, RBDynamicBody::collision_data_class);
 

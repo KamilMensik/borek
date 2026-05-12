@@ -133,6 +133,8 @@ private:
 
         void AddCellNode(uint32_t cell_id, uint32_t element_id);
         void DeleteCellNode(uint32_t cell_id, uint32_t element_id);
+        void UpdateCellNode(uint32_t cell_id, uint32_t prev_el_id,
+                            uint32_t new_el_id);
 };
 
 struct CGrid::RayCollisionData {
